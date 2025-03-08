@@ -1,0 +1,148 @@
+# **Interview Questions and Answers Based on Resume**
+
+---
+
+## **1️⃣ Core Java**
+
+### **Q1: What are the key features of Java?**  
+✅ **Answer:** Java is a high-level, object-oriented programming language known for:  
+- **Platform Independence** (Write Once, Run Anywhere using JVM)  
+- **Automatic Memory Management (Garbage Collection)**  
+- **Multithreading & Concurrency**  
+- **Robust Exception Handling**  
+- **Strong Security Features**  
+
+### **Q2: Explain OOPs concepts in Java.**  
+✅ **Answer:** Java follows four main OOP principles:  
+- **Encapsulation:** Hiding implementation details using private variables and public methods.  
+- **Inheritance:** Reusing code by extending a class.  
+- **Polymorphism:** Multiple forms of a method (Overloading & Overriding).  
+- **Abstraction:** Hiding implementation using abstract classes and interfaces.  
+
+### **Q3: How do you handle multithreading in Java?**  
+✅ **Answer:** Multithreading in Java is managed using:  
+- **Thread class:** Extend `Thread` class and override `run()` method.  
+- **Runnable interface:** Implement `Runnable` and pass it to `Thread` constructor.  
+- **Executors framework:** Manage thread pools efficiently for better performance.  
+
+---
+
+## **2️⃣ Spring Boot & Microservices**
+
+### **Q4: What is Spring Boot and how does it simplify backend development?**  
+✅ **Answer:** Spring Boot is a framework that simplifies **Spring application development** by providing:  
+- **Auto-configuration** (No manual XML configuration needed)  
+- **Embedded Servers** (Tomcat, Jetty, etc.)  
+- **Starter Dependencies** (spring-boot-starter-web, spring-boot-starter-data-jpa)  
+
+### **Q5: How did you implement microservices in your projects?**  
+✅ **Answer:** I implemented **Spring Boot microservices** with:  
+- **RESTful APIs for service communication.**  
+- **Database per service approach (MySQL, Redis for caching).**  
+- **JWT authentication and OAuth2 for secure API access.**  
+- **API Gateway for centralized routing and authentication.**  
+
+### **Q6: What is JWT authentication, and how did you implement it?**  
+✅ **Answer:** JWT (JSON Web Token) is used for secure authentication in APIs. I implemented it in my **Backend API project** by:  
+- Generating **JWT tokens** after user login.  
+- Validating the **token in each API request** using a filter.  
+- Using **Spring Security** for role-based access control.  
+
+### **Q7: How did you optimize Spring Boot performance?**  
+✅ **Answer:** Optimized API performance using:  
+- **Caching (Redis, KeyDB) to store frequently accessed data.**  
+- **Indexing in MySQL & Elasticsearch** for faster query execution.  
+- **Asynchronous processing** for background tasks.  
+- **Connection pooling** to optimize database interactions.  
+
+---
+
+## **3️⃣ Databases & Caching**
+
+### **Q8: How does Elasticsearch improve search performance?**  
+✅ **Answer:** Elasticsearch uses **inverted indexing** for full-text search, making it much faster than SQL databases for **search queries**. In my projects, I used it for:  
+- **Efficient product searches in the e-commerce platform.**  
+- **Reducing database load by indexing frequently searched data.**  
+
+### **Q9: How did you use Redis in your projects?**  
+✅ **Answer:** Redis was used for:  
+- **Caching frequently accessed database queries** to improve API response times.  
+- **Session management** for user authentication.  
+- **Storing real-time data updates in microservices.**  
+
+---
+
+## **4️⃣ Frontend (Angular, TypeScript, UI Integration)**
+
+### **Q10: What experience do you have with Angular?**  
+✅ **Answer:** In my **E-commerce project**, I used Angular for:  
+- **Building dynamic product search and filtering components.**  
+- **Integrating APIs with real-time Firebase updates.**  
+- **Improving UI responsiveness using lazy loading & optimized API calls.**  
+
+### **Q11: How did you integrate frontend with backend APIs?**  
+✅ **Answer:**  
+- Used **Angular HttpClient** to make API calls to backend services.  
+- Implemented **Interceptors** for adding authentication tokens.  
+- Handled **error responses** gracefully with Angular services.  
+
+---
+
+## **5️⃣ Tools & Platforms (Docker, AWS, Postman, Kibana, Git)**
+
+### **Q12: How did you use Docker in your projects?**  
+✅ **Answer:** Docker was used for:  
+- **Containerizing Spring Boot microservices** for portability.  
+- **Running MySQL, Redis, and Elasticsearch containers** locally for development/testing.  
+- **Ensuring consistent environments across development and production.**  
+
+### **Q13: What AWS services have you worked with?**  
+✅ **Answer:** I have **basic experience with AWS (EC2, S3)**:  
+- **EC2** for hosting backend services.  
+- **S3** for storing static assets.  
+
+### **Q14: How do you test REST APIs in Postman?**  
+✅ **Answer:**  
+- Used **Postman** for API testing and debugging.  
+- Created **automated test collections** for regression testing.  
+- Verified **JWT authentication** and role-based API access.  
+
+---
+
+## **6️⃣ Projects (Backend API & E-commerce)**
+
+### **Q15: Explain your Backend API Development project.**  
+✅ **Answer:**  
+- Built **RESTful APIs using Spring Boot** for structured data transactions.  
+- Used **H2 database for in-memory testing** and validation.  
+- Implemented **JWT-based authentication and OAuth2** for API security.  
+- Optimized database queries using **indexing and caching with Redis**.  
+
+### **Q16: Explain your E-commerce project.**  
+✅ **Answer:**  
+- Developed **dynamic product search and cart management** in Angular.  
+- Integrated **Firebase** as a real-time backend database.  
+- Implemented **payment gateway integration** for secure transactions.  
+- Optimized **network requests and API interactions** for better performance.  
+
+---
+
+## **7️⃣ Work Experience (Reliance Jio)**
+
+### **Q17: What key contributions did you make at Reliance Jio?**  
+✅ **Answer:**  
+- Developed **scalable REST APIs** using Java & Spring Boot.  
+- **Integrated Elasticsearch & Redis** for better performance.  
+- Worked on **API security (JWT, OAuth2, RBAC)**.  
+- Developed **Angular UI components** for better frontend integration.  
+- Explored **microservices architecture using Spring Boot**.  
+
+---
+
+## **🚀 Final Steps**
+1. **Review and practice these answers** before interviews.  
+2. **Strengthen GitHub profile** with Spring Boot microservices projects.  
+3. **Network with professionals on LinkedIn** for referrals.  
+
+Would you like me to refine any specific area further? 🚀
+

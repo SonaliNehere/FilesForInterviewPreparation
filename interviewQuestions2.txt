@@ -1,0 +1,105 @@
+# **Interview Questions and Answers Based on Resume**
+
+---
+
+## **1️⃣ Core Java**
+
+### **Q1: What are the key features of Java?**  
+✅ **Answer:** Java is a high-level, object-oriented programming language known for:  
+- **Platform Independence** (Write Once, Run Anywhere using JVM)  
+- **Automatic Memory Management (Garbage Collection)**  
+- **Multithreading & Concurrency**  
+- **Robust Exception Handling**  
+- **Strong Security Features**  
+
+### **Q2: Explain OOPs concepts in Java.**  
+✅ **Answer:** Java follows four main OOP principles:  
+- **Encapsulation:** Hiding implementation details using private variables and public methods.  
+- **Inheritance:** Reusing code by extending a class.  
+- **Polymorphism:** Multiple forms of a method (Overloading & Overriding).  
+- **Abstraction:** Hiding implementation using abstract classes and interfaces.  
+
+### **Q3: What are Java Collections? Name some commonly used classes.**  
+✅ **Answer:** Java Collections Framework provides reusable data structures. Common classes include:  
+- **List (ArrayList, LinkedList)** – Ordered, allows duplicates.  
+- **Set (HashSet, TreeSet, LinkedHashSet)** – Unique elements only.  
+- **Map (HashMap, TreeMap, LinkedHashMap)** – Key-value pairs.  
+
+---
+
+## **2️⃣ Advanced System Design**
+
+### **Q4: What is System Design?**  
+✅ **Answer:** System design is the process of defining the **architecture, components, modules, and data flow** of a system to meet performance, scalability, and reliability requirements.  
+
+### **Q5: What is the CAP Theorem?**  
+✅ **Answer:** The **CAP theorem** states that in a distributed system, you can only achieve two of the following three properties:  
+- **Consistency (C):** Every read receives the most recent write.  
+- **Availability (A):** Every request gets a response, even if it's not the latest.  
+- **Partition Tolerance (P):** The system continues to function even if network partitions occur.  
+Most real-world distributed systems (e.g., Elasticsearch, Cassandra) choose **AP or CP**.  
+
+### **Q6: What are Load Balancers?**  
+✅ **Answer:** A **Load Balancer** distributes incoming traffic across multiple servers to prevent overload and ensure reliability. Types include:  
+- **DNS Load Balancing** (Round-robin across multiple IPs)  
+- **Application Load Balancers (Layer 7 - HTTP/HTTPS requests)**  
+- **Network Load Balancers (Layer 4 - TCP/UDP packets)**  
+
+---
+
+## **3️⃣ Advanced Microservices**
+
+### **Q7: What is an API Gateway?**  
+✅ **Answer:** An **API Gateway** is a single entry point for all client requests in a microservices system. It helps with:  
+- **Routing requests to the appropriate microservice.**  
+- **Security** (JWT authentication, rate limiting).  
+- **Logging & Monitoring** (centralized request tracking).  
+Example: **Netflix Zuul, Spring Cloud Gateway, Kong API Gateway**.  
+
+### **Q8: What is the Circuit Breaker Pattern?**  
+✅ **Answer:** The **Circuit Breaker** pattern prevents cascading failures in microservices by stopping calls to an unresponsive service. It has three states:  
+- **Closed:** All requests are allowed.  
+- **Open:** Requests are blocked after failures exceed a threshold.  
+- **Half-Open:** A few test requests are sent to check recovery.  
+Example: **Resilience4J, Hystrix**.  
+
+---
+
+## **4️⃣ DevOps & Cloud**
+
+### **Q9: What is CI/CD, and how does it work?**  
+✅ **Answer:** **CI/CD (Continuous Integration/Continuous Deployment)** automates the software release process.  
+- **Continuous Integration (CI):** Developers merge code frequently, and automated tests are run (e.g., using Jenkins, GitHub Actions).  
+- **Continuous Deployment (CD):** Successful builds are automatically deployed to production.  
+
+### **Q10: How does Kubernetes help in microservices deployment?**  
+✅ **Answer:** **Kubernetes (K8s)** is an orchestration tool for deploying, scaling, and managing containerized applications. It provides:  
+- **Load balancing and service discovery.**  
+- **Auto-scaling based on traffic.**  
+- **Self-healing (automatic restarts on failure).**  
+
+---
+
+## **5️⃣ Tools & Platforms (Docker, AWS, Postman, Kibana, Git)**
+
+### **Q11: How did you use Docker in your projects?**  
+✅ **Answer:** Docker was used for:  
+- **Containerizing Spring Boot microservices** for portability.  
+- **Running MySQL, Redis, and Elasticsearch containers** for testing.  
+
+### **Q12: What AWS services have you worked with?**  
+✅ **Answer:** I have **basic experience with AWS (EC2, S3, Lambda, RDS)**:  
+- **EC2** for hosting backend services.  
+- **S3** for storing static assets.  
+- **Lambda** for serverless function execution.  
+- **RDS** for managed database services.  
+
+---
+
+## **🚀 Final Steps**
+1. **Review and practice these answers** before interviews.  
+2. **Strengthen GitHub profile** with Spring Boot microservices projects.  
+3. **Network with professionals on LinkedIn** for referrals.  
+
+Would you like me to refine any specific area further? 🚀
+

@@ -1,0 +1,143 @@
+# **Interview Questions and Answers Based on Resume**
+
+---
+
+## **1️⃣ Core Java**
+
+### **Q1: What are the key features of Java?**  
+✅ **Answer:** Java is a high-level, object-oriented programming language known for:  
+- **Platform Independence** (Write Once, Run Anywhere using JVM)  
+- **Automatic Memory Management (Garbage Collection)**  
+- **Multithreading & Concurrency**  
+- **Robust Exception Handling**  
+- **Strong Security Features**  
+
+### **Q2: Explain OOPs concepts in Java.**  
+✅ **Answer:** Java follows four main OOP principles:  
+- **Encapsulation:** Hiding implementation details using private variables and public methods.  
+- **Inheritance:** Reusing code by extending a class.  
+- **Polymorphism:** Multiple forms of a method (Overloading & Overriding).  
+- **Abstraction:** Hiding implementation using abstract classes and interfaces.  
+
+### **Q3: What are Java Collections? Name some commonly used classes.**  
+✅ **Answer:** Java Collections Framework provides reusable data structures. Common classes include:  
+- **List (ArrayList, LinkedList)** – Ordered, allows duplicates.  
+- **Set (HashSet, TreeSet, LinkedHashSet)** – Unique elements only.  
+- **Map (HashMap, TreeMap, LinkedHashMap)** – Key-value pairs.  
+
+### **Q4: What is Exception Handling in Java?**  
+✅ **Answer:** Exception handling is the mechanism to handle runtime errors. It uses:  
+- **try-catch** blocks to catch exceptions.  
+- **throw** to manually throw exceptions.  
+- **throws** to declare exceptions in a method signature.  
+- **finally** to execute code regardless of exception occurrence.  
+
+### **Q5: How does JVM work?**  
+✅ **Answer:** JVM (Java Virtual Machine) executes Java bytecode. Steps include:  
+- **Compilation:** Java code → Bytecode using JDK.  
+- **Class Loading:** Loads compiled bytecode into memory.  
+- **Execution:** Converts bytecode to machine code using Just-In-Time (JIT) Compiler.  
+
+---
+
+## **2️⃣ Spring Boot & Microservices**
+
+### **Q6: What is Spring Boot and how does it simplify backend development?**  
+✅ **Answer:** Spring Boot is a framework that simplifies **Spring application development** by providing:  
+- **Auto-configuration** (No manual XML configuration needed)  
+- **Embedded Servers** (Tomcat, Jetty, etc.)  
+- **Starter Dependencies** (spring-boot-starter-web, spring-boot-starter-data-jpa)  
+
+### **Q7: What is a microservices architecture?**  
+✅ **Answer:** Microservices architecture is an approach where an application is built as a collection of **small, independent services**, each responsible for a specific functionality.  
+
+### **Q8: Why use microservices instead of a monolithic architecture?**  
+✅ **Answer:** Microservices offer:  
+- **Scalability:** Services can scale independently.  
+- **Flexibility:** Each service can use different tech stacks.  
+- **Fault Isolation:** A failure in one service doesn’t crash the entire system.  
+
+### **Q9: How did you implement microservices in your projects?**  
+✅ **Answer:** I implemented **Spring Boot microservices** with:  
+- **RESTful APIs for service communication.**  
+- **Database per service approach (MySQL, Redis for caching).**  
+- **JWT authentication and OAuth2 for secure API access.**  
+- **API Gateway for centralized routing and authentication.**  
+
+---
+
+## **3️⃣ Databases & Caching**
+
+### **Q10: What is indexing in databases?**  
+✅ **Answer:** Indexing speeds up **data retrieval** by creating a sorted structure for fast lookups.  
+- **Primary Index (Unique)** – Automatically created for primary keys.  
+- **Secondary Index (Non-Unique)** – Created on frequently searched columns.  
+
+### **Q11: How did you use Redis in your projects?**  
+✅ **Answer:** Redis was used for:  
+- **Caching frequently accessed database queries** to improve API response times.  
+- **Session management** for user authentication.  
+- **Storing real-time data updates in microservices.**  
+
+### **Q12: What is ACID in databases?**  
+✅ **Answer:** ACID properties ensure reliable transactions:  
+- **Atomicity:** Transaction is all or nothing.  
+- **Consistency:** Database remains in a valid state.  
+- **Isolation:** Transactions don’t affect each other.  
+- **Durability:** Data is permanently stored.  
+
+---
+
+## **4️⃣ Security & Authentication**
+
+### **Q13: What is JWT authentication?**  
+✅ **Answer:** JWT (JSON Web Token) is a method to secure API communication by:  
+- **Encoding user authentication details** into a compact token.  
+- **Validating tokens** on each API request.  
+- **Preventing session hijacking** as no sensitive data is stored on the server.  
+
+### **Q14: How did you implement JWT authentication?**  
+✅ **Answer:** In my project:  
+- **JWT tokens were generated after user login.**  
+- **Tokens were verified in a security filter.**  
+- **Spring Security handled role-based access control.**  
+
+---
+
+## **5️⃣ Frontend (Angular, TypeScript, UI Integration)**
+
+### **Q15: What are Angular Lifecycle Hooks?**  
+✅ **Answer:** Lifecycle hooks allow components to respond to changes. Important hooks include:  
+- `ngOnInit()` – Runs after component initialization.  
+- `ngOnChanges()` – Detects input changes.  
+- `ngOnDestroy()` – Cleanup before component removal.  
+
+### **Q16: How did you integrate frontend with backend APIs?**  
+✅ **Answer:**  
+- Used **Angular HttpClient** to make API calls.  
+- Implemented **Interceptors** for adding authentication tokens.  
+- Handled **error responses** with Angular services.  
+
+---
+
+## **6️⃣ Tools & Platforms (Docker, AWS, Postman, Kibana, Git)**
+
+### **Q17: How did you use Docker in your projects?**  
+✅ **Answer:** Docker was used for:  
+- **Containerizing Spring Boot microservices** for portability.  
+- **Running MySQL, Redis, and Elasticsearch containers** for testing.  
+
+### **Q18: What AWS services have you worked with?**  
+✅ **Answer:** I have **basic experience with AWS (EC2, S3)**:  
+- **EC2** for hosting backend services.  
+- **S3** for storing static assets.  
+
+---
+
+## **🚀 Final Steps**
+1. **Review and practice these answers** before interviews.  
+2. **Strengthen GitHub profile** with Spring Boot microservices projects.  
+3. **Network with professionals on LinkedIn** for referrals.  
+
+Would you like me to refine any specific area further? 🚀
+
