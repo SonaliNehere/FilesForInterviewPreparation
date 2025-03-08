@@ -1,0 +1,129 @@
+# **Interview Questions and Answers Based on Resume**
+
+---
+
+## **🔹 Updated Profile Summary**
+
+### **Q0: What is your expertise as a Software Developer?**  
+✅ **Answer:** I have **2.7 years of experience** in **backend development using Java and Spring Boot**, with hands-on experience in **RESTful API development, microservices, database optimization, caching (Redis), and frontend integration using Angular**. Additionally, I have **experience with Docker for containerization and AWS (EC2, S3) for cloud deployments.**  
+
+### **Q1: What is a RESTful API?**  
+✅ **Answer:** A RESTful API follows the **REST (Representational State Transfer)** architectural style, allowing communication between clients and servers. Key principles include:
+- **Statelessness** – Each request is independent and contains all necessary information.
+- **Resource-Based URLs** – API endpoints represent resources (e.g., `/products/{id}`).
+- **HTTP Methods** – Uses GET, POST, PUT, DELETE for operations.
+- **JSON or XML Data Format** – Typically, APIs exchange data in JSON.
+
+### **Q2: How did you implement RESTful APIs in your project?**  
+✅ **Answer:**
+- Developed **Spring Boot-based REST APIs** to handle CRUD operations.
+- Used **Spring Data JPA** for database interactions.
+- Implemented **JWT authentication** to secure API endpoints.
+- Optimized performance using **caching (Redis) and pagination.**
+
+---
+
+## **1️⃣ Core Java**
+
+### **Q3: What are Java Streams, and how do they work?**  
+✅ **Answer:** Java Streams API allows functional-style processing of data collections. Common methods include:
+- **map()** – Transforms elements.
+- **filter()** – Selects elements based on conditions.
+- **collect()** – Aggregates results (e.g., converting to a List).
+
+### **Q4: How does Garbage Collection work in Java?**  
+✅ **Answer:** Java's Garbage Collector (GC) automatically removes unused objects. GC algorithms include:
+- **Young Generation (Eden, Survivor spaces)** – Frequent short-lived objects.
+- **Old Generation (Tenured space)** – Long-lived objects.
+- **G1 GC, CMS GC** – Advanced collectors for optimizing performance.
+
+---
+
+## **2️⃣ Advanced System Design**
+
+### **Q5: How do you design a scalable e-commerce system?**  
+✅ **Answer:**
+- **Load Balancers** – Distribute requests across multiple servers.
+- **Microservices Architecture** – Separate services for products, orders, payments.
+- **Database Optimization** – Indexing, sharding, caching (Redis, Elasticsearch).
+- **Asynchronous Processing** – Kafka or RabbitMQ for event-driven workflows.
+
+### **Q6: What is Event-Driven Architecture?**  
+✅ **Answer:** Event-Driven Architecture (EDA) enables services to communicate asynchronously through events.
+- **Producers generate events** (e.g., order placed).
+- **Consumers process events** (e.g., send confirmation email).
+- **Kafka, RabbitMQ** are commonly used for event-driven systems.
+
+---
+
+## **3️⃣ Advanced Microservices**
+
+### **Q7: How does OAuth2 work for securing microservices?**  
+✅ **Answer:** OAuth2 is an authentication framework that issues **access tokens** for secure API interactions.
+- **Client Credentials Flow** – For machine-to-machine communication.
+- **Authorization Code Flow** – For user authentication with redirects.
+- **Refresh Tokens** – Extend session lifespan without re-authentication.
+
+### **Q8: How did you implement JWT authentication in Spring Boot?**  
+✅ **Answer:**
+- Generated JWT token using **Spring Security & Java JWT library**.
+- Secured API endpoints with a **JWT filter**.
+- Stored user roles in the token for **role-based authorization**.
+
+---
+
+## **4️⃣ Databases & Caching**
+
+### **Q9: What is Redis, and how did you use it?**  
+✅ **Answer:** Redis is an in-memory key-value store used for caching and real-time applications.
+- **Session Management** – Stored user sessions in Redis.
+- **Caching API Responses** – Reduced database load by storing frequently accessed queries.
+- **Message Broker** – Used Redis Pub/Sub for event-driven notifications.
+
+### **Q10: How does Elasticsearch work for full-text search?**  
+✅ **Answer:** Elasticsearch uses **inverted indexing** for fast text searches.
+- **Tokenizer & Analyzer** – Breaks text into searchable tokens.
+- **Search Queries** – Supports fuzzy search, autocomplete, and ranking.
+- **Used in e-commerce** to enable fast product searches.
+
+---
+
+## **5️⃣ DevOps & Cloud**
+
+### **Q11: How does Docker improve software deployment?**  
+✅ **Answer:** Docker **containerizes applications**, ensuring:
+- **Portability** – Works the same across dev, test, and production.
+- **Isolation** – Dependencies bundled in containers.
+- **Scaling** – Easily replicate containers for load balancing.
+
+### **Q12: What is Kubernetes, and why use it?**  
+✅ **Answer:** Kubernetes automates deployment, scaling, and management of containerized applications.
+- **Self-Healing** – Restarts failed containers.
+- **Auto-Scaling** – Adjusts resources based on demand.
+- **Service Discovery** – Manages internal communication between services.
+
+---
+
+## **6️⃣ Tools & Platforms (Postman, Kibana, Git)**
+
+### **Q13: How do you test APIs using Postman?**  
+✅ **Answer:**
+- **Sent GET, POST, PUT, DELETE requests** to test APIs.
+- **Added authentication headers** (JWT, OAuth2).
+- **Wrote automated test scripts** using Postman’s test framework.
+
+### **Q14: What is Kibana, and how does it help with logs?**  
+✅ **Answer:** Kibana is a visualization tool for **Elasticsearch logs and metrics**.
+- **Used for debugging API errors.**
+- **Created real-time dashboards** for API response times.
+- **Analyzed trends** in system performance.
+
+---
+
+## **🚀 Final Steps**
+1. **Review and practice these answers** before interviews.
+2. **Strengthen GitHub profile** with Spring Boot microservices projects.
+3. **Network with professionals on LinkedIn** for referrals.
+
+Would you like me to refine any specific area further? 🚀
+
