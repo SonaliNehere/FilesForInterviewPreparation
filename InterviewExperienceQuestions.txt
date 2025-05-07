@@ -1,0 +1,652 @@
+Spring boot - annotations
+Spring Boot provides a rich set of annotations that simplify the development of Java applications by reducing boilerplate code.
+ Below is a categorized list of commonly used Spring Boot and Spring Framework annotations:
+
+@SpringBootApplication – Main class annotation, enables auto-configuration, component scan, and configuration.
+@Component – Marks a Java class as a Spring component.
+@Service – Marks a class as a service provider (business logic layer).
+@Repository – Indicates the class is a Data Access Object (DAO).
+@Controller – Used to define a web controller (returns views).
+@RestController – Combines @Controller and @ResponseBody (returns JSON/XML).
+@Autowired – Automatically injects dependencies.
+@Value – Injects values from application.properties or application.yml.
+@Configuration – Marks a class as source of bean definitions.
+@Bean – Declares a Spring bean within @Configuration.
+@ComponentScan – Tells Spring where to search for annotated components.
+@EnableAutoConfiguration – Enables Spring Boot auto-configuration.
+@PropertySource – Loads external property files into Spring environment.
+@ConfigurationProperties – Binds properties to a bean.
+@EnableConfigurationProperties – Enables support for @ConfigurationProperties beans.
+@Profile – Activates a bean only for specific Spring profiles.
+
+--- Web Annotations ---
+@RequestMapping – Maps HTTP requests to handler methods/classes.
+@GetMapping – Maps GET requests.
+@PostMapping – Maps POST requests.
+@PutMapping – Maps PUT requests.
+@DeleteMapping – Maps DELETE requests.
+@PathVariable – Binds URI path variable to method parameter.
+@RequestParam – Binds HTTP request parameter to method parameter.
+@RequestBody – Binds HTTP request body to method parameter.
+@ResponseBody – Sends method return value as HTTP response.
+
+--- JPA & Database Annotations ---
+@Entity – Declares a JPA entity.
+@Table – Specifies table name for a JPA entity.
+@Column – Specifies column mapping in JPA.
+@Id – Marks a field as primary key.
+@GeneratedValue – Specifies generation strategy for primary key.
+@Transactional – Marks a method or class to run in a transaction.
+
+--- Testing Annotations ---
+@SpringBootTest – Loads full Spring application context for testing.
+@WebMvcTest – Loads only MVC components for controller testing.
+@DataJpaTest – Configures JPA components for repository testing.
+
+===================================================================================
+
+✅ What is Dependency Injection (DI)?
+Dependency Injection is a design pattern used to achieve Inversion of Control (IoC) between classes and their dependencies.
+	Instead of creating dependencies within a class, they are injected from the outside by the Spring container. This leads to 
+	loosely coupled and easily testable code.
+
+In Spring Boot, DI is automatically managed by the Spring IoC container.
+
+✅ Why is DI important?
+Promotes loose coupling between components.
+Makes unit testing easier by allowing mock injection.
+Increases code modularity and maintainability.
+Supports cleaner separation of concerns.
+
+✅ Types of Dependency Injection in Spring:
+Constructor Injection – Dependencies are provided via a class constructor. This is the most recommended way because it ensures
+	that required dependencies are not null and supports immutability.
+Setter Injection – Spring calls setter methods to inject dependencies after object creation. It's useful for optional
+	dependencies but may lead to partially constructed objects.
+Field Injection – Dependencies are injected directly into fields using annotations like @Autowired. While concise, it is 
+	discouraged for production-grade code as it hides dependencies and makes testing harder.
+
+✅ How Spring Boot injects dependencies:
+Spring Boot uses annotations like:
+@Component, @Service, @Repository, and @Controller to mark beans.
+@Autowired to automatically wire a bean by type.
+@Qualifier("beanName") to resolve conflicts when multiple beans of the same type exist.
+@Primary to mark a bean as the default autowiring candidate when multiple matches are found.
+@Configuration + @Bean for manual bean creation and injection.
+You can also use @Inject (JSR-330) or @Resource (JSR-250) as alternatives.
+
+✅ Best Practices
+Prefer constructor injection.
+Avoid field injection in production.
+Use @Qualifier when multiple beans of the same type exist.
+For better readability and testability, explicitly define required dependencies.
+
+===================================================================================
+what if multiple controllers have same endpoints
+✅ What happens if multiple controllers have the same endpoint in Spring Boot?
+If two or more @Controller or @RestController classes define the same request mapping (e.g., /api/users), Spring Boot will throw
+	a IllegalStateException during application startup, indicating that the mapping is ambiguous.
+Spring's DispatcherServlet tries to map each HTTP request to exactly one handler method. If it finds more than one candidate,
+	the application context will fail to start, and you'll see an error like:
+"Ambiguous mapping. Cannot map 'userController1' and 'userController2' to the same path '/api/users' "
+
+===================================================================================
+Core Java - Completable future
+✅ What is CompletableFuture?
+CompletableFuture is a class introduced in Java 8 as part of the java.util.concurrent package. It represents a future result of
+ an asynchronous computation and provides a powerful, non-blocking way to write async code using callbacks, chaining, and 
+ exception handling.
+
+It is part of the Java Concurrency API and can be used instead of Future, which was more limited.
+
+✅ Key Benefits
+Executes tasks asynchronously without blocking the main thread.
+Supports chaining of multiple tasks using functional-style callbacks.
+Handles success and failure scenarios elegantly.
+Works well with ExecutorService for better control over threading.
+
+✅ Basic Example
+"
+CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+    // Simulate long-running task
+    return "Hello from background thread!";
+});
+
+future.thenAccept(result -> {
+    System.out.println(result); // Will run after the task completes
+});
+"
+
+✅ Common Methods in CompletableFuture
+supplyAsync(Supplier) – Runs a task asynchronously that returns a result.
+runAsync(Runnable) – Runs a void task asynchronously.
+thenApply(Function) – Transforms the result.
+thenAccept(Consumer) – Consumes the result without returning anything.
+thenCombine() – Combines two futures.
+exceptionally() – Handles exceptions.
+whenComplete() – Runs a callback regardless of success or failure.
+join() – Waits and returns the result (similar to get() but unchecked).
+===================================================================================
+
+Angular - promise, data binding
+🔷 What is a Promise in Angular?
+A Promise is a JavaScript feature (not Angular-specific) used to handle asynchronous operations. In Angular, it’s often used
+ when working with HTTP requests, services, or any async logic — though Observables from RxJS are preferred.
+
+A Promise represents a value that may be available now, later, or never.
+
+
+🔷 When to use Promise vs Observable?
+Use Promise for a single async response.
+Use Observable for multiple or stream-based data.
+
+✅ What is an Observable in Angular?
+An Observable is a core concept from the RxJS (Reactive Extensions for JavaScript) library, which Angular heavily uses for 
+	handling asynchronous data streams.
+
+Unlike Promises (which return one value), Observables can emit multiple values over time, making them ideal for working with real-time data, HTTP streams, user events, and more.
+
+✅ Angular – Data Binding
+🔷 What is Data Binding?
+Data Binding is the connection between the component class and the DOM (template). It allows dynamic interaction between the
+ user interface and the logic behind it.
+
+Angular supports four types of data binding:
+🔸 1. Interpolation – One-way from component to DOM
+<p>{{ user.name }}</p>
+🔸 2. Property Binding – One-way from component to DOM
+<img [src]="user.avatarUrl" />
+🔸 3. Event Binding – One-way from DOM to component
+<button (click)="submitForm()">Submit</button>
+🔸 4. Two-Way Binding – Sync data both ways using [(ngModel)]
+<input [(ngModel)]="username" />
+<p>Your name: {{ username }}</p>
+⚠️ Requires importing FormsModule in your module for ngModel.
+
+🔷 Summary
+Binding Type			Direction				Syntax
+Interpolation			Component ➝ Template	{{ expression }}
+Property Binding		Component ➝ Template	[property]="expression"
+Event Binding			Template ➝ Component	(event)="handler()"
+Two-Way Binding			Both ways				[(ngModel)]="property"
+	
+===================================================================================
+Java 15 features
+1. Text Blocks (Standard Feature) – 
+Multi-line strings made easier.
+
+✅ Before Java 15:
+"
+String json = "{\n" +
+              "  \"name\": \"John\",\n" +
+              "  \"age\": 30\n" +
+              "}";
+"
+			  
+✅ With Text Blocks:
+"
+String json = """
+              {
+                "name": "John",
+                "age": 30
+              }
+              """;
+"
+Benefits: More readable multi-line strings (like SQL, JSON, HTML).
+
+2. Sealed Classes (Preview Feature) -
+Restrict which classes can extend or implement a class/interface.
+"
+public sealed class Shape permits Circle, Square {}
+
+final class Circle extends Shape {}
+final class Square extends Shape {}
+"
+
+Use Case: Enforces a controlled class hierarchy. Good for domain modeling and pattern matching.
+
+4. Records (Second Preview) – 
+Concise syntax for immutable data classes.
+
+✅ Instead of writing boilerplate POJOs:
+"
+public record User(String name, int age) {}
+"
+Automatically gives:
+equals()
+hashCode()
+toString()
+Getters
+
+Use Case: DTOs, immutable value carriers, JSON mapping.
+
+5. Pattern Matching for instanceof (Preview) – 
+Simplifies type casting after instanceof.
+
+✅ Before Java 15:
+"
+if (obj instanceof String) {
+    String s = (String) obj;
+    System.out.println(s.length());
+}
+"
+
+✅ In Java 15:
+"
+if (obj instanceof String s) {
+    System.out.println(s.length());
+}
+"
+
+===================================================================================
+Java 8 features
+Lambda Expressions → Functional-style code
+Functional Interfaces → Basis for lambdas
+Streams API → Declarative data processing
+Default Methods → Interface evolution
+Optional → Null-safe value container
+Method References → Cleaner lambdas
+Date/Time API → Modern, immutable dates
+
+1. Lambda Expressions (JEP 126)
+Provides a concise way to implement functional interfaces (interfaces with a single abstract method).
+
+✅ Before Java 8:
+"
+Runnable r = new Runnable() {
+    public void run() {
+        System.out.println("Hello");
+    }
+};
+"
+✅ With Lambda:
+"
+Runnable r = () -> System.out.println("Hello");
+"
+Use Case: Used in collections, threads, event handling, etc.
+
+2. Functional Interfaces (JEP 126)
+Interfaces with exactly one abstract method. Annotated with @FunctionalInterface.
+"
+@FunctionalInterface
+public interface MyFunction {
+    void apply();
+}
+"
+✅ Built-in functional interfaces in java.util.function: Predicate<T>, Function<T,R>, Consumer<T>, Supplier<T>, etc.
+
+3. Streams API (JEP 107)
+Process collections of data in a declarative and functional style.
+"
+List<String> names = List.of("Alice", "Bob", "Charlie");
+
+names.stream()
+     .filter(name -> name.startsWith("A"))
+     .forEach(System.out::println);
+"
+Benefits:
+Less boilerplate
+Supports parallel processing (parallelStream())
+Easy chaining with intermediate operations like map(), filter(), sorted()
+
+4. Default & Static Methods in Interfaces (JEP 126)
+You can now add concrete methods in interfaces using default and static.
+"
+interface Vehicle {
+    default void start() {
+        System.out.println("Vehicle started");
+    }
+
+    static void info() {
+        System.out.println("Static method in interface");
+    }
+}
+"
+Why? To allow interface evolution without breaking existing implementations.
+
+5. Optional Class (JEP 102)
+To avoid NullPointerException. A container that may or may not hold a non-null value.
+"
+Optional<String> name = Optional.ofNullable(getName());
+name.ifPresent(n -> System.out.println(n));
+"
+Use Case: Return types from methods where value may be absent.
+
+6. Method References
+Shorthand for calling methods via lambdas.
+
+✅ Instead of:
+"
+list.forEach(s -> System.out.println(s));
+"
+✅ Use:
+"
+list.forEach(System.out::println);
+"
+
+Types:
+Static: ClassName::staticMethod
+Instance: object::instanceMethod
+Constructor: ClassName::new
+
+7. Date & Time API (JEP 150) – java.time package
+Improved and immutable replacement for java.util.Date and Calendar.
+"
+LocalDate today = LocalDate.now();
+LocalDate birthday = LocalDate.of(1995, Month.JULY, 20);
+Period age = Period.between(birthday, today);
+"
+Benefits:
+Thread-safe
+Immutable
+Fluent APIs
+
+
+===================================================================================
+Exception, Checked vs unchecked exception
+✅ What is an Exception?
+An exception is an event that disrupts the normal flow of a program during execution. It is an object that represents an error 
+	or unexpected behavior.
+
+All exceptions in Java are subclasses of:
+java.lang.Throwable
+
+➤ Throwable has two major subclasses:
+Exception (can be caught and handled)
+Error (serious problems like OutOfMemoryError, usually not handled by applications)
+
+✅ Checked vs Unchecked Exceptions
+1. Checked Exceptions
+Subclasses of java.lang.Exception (but not RuntimeException)
+Checked at compile-time
+Must be either caught or declared in method signature using throws
+
+Examples of Checked Exceptions:
+IOException
+SQLException
+FileNotFoundException
+ParseException
+
+Use Case: External failures – file system, database, network.
+
+2. Unchecked Exceptions
+Subclasses of RuntimeException
+Checked at runtime (not compile-time)
+No need to declare in method signature or catch explicitly
+
+Examples of Unchecked Exceptions:
+NullPointerException
+ArithmeticException
+ArrayIndexOutOfBoundsException
+IllegalArgumentException
+
+Use Case: Programming bugs – invalid input, bad logic.
+
+✅ Best Practices
+Use checked exceptions when the caller should handle the exception (e.g., recover from a network error).
+Use unchecked exceptions for programming errors that should be fixed (e.g., null pointer bugs).
+
+✅ Custom Exceptions
+You can create your own exception by extending Exception or RuntimeException.
+"
+public class InvalidAgeException extends Exception {
+    public InvalidAgeException(String message) {
+        super(message);
+    }
+}
+"
+
+===================================================================================
+Interface
+✅ What is an Interface in Java?
+An interface in Java is a reference type (like a class) that can contain only constants, method signatures, default methods, 
+	static methods, and nested types.
+It cannot contain instance fields or constructors.
+An interface is a contract: any class that implements it must provide an implementation for its abstract methods.
+
+✅ Key Characteristics
+Methods in an interface are implicitly public and abstract (unless marked default or static).
+Multiple inheritance of type is possible via interfaces.
+Interfaces support loose coupling and polymorphism.
+
+✅ Why Use Interfaces?
+To achieve abstraction
+To support multiple inheritance
+To implement contracts in large systems
+To separate what from how (declaration from implementation)
+
+✅ Interface vs Abstract Class
+Aspect					Interface						Abstract Class
+Multiple Inheritance	Yes								No
+Constructors			Not allowed						Allowed
+Fields					Only static final (constants)	Instance variables allowed
+Access Modifiers		Public only (for methods)		Can be private, protected, etc.
+Default Behavior		default, static methods			Regular methods with body
+
+✅ Real-World Analogy
+Think of an interface like a remote control — it defines what buttons/actions are available (like turnOn(), volumeUp()), but
+ the actual behavior depends on the device (TV, AC, etc.).
+
+===================================================================================
+streams and its functions
+A Stream is a sequence of elements that supports functional-style operations to process data (usually from collections).
+Stream API helps you process collections (List, Set, etc.) in a declarative way (what to do), rather than imperative (how to do).
+Stream is not a data structure, it doesn’t store elements.
+
+✅ How to Create a Stream
+"
+List<String> names = List.of("Alice", "Bob", "Charlie");
+Stream<String> stream = names.stream();
+"
+
+Also possible from:
+Arrays: Arrays.stream(array)
+Builders: Stream.builder()
+Static factory: Stream.of(...)
+Infinite: Stream.generate(), Stream.iterate()
+
+✅ Stream Operation Types
+Type			Description									Examples
+Intermediate	Returns another stream (lazy evaluated)		filter(), map(), sorted()
+Terminal		Triggers processing (closes the stream)		collect(), forEach(), reduce()
+
+✅ Commonly Used Stream Functions
+1. filter(Predicate)
+Filters elements based on a condition.
+"
+list.stream()
+    .filter(s -> s.startsWith("A"))
+    .forEach(System.out::println);
+"
+
+2. map(Function)
+Transforms each element.
+"
+list.stream()
+    .map(String::toUpperCase)
+    .forEach(System.out::println);
+"
+
+3. sorted()
+Sorts elements (natural order or comparator).
+"
+list.stream()
+    .sorted()
+    .forEach(System.out::println);
+"
+
+4. collect(Collectors)
+Terminal operation to accumulate elements into a collection.
+"
+List<String> result = list.stream()
+                          .filter(s -> s.length() > 3)
+                          .collect(Collectors.toList());
+"
+
+5. forEach(Consumer)
+Performs action on each element (terminal operation).
+"
+list.stream().forEach(System.out::println);
+"
+
+6. reduce()
+Combines elements to produce a single result (e.g., sum, max).
+"
+int sum = numbers.stream().reduce(0, (a, b) -> a + b);
+"
+
+7. distinct()
+Removes duplicates.
+"
+list.stream().distinct().forEach(System.out::println);
+"
+
+8. limit(n) / skip(n)
+Truncates or skips elements.
+"
+list.stream().limit(5).forEach(System.out::println);
+list.stream().skip(2).forEach(System.out::println);
+"
+
+9. anyMatch() / allMatch() / noneMatch()
+Returns boolean based on matching a condition.
+"
+boolean hasA = list.stream().anyMatch(s -> s.contains("A"));
+"
+
+10. flatMap()
+Flattens nested structures (e.g., list of lists).
+"
+List<List<Integer>> data = List.of(List.of(1, 2), List.of(3, 4));
+data.stream()
+    .flatMap(List::stream)
+    .forEach(System.out::println);
+"
+
+✅ Parallel Stream
+For parallel processing using multiple threads:
+"
+list.parallelStream()
+    .filter(s -> s.startsWith("A"))
+    .forEach(System.out::println);
+"
+
+✅ Benefits of Streams
+Cleaner, more concise code
+Chainable operations
+Efficient lazy evaluation
+Easier to parallelize
+
+===================================================================================
+marker interface
+✅ What is a Marker Interface in Java?
+A Marker Interface is an interface without any methods or fields. It is used to "mark" a class to provide some metadata or 
+	special behavior to it, usually recognized by the JVM or frameworks at runtime.
+In other words, a marker interface is used as a tag to signal to tools or libraries that a class has a certain capability.
+
+✅ Syntax
+"
+public interface Serializable {}  // No methods
+public class MyData implements Serializable {
+    // The class is now marked as serializable
+}
+"
+
+✅ Common Marker Interfaces in Java
+Interface		Purpose
+Serializable	Marks a class so that its objects can be serialized (converted to byte stream)
+Cloneable		Marks a class to allow field-by-field copy using Object.clone()
+Remote			Marks a class for remote method invocation (RMI)
+ThreadSafe		Used in third-party libraries to indicate thread safety (not in JDK)
+
+✅ Why Use Marker Interfaces?
+Type tagging – allows checking type using instanceof
+Used by JVM or frameworks to enable specific behavior
+Alternative to annotations before Java 5 (which introduced annotations)
+
+✅ Marker Interface vs Annotation
+Aspect			Marker Interface					Annotation
+Introduced		Since early Java versions			Introduced in Java 5
+Inheritance		Inherits from Object				Does not affect inheritance
+Multiple tags	Can implement multiple interfaces	Can use multiple annotations
+Flexibility		Less flexible						More flexible with attributes
+
+✅ Example: Custom Marker Interface
+"
+public interface Auditable {}  // Marker interface
+
+public class Employee implements Auditable {
+    // system can audit this class specially
+}
+
+if (object instanceof Auditable) {
+    auditLog(object);
+}
+"
+
+===================================================================================
+ 
+ ✅ What is a Functional Interface in Java?
+A functional interface is an interface that contains only one abstract method.
+It can have any number of default or static methods, but only one abstract method.
+
+Functional interfaces are used as the basis for lambda expressions and method references in Java 8 and later.
+
+✅ Example of Functional Interface
+"
+@FunctionalInterface
+public interface MyFunction {
+    int apply(int a, int b);
+}
+"
+
+This can be used with a lambda expression:
+"
+MyFunction add = (a, b) -> a + b;
+System.out.println(add.apply(5, 3)); // Output: 8
+"
+
+✅ Key Rules
+Must have only one abstract method.
+Can have default and static methods.
+Marking with @FunctionalInterface is optional but recommended (helps catch errors at compile time).
+
+✅ Built-in Functional Interfaces (from java.util.function package)
+Interface	Abstract Method	Description
+Function<T, R>	R apply(T t)	Takes one input, returns a result
+Predicate<T>	boolean test(T t)	Returns true/false
+Consumer<T>	void accept(T t)	Performs an action
+Supplier<T>	T get()	Supplies a result (no input)
+BiFunction<T,U,R>	R apply(T, U)	Takes two inputs, returns a result
+UnaryOperator<T>	T apply(T t)	A Function where input and output are same
+BinaryOperator<T>	T apply(T, T)	Like BiFunction with same input/output type
+
+✅ Example: Using Built-in Functional Interfaces
+"
+Function<String, Integer> strLength = str -> str.length();
+System.out.println(strLength.apply("Hello"));  // Output: 5
+"
+
+"
+Predicate<Integer> isEven = n -> n % 2 == 0;
+System.out.println(isEven.test(4));           // Output: true
+"
+
+✅ Functional Interface vs Normal Interface
+Aspect	Functional Interface	Normal Interface
+Abstract Methods	Only one	One or more
+Purpose	Lambda expressions	General-purpose abstraction
+Annotation Used	@FunctionalInterface	Not required
+
+✅ Real-World Use Case: Thread
+"
+Runnable r = () -> System.out.println("Thread running");
+new Thread(r).start();
+"
+
+Here, Runnable is a functional interface with one method: run().
+
+
+ 
+===================================================================================
+
