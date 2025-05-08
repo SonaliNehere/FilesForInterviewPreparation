@@ -645,8 +645,712 @@ new Thread(r).start();
 "
 
 Here, Runnable is a functional interface with one method: run().
-
-
  
 ===================================================================================
+
+hashmap internal working
+✅ 1. What is HashMap?
+A part of java.util package.
+Stores data in key-value pairs.
+Allows null key and multiple null values.
+Not thread-safe (use ConcurrentHashMap for thread safety).
+
+✅ 2. Internal Structure
+Backed by an array of nodes called buckets.
+Each node stores: key, value, hash, and next (for linked list).
+
+static class Node<K,V> {
+    final int hash;
+    final K key;
+    V value;
+    Node<K,V> next;
+}
+
+✅ 3. put(K key, V value) – How Insertion Works
+Calculate hashCode() of key.
+Use (n - 1) & hash to find index.
+If no collision → insert node.
+If collision:
+Traverse bucket via equals().
+If key matches → overwrite value.
+If not → add new node to end.
+If bucket has >8 nodes AND capacity ≥ 64 → convert to Red-Black Tree.
+If size > threshold → resize (rehashing, double capacity).
+
+✅ 4. get(Object key) – How Retrieval Works
+Compute hash of key.
+Calculate bucket index.
+Traverse the bucket:
+Compare keys via equals().
+Return value if match found.
+
+✅ 5. Key Terms
+Load Factor: Default 0.75 – controls when resize occurs.
+Threshold: capacity * loadFactor
+Resize: Doubles bucket size and rehashes entries.
+Collision: When multiple keys hash to same index.
+
+✅ 6. Java 8+ Enhancements
+Bucket uses Linked List initially.
+Converted to Red-Black Tree if:
+Nodes > 8
+Capacity ≥ 64
+Improves performance from O(n) to O(log n).
+
+✅ 7. Key Requirements
+Override hashCode() and equals() properly for custom key objects.
+
+✅ 8. Time Complexities
+Operation	Best Case	Worst Case
+put()		O(1)		O(log n) (tree) / O(n) (list)
+get()		O(1)		O(log n) / O(n)
+
+===================================================================================
+
+ arraylist vs linkedlist
+ ✅ 1. Overview
+Feature			ArrayList				LinkedList
+Data Structure	Resizable array			Doubly linked list
+Package			java.util.ArrayList		java.util.LinkedList
+Implements		List, RandomAccess		List, Deque, Queue
+
+✅ 2. Performance (Time Complexity)
+Operation			ArrayList			LinkedList
+Access (get)		O(1) – fast			O(n) – slow
+Insert at End		O(1) (amortized)	O(1)
+Insert in Middle	O(n) – slow			O(n) – slow
+Remove at End		O(1)				O(1)
+Remove in Middle	O(n)				O(n)
+
+✅ 3. Internal Working
+ArrayList:
+Uses a dynamic array.
+When size exceeds capacity → array is resized (new array created, old copied).
+
+LinkedList:
+Consists of nodes (each contains data, prev, next).
+No need for resizing, but has extra memory overhead due to pointers.
+
+✅ 4. Memory Usage
+ArrayList: Less memory (no pointers).
+LinkedList: More memory (each node stores two pointers).
+
+✅ 5. Use Case Recommendations
+Scenario													Use
+Frequent access (get by index)								ArrayList
+Frequent insert/delete (especially at beginning or middle)	LinkedList
+Less memory usage is important								ArrayList
+Working with queue-like behavior							LinkedList
+
+✅ 6. Iterator Performance
+ArrayList: Faster iteration due to contiguous memory.
+LinkedList: Slower because of node traversal.
+
+✅ 7. Null Elements
+Both allow null elements and duplicates.
+
+✅ 8. Thread Safety
+Neither is thread-safe.
+Use Collections.synchronizedList() or CopyOnWriteArrayList if thread-safety is needed.
+
+ ===================================================================================
+ oops
+ ✅ 1. What is OOP?
+OOP (Object-Oriented Programming) is a programming paradigm based on the concept of objects that contain data (fields) and
+ behavior (methods).
+Java is a pure object-oriented language (except for primitive types).
+
+✅ 2. 4 Pillars of OOP
+➤ A. Encapsulation
+Binding data and methods together into a single unit (class).
+
+Achieved by:
+Declaring variables as private.
+Providing public getters/setters.
+
+🧪 Example: private int age; public int getAge() { return age; }
+
+➤ B. Abstraction
+Hiding implementation details and exposing only essential features.
+
+Achieved using:
+Abstract classes (partial abstraction)
+Interfaces (100% abstraction till Java 7)
+
+🧪 Example: abstract void draw(); in an abstract class.
+
+➤ C. Inheritance
+Enables one class to inherit properties and methods from another.
+Promotes code reusability.
+
+Syntax: class B extends A
+
+Java supports single inheritance (not multiple, to avoid ambiguity).
+
+➤ D. Polymorphism
+Many forms – allows the same method name to behave differently.
+
+Types:
+Compile-time (Static): Method Overloading
+Runtime (Dynamic): Method Overriding
+
+✅ 3. Additional OOP Concepts
+➤ Class
+Blueprint/template for creating objects.
+
+➤ Object
+An instance of a class containing state and behavior.
+
+➤ Constructor
+Special method used to initialize objects.
+
+Invoked automatically when an object is created.
+
+➤ 'this' Keyword
+Refers to the current object.
+
+✅ 4. Access Modifiers (Control OOP Visibility)
+Modifier	Class	Package	Subclass	World
+private		✅		❌		❌			❌	
+default		✅		✅		❌			❌
+protected	✅		✅		✅			❌
+public		✅		✅		✅			✅
+
+✅ 5. Real-Life Example
+🧑‍⚕️ Doctor Example:
+
+Encapsulation: Doctor's profile is private, only accessible via interface.
+
+Abstraction: You only know "get treatment", not how it's done internally.
+
+Inheritance: Surgeon extends Doctor.
+
+Polymorphism: Doctor.treat() behaves differently for a General Physician vs a Surgeon.
+
+
+🔹 Encapsulation vs Abstraction in Java
+Definition:
+Encapsulation is the process of wrapping data and methods that operate on the data into a single unit (class), and restricting
+ direct access to some of the object’s components.
+Abstraction is the process of hiding internal implementation details and showing only the essential features of an object.
+
+Purpose:
+Encapsulation is used to protect the data from unauthorized access and ensure controlled access via methods.
+Abstraction is used to simplify complexity by hiding irrelevant details and showing only necessary parts of the object to the 
+	user.
+
+How it's achieved:
+Encapsulation is achieved by declaring variables as private and using public getter and setter methods to access and modify 
+	them.
+Abstraction is achieved using abstract classes and interfaces, which expose method signatures but hide implementation.
+
+Focus:
+Encapsulation focuses on how to restrict access and maintain data integrity.
+Abstraction focuses on what to show and hides the "how" part of implementation.
+
+Real-life Example:
+Encapsulation: Your bank account balance is hidden from others; you access it via secure methods like ATM or net banking.
+Abstraction: When you withdraw money from an ATM, you just press buttons — you don’t know the internal software or hardware 
+	operations.
+
+Relation:
+Encapsulation helps in implementing abstraction — both often work together in real-world OOP designs.
+
+
+🔹 How Encapsulation Helps Abstraction in Java
+Encapsulation and Abstraction are two core OOP concepts that often work together, and encapsulation supports abstraction in 
+	the following way:
+
+✅ 1. Encapsulation hides internal data
+By making fields private and exposing only selected behavior through public methods (getters/setters or business logic), we
+ prevent external classes from seeing or modifying internal implementation.
+This is the foundation of abstraction — users of the class don’t know how things work inside, they just interact via defined 
+	methods.
+
+✅ 2. Controls what is exposed
+Encapsulation lets you control what details to expose and what to hide. Abstraction builds on this — it only exposes the 
+	necessary features and hides everything else behind the scenes.
+
+✅ 3. Interface/Contract is clean
+When encapsulation is applied properly, the class becomes easier to abstract. The user only deals with a simple public 
+	interface, while all internal complexities are encapsulated — enabling clean abstraction.
+
+🔁 Example:
+
+class BankAccount {
+    private double balance;  // encapsulated
+
+    // abstracted behavior — user just uses these methods
+    public void deposit(double amount) { balance += amount; }
+    public void withdraw(double amount) { balance -= amount; }
+}
+Here, encapsulation hides the actual variable balance.
+
+Abstraction allows the user to just call deposit() and withdraw() without knowing how balance is maintained internally.
+
+🧠 Summary:
+Encapsulation hides the data, and abstraction hides the complexity.
+Without encapsulation, it would be hard to implement true abstraction.
+
+===================================================================================
+interface uses
+Interfaces are used to achieve abstraction, allow multiple inheritance, loose coupling, and ensure polymorphism and reusability.
+They provide contracts and enable flexibility and interchangeability in code design.
+===================================================================================
+
+🧠 ConcurrentHashMap Internal Working 
+ConcurrentHashMap is a thread-safe, high-performance implementation of a hash-based Map introduced in Java 5, and heavily 
+optimized in Java 8.
+
+✅ Why ConcurrentHashMap?
+In multi-threaded environments, HashMap is not thread-safe.
+Hashtable is thread-safe but slow due to locking the entire map.
+ConcurrentHashMap allows concurrent read/write without locking the whole map.
+
+✅ Key Concepts
+1. Segmented Locking (Java 7 and below)
+Internally divides the map into segments (like smaller hash tables).
+Each segment had its own lock, allowing 16 threads to write concurrently by default.
+Reduced contention compared to Hashtable.
+🔸 This design is deprecated in Java 8.
+
+2. Bucket + Node Structure (Java 8 and above)
+No segmentation; entire table is a single array of buckets (like HashMap).
+
+Each bucket can contain:
+A Node (key-value pair)
+A LinkedList of Nodes
+A TreeBin (if hash collisions are high, similar to HashMap's red-black tree)
+
+3. Thread Safety in Java 8 (Using CAS and synchronized)
+Uses CAS (Compare-And-Swap) for thread-safe operations without locking.
+Write operations (like put) may use synchronized blocks at the bucket level.
+Only the bucket involved in the update is locked, not the whole map.
+
+map.put("key", "value"); // Internally uses CAS and fine-grained locking
+
+4. Concurrent Read
+Reads like get() are non-blocking and thread-safe.
+No locks required for reads unless there’s a structural modification.
+String val = map.get("key"); // Fast and lock-free
+
+5. Write (Put) Operation
+Computes hash of key.
+Determines bucket index.
+If bucket is empty → uses CAS to insert node.
+If not:
+Acquires lock on the bucket (synchronized on the first node).
+Traverses linked list or tree to update or insert new node.
+
+6. Resize
+Resizing is thread-safe and distributed across threads.
+Threads help each other during resizing using transferIndex logic.
+
+7. Fail-Safe Iterators
+Iterators do not throw ConcurrentModificationException.
+They reflect some elements as of the time of iteration, not necessarily real-time updates.
+
+✅ Summary
+Feature				Description
+Thread Safety		Yes (Read: lock-free, Write: fine-grained)
+Locking Mechanism	Bucket-level, CAS & synchronized
+Read Performance	Very High (lock-free)
+Write Performance	High due to fine-grained locking
+Null Keys/Values	❌ Not allowed (unlike HashMap)
+Resize Behavior		Safe and concurrent
+
+===================================================================================
+ 
+ ✅ JDBC vs JPA Mapping – Key Differences
+🔹 1. Level of Abstraction
+JDBC: Low-level, manual handling of SQL queries and result sets.
+JPA: High-level, ORM (Object-Relational Mapping) abstraction over SQL and JDBC.
+
+🔹 2. Mapping Style
+JDBC: No automatic mapping. You manually map database columns to Java objects.
+JPA: Uses annotations (e.g., @Entity, @Table, @Column) to map Java classes to DB tables.
+
+// JPA example
+@Entity
+@Table(name = "employee")
+public class Employee {
+  @Id
+  private int id;
+
+  @Column(name = "emp_name")
+  private String name;
+}
+
+In JDBC, you would manually write:
+Employee emp = new Employee();
+emp.setId(resultSet.getInt("id"));
+emp.setName(resultSet.getString("emp_name"));
+
+🔹 3. SQL Handling
+JDBC: You write full SQL queries yourself.
+JPA: Generates SQL behind the scenes using JPQL or Criteria API.
+
+🔹 4. Boilerplate Code
+JDBC: Lots of boilerplate (connection handling, closing resources, result parsing).
+JPA: Minimal boilerplate, handles most of the plumbing (e.g., with EntityManager).
+
+🔹 5. Transaction Management
+JDBC: Manually handled via Connection.setAutoCommit(false) and commit().
+JPA: Handled declaratively using @Transactional or programmatically via EntityTransaction.
+
+🔹 6. Performance Tuning
+JDBC: Gives full control over SQL and performance optimization.
+JPA: Can optimize using @FetchType, caching, batching—but less granular control than JDBC.
+
+🔹 7. Relationship Handling
+JDBC: Relationships must be handled manually (joins, foreign keys).
+JPA: Uses annotations like @OneToMany, @ManyToOne, etc., for automatic relationship mapping.
+
+✅ Summary Table (Text Format)
+JDBC: Manual, SQL-based, more control, verbose.
+JPA: Declarative, object-oriented, less code, abstraction over SQL.
+
+💡 When to Use What?
+Use JPA for faster development, maintainability, and cleaner code.
+Use JDBC when you need fine-grained control, custom SQL tuning, or performance-critical code.
+
+
+===================================================================================
+why jetty used
+===================================================================================
+✅ Jetty vs Tomcat – Clear & Practical Differences
+🔹 1. Use Case Focus
+Jetty: Best for embedded use, microservices, lightweight REST APIs, and asynchronous apps.
+Tomcat: Best for enterprise web applications, JSP-based apps, and traditional WAR deployments.
+
+🔹 2. Embeddability
+Jetty: Designed from the ground up to be embedded into your Java code. You write a few lines of code and run the server.
+Tomcat: Can be embedded too (Spring Boot does this), but it was originally designed as a standalone server, so embedding isn’t
+ its natural strength.
+
+🔹 3. Thread Model
+Jetty: Uses non-blocking NIO, which means it can handle more concurrent connections with fewer threads (great for real-time 
+	apps, WebSockets).
+Tomcat: Uses blocking IO by default, meaning one thread per request. Scales well, but needs more threads under high load.
+
+🔹 4. Size and Speed
+Jetty: Smaller and faster to start. Useful in containers (Docker), IoT devices, or CI/CD pipelines.
+Tomcat: Slightly larger footprint and slower startup, but still fast enough for most apps.
+
+🔹 5. Popularity & Community
+Tomcat: More widely adopted, especially in large companies. You’ll find more help, examples, and plugins.
+Jetty: Popular in cloud-native and modern apps, but smaller community.
+
+🔹 6. Support for Modern Protocols
+Both support Servlet 4.0, HTTP/2, WebSockets.
+Jetty has a slight edge in modularity and ease of extending the server with plugins.
+
+🧠 In Short:
+Feature				Jetty								Tomcat
+Purpose				Microservices, real-time apps		Traditional enterprise web apps
+Embedding			Designed for it						Possible, but less intuitive
+IO Model			Non-blocking (NIO)					Blocking (BIO) by default
+Startup Time		Faster								Slightly slower
+Thread Efficiency	More efficient with connections		Needs more threads under load
+Community			Smaller (Eclipse)					Larger (Apache)
+Default in Spring	❌									✅
+
+🧠 Interview Tip:
+If asked to choose one:
+“Jetty is ideal when I want a lightweight, embedded server with non-blocking performance for APIs or microservices. 
+Tomcat is better when building traditional enterprise web apps or when I need strong community support.”
+
+
+===================================================================================
+✅ What is a WebSocket?
+WebSocket is a communication protocol that provides full-duplex (two-way) communication between a client (usually a browser) 
+	and a server over a single, long-lived TCP connection.
+
+🔹 Traditional vs WebSocket:
+In HTTP, every request needs a new connection (request → response → close).
+In WebSocket, the client and server open a connection once and keep it alive, so they can send and receive messages anytime.
+
+🔹 Key Features of WebSocket:
+Full-duplex: Both server and client can talk to each other independently and simultaneously.
+Persistent connection: The connection stays open, reducing overhead.
+Real-time: Ideal for live data (chat apps, stock tickers, multiplayer games).
+Low latency: No repeated handshakes like HTTP.
+
+🔹 How WebSocket Works:
+Client sends an HTTP request with Upgrade: websocket header.
+Server upgrades the protocol to WebSocket.
+Now, both can send messages any time over this open connection.
+
+🔹 Use Cases:
+Chat applications
+Live notifications
+Online games
+Live dashboards or analytics
+Collaborative tools (e.g., Google Docs live typing)
+
+🔹 WebSocket vs HTTP Summary:
+Feature				HTTP						WebSocket
+Connection			One-time per request		Persistent
+Communication		Request → Response			Full-duplex
+Latency				Higher (due to handshakes)	Lower
+Use Case			Web pages, APIs				Real-time, live updates
+
+🧠 Interview Tip:
+"WebSocket is ideal for real-time communication where the server needs to push data to the client without waiting for 
+	requests. It’s more efficient than polling or long-polling over HTTP."
+===================================================================================
+
+✅ Who provides more abstraction: Class or Interface?
+👉 Interface provides more abstraction than a class.
+
+🔍 Why?
+Interfaces only declare "what" needs to be done, not "how".
+They contain method signatures without implementation (until Java 8, which added default/static methods).
+It forces the implementing class to define its own behavior, thus achieving 100% abstraction (before Java 8).
+Classes, especially abstract classes, can contain both implemented and unimplemented methods.
+This means they provide partial abstraction.
+Abstract classes can also maintain state via instance variables, which reduces abstraction compared to interfaces.
+
+🔸 Example:
+interface Vehicle {
+    void start();   // no implementation — just abstraction
+}
+
+abstract class Car {
+    abstract void drive(); // abstract method
+    void fuel() {
+        System.out.println("Fueling..."); // implemented method
+    }
+}
+Vehicle provides only what to do (start()), not how.
+Car provides what (abstract method) and how (concrete method).
+
+✅ Conclusion:
+Interface provides more abstraction than an abstract class because it fully separates what needs to be done from how it's 
+done, encouraging loose coupling and better design.
+
+
+✅ If interfaces have default and static methods, then how do they still provide more abstraction?
+You're right — since Java 8, interfaces can include:
+default methods (with implementation)
+static methods
+But even with that, interfaces still provide more abstraction than classes. Here's why:
+
+🔍 Key Reasons Why Interfaces Still Offer More Abstraction:
+1. Interfaces cannot maintain state
+Even if an interface has default or static methods, it cannot have instance variables (only constants — public static final).
+This means you can’t store object-level state, which keeps the interface focused on behavior — not implementation.
+
+2. Purpose of default/static methods is backward compatibility
+Java 8 introduced default and static methods in interfaces only to avoid breaking existing implementations when new behavior
+ is added.
+They are not meant for full implementations, only small helpers or shared logic.
+
+3. Still enforces implementation of core behavior
+Interfaces require the implementing class to define the logic of the declared methods (unless they’re default).
+
+This keeps the core abstraction intact: “define what, not how”.
+
+🔁 Comparison to Abstract Class:
+Feature						Interface						Abstract Class
+Can have method bodies		Yes (default/static only)		Yes
+Can maintain state			❌ No							✅ Yes (instance variables)
+Multiple inheritance		✅ Yes (multiple interfaces)		❌ No
+Primary purpose				Define capability				Provide base + partial logic
+
+✅ Conclusion:
+Even with default and static methods, interfaces still provide more abstraction than abstract classes because they focus 
+only on defining capabilities, not holding state or complex logic. Abstract classes are designed for partial i
+===================================================================================
+
+✅ Serialization
+Serialization is the process of converting a Java object into a byte stream to save it to a file or send over a network.
+
+class Student implements Serializable {
+    int id;
+    String name;
+}
+
+✅ transient keyword
+The transient keyword is used to skip a field during serialization — its value won't be saved.
+
+transient String password; // won't be saved when object is serialized
+
+🔹 Definition:
+The transient keyword is used in Java to prevent a field from being serialized.
+
+🔍 What does that mean?
+When an object is serialized (e.g., written to a file or sent over a network), Java converts its fields into a byte stream.
+If a field is marked as transient, it will be skipped during this process — i.e., its value will not be saved.
+
+🔸 Why use it?
+To exclude sensitive data like passwords or credit card numbers from serialization.
+To avoid serialization of non-serializable fields like file streams, sockets, or database connections.
+To save space or performance by omitting fields that can be recalculated or reloaded later.
+
+📌 Example:
+import java.io.*;
+
+class User implements Serializable {
+    String username;
+    transient String password; // won't be serialized
+
+    User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+}
+In this example:
+If we serialize and then deserialize a User object,
+username will be restored, but password will be null.
+
+🔐 Example Output After Deserialization:
+username = "john"
+password = null
+⚠️ Important Notes:
+Only applicable to instance variables.
+transient has no effect on static variables.
+Use it carefully — skipped fields won't retain values after deserialization.
+
+✅ Conclusion:
+transient is a keyword that excludes a field from serialization, useful for security, performance, and handling
+ non-serializable objects.
+
+import java.io.*;
+
+class User implements Serializable {
+    String username;
+    transient String password;  // This will not be serialized
+
+    User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+}
+
+public class TransientDemo {
+    public static void main(String[] args) {
+        User user = new User("john_doe", "secret123");
+
+        // Serialize the object
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream("user.ser"))) {
+            out.writeObject(user);
+            System.out.println("User object serialized.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Deserialize the object
+        try (ObjectInputStream in = new ObjectInputStream(new FileInputStream("user.ser"))) {
+            User deserializedUser = (User) in.readObject();
+            System.out.println("Deserialized User:");
+            System.out.println("Username: " + deserializedUser.username);
+            System.out.println("Password: " + deserializedUser.password); // Will be null
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+🧾 Expected Output:
+User object serialized.
+Deserialized User:
+Username: john_doe
+Password: null
+
+✅ Explanation:
+The username field is serialized and restored.
+The password field is marked transient, so it is not saved, and hence becomes null upon deserialization.
+
+🧪 Example Memory Flow:
+Field		Type	Marked transient?	Serialized?		Deserialized Value
+username	String	No					✅ Yes			"john_doe"
+password	String	✅ Yes				❌ No			null
+
+💡 JVM Optimization:
+During serialization, transient helps reduce object size, protect sensitive data, and avoid non-serializable class errors.
+
+✅ Conclusion:
+The JVM skips transient fields during object traversal in serialization, and assigns them default values during 
+deserialization, ensuring better performance, security, and flexibility.
+
+===================================================================================
+✅ 1. Maven
+Maven is a build automation and dependency management tool for Java-based projects.
+It uses a pom.xml file to manage:
+Project dependencies,
+Build lifecycle (compile, test, package),
+Plugins, and configurations.
+
+📦 Example:
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+✅ 2. mvn clean install
+mvn clean: Deletes the target/ directory (removes compiled files and previous builds).
+
+mvn install: Compiles code, runs tests, and installs the .jar or .war to the local repository (~/.m2/repository).
+
+🔁 Common full build command:
+mvn clean install
+
+✅ 3. @Configuration
+Used to mark a class as a source of bean definitions for the Spring container.
+
+📌 It is the Java-based equivalent of an XML configuration file.
+
+📦 Example:
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+
+✅ 4. @Autowired
+Used for automatic dependency injection in Spring.
+Spring scans and injects the appropriate bean from the application context.
+
+Can be used on:
+Fields
+Setters
+Constructors
+
+📦 Example:
+@Service
+public class UserService {
+
+    @Autowired
+    private UserRepository userRepository;
+}
+🔍 You can also use @Autowired(required = false) to avoid errors if a bean is missing.
+
+✅ 5. RestTemplate
+RestTemplate is a Spring class used to make HTTP requests to REST APIs.
+
+✅ It supports methods like:
+GET, POST, PUT, DELETE
+Automatically handles serialization/deserialization
+
+📦 Example (GET request):
+@RestController
+public class MyController {
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @GetMapping("/getUsers")
+    public String getUsers() {
+        return restTemplate.getForObject("https://jsonplaceholder.typicode.com/users", String.class);
+    }
+}
+🛑 Note: RestTemplate is deprecated in favor of WebClient in Spring WebFlux for non-blocking calls.
+
+===================================================================================
+
+
 
