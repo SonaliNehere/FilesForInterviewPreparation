@@ -1,0 +1,45 @@
+🔹 SQL (Structured Query Language)
+What it is: A language used to interact with relational databases.
+Purpose: Used to create, read, update, and delete (CRUD) data in databases.
+Standardized: Defined by ANSI (American National Standards Institute).
+
+Example Commands:
+SELECT * FROM users;  
+INSERT INTO users (name, age) VALUES ('Alice', 25);
+
+🔹 MySQL
+What it is: A Relational Database Management System (RDBMS).
+Purpose: A software that uses SQL to store, retrieve, and manage data in databases.
+Developer: Originally developed by MySQL AB, now owned by Oracle Corporation.
+Uses SQL: MySQL implements SQL as its query language, but it’s just one of many database systems that do (others include
+ PostgreSQL, Oracle DB, MS SQL Server).
+
+✅ Key Differences
+Feature			SQL							MySQL
+Type			Language					Software (RDBMS)
+Function		Querying and managing data	Storing and managing databases
+Standardization	ANSI standard				Not a standard; a specific tool
+Developer		Not applicable				Oracle Corporation
+Usage			Used in many RDBMSs			One specific RDBMS using SQL
+
+
+what is rdbms
+An RDBMS (Relational Database Management System) is software that manages relational databases that store data in 
+	tables (also called relations).
+
+🔹 Key Concepts of RDBMS:
+Term			Meaning
+Table			Data is stored in rows and columns, just like a spreadsheet.
+Row				A single record (also called a tuple).
+Column			A field (like name, age, email) that holds one type of data.
+Primary Key		A unique identifier for each row in a table.
+Foreign Key		A field that links one table to another, helping maintain relationships.
+SQL				The language used to interact with RDBMS (e.g., SELECT, INSERT).
+
+🔹 Popular RDBMS Software
+MySQL
+PostgreSQL
+Oracle DB
+Microsoft SQL Server
+SQLite
+
