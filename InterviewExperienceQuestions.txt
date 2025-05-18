@@ -1155,7 +1155,7 @@ This keeps the core abstraction intact: “define what, not how”.
 Feature						Interface						Abstract Class
 Can have method bodies		Yes (default/static only)		Yes
 Can maintain state			❌ No							✅ Yes (instance variables)
-Multiple inheritance		✅ Yes (multiple interfaces)		❌ No
+Multiple inheritance		✅ Yes (multiple interfaces)	❌ No
 Primary purpose				Define capability				Provide base + partial logic
 
 ✅ Conclusion:

@@ -43,3 +43,12 @@ Oracle DB
 Microsoft SQL Server
 SQLite
 
+🔸 SQL vs NoSQL
+Feature			SQL (Relational DB)				NoSQL (Non-relational DB)
+Data structure	Tables with rows and columns	Documents, key-value, graph, wide-column
+Schema			Fixed schema					Dynamic schema (flexible)
+Examples		MySQL, PostgreSQL, Oracle		MongoDB, Cassandra, Redis, Firebase
+Best for		Structured data, complex joins	Unstructured/semi-structured data
+Query language	SQL (Structured Query Language)	Various (Mongo uses JSON-like queries)
+Scalability		Vertical (scale-up)				Horizontal (scale-out)
+Transactions	Strong ACID support				Often eventual consistency (BASE)
