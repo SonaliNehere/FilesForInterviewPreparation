@@ -58,7 +58,8 @@ Users in the production environment can access the --prod flag, indicating that 
 This summary provides a concise overview of the topics and questions discussed in the video regarding Angular.
 
 hAVe you given all that is covered in video
-Yes, the summary I provided includes all the key topics and points covered in the video, structured into a clear format. Below is a more detailed breakdown to ensure completeness and clarity:
+Yes, the summary I provided includes all the key topics and points covered in the video, structured into a clear format. 
+Below is a more detailed breakdown to ensure completeness and clarity:
 
 Important Angular Interview Questions
 
@@ -112,7 +113,8 @@ Production Environment Access
 The --prod flag signifies access to the production version for certain users.
 
 
-In Angular, both Promises and Observables are used for handling asynchronous operations, such as API calls. However, they have significant differences in behavior and use cases.
+In Angular, both Promises and Observables are used for handling asynchronous operations, such as API calls. However, they have 
+significant differences in behavior and use cases.
 
 1. Promise in Angular
 A Promise represents a single asynchronous operation that either resolves successfully or rejects with an error.
@@ -125,8 +127,6 @@ Key Features of Promise:
 
 Example of a Promise:
 typescript
-Copy
-Edit
 const myPromise = new Promise((resolve, reject) => {
   setTimeout(() => {
     resolve("Data received!");
@@ -140,7 +140,8 @@ Use Case:
 ✅ When you need a one-time response, such as fetching data from an API.
 
 2. Observable in Angular
-An Observable is a more powerful alternative to Promises. It allows multiple values to be emitted over time and supports cancellation.
+An Observable is a more powerful alternative to Promises. It allows multiple values to be emitted over time and supports 
+cancellation.
 
 Key Features of Observable:
 ✔ Supports multiple values over time (streams of data).
@@ -150,8 +151,6 @@ Key Features of Observable:
 
 Example of an Observable:
 typescript
-Copy
-Edit
 import { Observable } from 'rxjs';
 
 const myObservable = new Observable((observer) => {
@@ -174,13 +173,27 @@ Use Case:
 ✅ When dealing with streams of data, such as WebSockets, user input events, or real-time API responses.
 
 3. Difference Between Promise and Observable
-Feature	Promise	Observable
-Emits Values	Single value	Multiple values
-Execution	Immediately starts	Executes only when subscribed
-Cancellable	❌ No	✅ Yes (unsubscribe)
-Operators (map, filter, etc.)	❌ No	✅ Yes
-Better for API Calls?	✅ Yes (one-time calls)	✅ Yes (realtime updates)
+Feature					Promise							Observable
+Emits Values			Single value					Multiple values
+Execution				Immediately starts				Executes only when subscribed
+Cancellable				❌ No							✅ Yes (unsubscribe)
+Operators(map, filter)	❌ No							✅ Yes
+Better for API Calls?	✅ Yes (one-time calls)			✅ Yes (realtime updates)
+
 When to Use What?
 Use Promise when you need a one-time response (e.g., HTTP request).
 
 Use Observable when dealing with real-time data, multiple values, or streams (e.g., WebSocket, user events, live updates).
+
+
+index.html
+   ↓
+main.ts → AppModule → AppComponent
+   ↓
+HTML Template → Data Binding, Directives
+   ↓
+Router (optional) → Route-based Component Loads
+   ↓
+Services Injected → Data Fetched/Updated
+   ↓
+Change Detection → DOM Updates Automatically
