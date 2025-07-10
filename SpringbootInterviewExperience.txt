@@ -1,0 +1,277 @@
+🔍 What is a Meta-Annotation in Spring Boot (and Java in general)?
+A meta-annotation is an annotation that is used to annotate other annotations.
+In Spring Boot and Spring Framework, meta-annotations are widely used to build custom annotations with built-in Spring behavior
+	like @Component, @Transactional, @RequestMapping, etc.
+
+🧠 Java Meta-Annotations (Standard)
+Java provides built-in meta-annotations like:
+
+Meta-Annotation		Purpose
+@Target				- Specifies where the annotation can be applied (method, class, field, etc.)
+@Retention			- Defines how long the annotation is retained (source, class, runtime)
+@Inherited			- Allows subclasses to inherit annotations
+@Documented			- Includes annotation in Javadoc
+
+✅ Spring's Use of Meta-Annotations
+Spring allows developers to create custom annotations that behave like Spring-managed beans or configurations by combining
+ annotations.
+
+🧾 Example 1: Spring’s own @RestController
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Controller
+@ResponseBody
+public @interface RestController {
+}
+Here, @RestController is itself annotated with @Controller and @ResponseBody.
+So, it acts as a meta-annotation wrapper to reduce boilerplate.
+
+🧾 Example 2: Creating Your Own Meta-Annotation
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+@Component
+public @interface MyService {
+}
+Now, you can use @MyService on a class:
+
+@MyService
+public class MyBusinessLogic {
+}
+Spring will treat it like a @Component-scanned bean because of the meta-annotation.
+
+🔁 Why Use Meta-Annotations in Spring Boot?
+✅ Reduce repetitive annotations
+✅ Create domain-specific annotations (like @SecuredAdmin, @JsonApi, etc.)
+✅ Promote cleaner and more maintainable code
+✅ Encapsulate complex configurations or behaviors
+
+🧠 Bonus: Composed Annotations
+Spring calls these composed annotations—annotations that combine other annotations using meta-annotations.
+
+✅ Summary
+Term				Description
+Meta-Annotation		- Annotation that is applied on another annotation
+Use in Spring		- To create custom annotations with built-in behavior
+Example				- @RestController = @Controller + @ResponseBody
+Custom Usage		- @MyService = @Component
+
+==============================================================================
+
+To implement basic authentication in Spring Boot using a properties file — and ensure it happens before the request reaches 
+	the controller — you can achieve this in a clean way using Spring Security with in-memory user details configured in 
+	application.properties or application.yml.
+
+✅ Goal:
+Authenticate users before hitting the controller
+Users and passwords defined in application.properties
+Use Spring Security filter chain to intercept requests
+
+✅ Step-by-Step Implementation
+1️⃣ Add Spring Security Dependency
+If you're using Maven:
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+2️⃣ Configure Users in application.properties
+spring.security.user.name=admin
+spring.security.user.password=admin123
+spring.security.user.roles=ADMIN
+You can also add multiple users via custom configuration (explained below).
+
+3️⃣ Secure All Endpoints by Default
+Spring Security automatically secures all endpoints unless configured otherwise.
+
+4️⃣ Create a Simple Controller
+@RestController
+@RequestMapping("/api")
+public class DemoController {
+
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello, authenticated user!";
+    }
+}
+If you now call /api/hello, it will prompt for Basic Auth credentials.
+
+5️⃣ Customize Security (Optional – if you want multiple users or roles)
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().authenticated()
+            )
+            .httpBasic() // enables Basic Auth
+            .and()
+            .csrf().disable(); // disable for testing purposes
+
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        var user1 = User.withUsername("admin")
+                .password("{noop}admin123") // {noop} = no password encoder
+                .roles("ADMIN")
+                .build();
+
+        var user2 = User.withUsername("user")
+                .password("{noop}user123")
+                .roles("USER")
+                .build();
+
+        return new InMemoryUserDetailsManager(user1, user2);
+    }
+}
+☝️ Here we define multiple users programmatically, not via application.properties.
+
+🧪 Testing
+Call your endpoint:
+GET http://localhost:8080/api/hello
+Use basic auth with:
+Username: admin
+Password: admin123
+
+✅ If credentials are correct, controller executes.
+❌ If wrong, Spring returns 401 Unauthorized before reaching the controller.
+
+🔐 Optional: Custom Auth Message (Before Controller)
+If you want to add custom auth logic, you can write a filter or authentication provider, but for most apps, the above setup 
+	is clean and secure.
+
+✅ Summary
+Goal								Achieved?
+Auth before controller				- ✅ Yes
+Config via application.properties	- ✅ Yes (simple user)
+Easily extendable					- ✅ Use custom beans
+Uses Spring Security filter chain	- ✅ Yes
+
+================================================================================
+
+🔐 1. CSRF – Cross-Site Request Forgery
+✅ What is it?
+CSRF (Cross-Site Request Forgery) is an attack where a malicious website causes a user’s browser to perform unintended actions
+ on another website where the user is authenticated.
+
+🔁 Real-world example:
+Imagine you are logged into your banking site. Then, you visit a malicious site that silently sends a request to:
+POST https://mybank.com/transfer-money
+Body: amount=5000&toAccount=attacker123
+Since you're already logged in, your session cookies are sent automatically, and the bank processes the request, thinking it's 
+	from you!
+
+🛡️ How to Prevent CSRF?
+CSRF Tokens: The server sends a unique token with every form. When the client submits the form, it must include this token.
+Spring Security automatically adds and validates CSRF tokens for state-changing requests (POST, PUT, DELETE).
+📌 CSRF is a concern mainly for stateful apps using cookies for auth.
+
+🔐 2. JWT – JSON Web Token
+✅ What is it?
+JWT (JSON Web Token) is a compact, self-contained token used to securely transmit information between parties as a JSON object.
+
+JWT is commonly used for:
+Authentication (stateless login)
+Authorization (roles/permissions)
+Secure API communication
+
+🧱 JWT Structure:
+A JWT has three parts:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.         // Header
+eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxN... // Payload
+SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c   // Signature
+Header – Type & signing algorithm
+Payload – Data like user ID, roles, issued-at time
+Signature – To verify the token’s integrity
+
+🔐 JWT Authentication Flow:
+User logs in with username/password.
+Server validates and returns a JWT token.
+Client sends this token in Authorization header for each API call:
+Authorization: Bearer <token>
+Server validates token and grants access — no session needed!
+
+🧾 Key Differences Between CSRF and JWT
+Feature				CSRF							JWT
+Type				Security vulnerability			Authentication/Authorization method
+Affects				Cookie-based sessions			Not applicable
+Prevented By		CSRF tokens						N/A
+Requires State?		Yes (session state)				No (stateless)
+Use Case			Prevents cross-site attacks		Secure token-based auth
+
+✅ Summary
+Term	Full Form						Role
+CSRF	Cross-Site Request Forgery		Security threat to defend against
+JWT		JSON Web Token					Mechanism for stateless auth
+
+====================================================================================
+
+🌱 What is Scope in Spring Boot?
+Scope defines the lifecycle and visibility of a Spring bean — i.e., how long the bean instance lives and when a new instance
+ is created.
+
+✅ Default Scope: singleton
+One instance per Spring IoC container
+Shared across the entire application context
+Default for all Spring beans
+
+🧾 Common Spring Scopes
+Scope				Description												Typical Use Case
+singleton (default)	Single shared instance per Spring container				Stateless service beans
+prototype			New instance every time the bean is requested			Stateful or short-lived objects
+request				One bean instance per HTTP request						Web applications, per HTTP request data
+session				One bean instance per HTTP session						User session data in web apps
+application			One instance per ServletContext (application-wide)		Shared resources in a web app
+websocket			One instance per WebSocket session						WebSocket-based communication
+
+🔧 How to Set Scope in Spring Boot
+You use the @Scope annotation on your bean or component class.
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+
+@Component
+@Scope("prototype")
+public class MyPrototypeBean {
+    // ...
+}
+🧠 Example: Common Scopes Usage
+@Service
+@Scope("singleton") // optional, singleton is default
+public class MySingletonService {
+    // One instance for entire app
+}
+
+@Component
+@Scope("prototype")
+public class MyPrototypeComponent {
+    // New instance every injection/request
+}
+
+@Component
+@Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
+public class MyRequestScopedBean {
+    // One per HTTP request
+}
+Note: For scopes like request and session, Spring needs proxying to inject beans correctly into singleton beans.
+
+📝 Summary Table
+Scope		Description							Lifecycle
+singleton	One shared instance					Application lifetime
+prototype	New instance per request			When requested
+request		One per HTTP request				Life of HTTP request
+session		One per HTTP session				Life of HTTP session
+application	One per ServletContext (web app)	Life of ServletContext
+
+🧩 When to use?
+Singleton: Default, for stateless services
+Prototype: For stateful or frequently changing beans
+Request/Session: When building web apps that require per-request or per-user data storage
+
+================================================================================
+
+
