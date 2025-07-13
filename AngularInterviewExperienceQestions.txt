@@ -1,0 +1,175 @@
+Guards :
+In Angular, Guards are used to control navigation between routes. They help you decide whether a user is allowed to visit a
+ particular route or not. Guards are commonly used for authentication, authorization, preventing accidental navigation, and more.
+
+🛡️ Types of Angular Guards
+Angular provides five types of guards:
+
+Guard Type			Interface			Purpose
+CanActivate			CanActivate			Checks if a route can be activated
+CanActivateChild	CanActivateChild	Checks if a child route can be activated
+CanDeactivate		CanDeactivate<T>	Checks if you can leave the current route
+Resolve				Resolve<T>			Pre-fetches data before navigating to the route
+CanLoad				CanLoad				Prevents loading of lazy-loaded modules if the condition fails
+
+✅ Example: CanActivate Guard
+1. Generate a Guard:
+ng generate guard auth
+
+2. Implement CanActivate:
+// auth.guard.ts
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthGuard implements CanActivate {
+  constructor(private router: Router) {}
+
+  canActivate(): boolean {
+    const isLoggedIn = !!localStorage.getItem('token'); // Dummy check
+
+    if (!isLoggedIn) {
+      this.router.navigate(['/login']);
+      return false;
+    }
+
+    return true;
+  }
+}
+
+3. Apply it to Routes:
+// app-routing.module.ts
+{
+  path: 'dashboard',
+  component: DashboardComponent,
+  canActivate: [AuthGuard]
+}
+🧠 Summary
+Guard				When Used
+CanActivate			Before navigating to a route
+CanActivateChild	Before navigating to a child route
+CanDeactivate		Before leaving the current route (e.g., unsaved changes warning)
+Resolve				To load data before a route activates
+CanLoad				To prevent loading lazy-loaded modules unless allowed
+
+=======================================================================
+
+💡 Subject — No memory
+A Subject is a special type of RxJS Observable that allows values to be multicasted to many observers. It acts like both an 
+	Observable and an Observer.
+
+Key Points:
+It does not store any previous value.
+New subscribers do not get any old values, only future emissions.
+Commonly used for event emitters like clicks, notifications, etc.
+
+
+import { Subject } from 'rxjs';
+
+const subject = new Subject<number>();
+
+subject.next(1); // No one is listening yet, this is LOST
+
+subject.subscribe(value => console.log('A:', value));
+
+subject.next(2); // A: 2
+subject.next(3); // A: 3
+👆 Here, the value 1 is lost because no subscriber was there at that time.
+
+💡 BehaviorSubject — Remembers the last value
+A BehaviorSubject is a type of Subject that requires an initial value and always stores the latest value emitted. When a new 
+	subscriber subscribes, it immediately receives the current/latest value.
+
+Key Points:
+It stores the latest value and sends it to new subscribers immediately.
+Requires an initial value when created.
+Commonly used for state management (e.g., current user, selected tab, etc.)
+
+import { BehaviorSubject } from 'rxjs';
+
+const behavior = new BehaviorSubject<number>(100); // 👈 Starts with initial value
+
+behavior.subscribe(value => console.log('A:', value)); // A: 100
+
+behavior.next(200); // A: 200
+behavior.next(300); // A: 300
+
+behavior.subscribe(value => console.log('B:', value)); // B: 300 (latest value)
+behavior.next(400); 
+// A: 400
+// B: 400
+👆 Here, even Subscriber B got the latest value 300 immediately on joining.
+
+🔁 Summary: Subject vs BehaviorSubject
+Feature									Subject				BehaviorSubject
+Initial Value							❌ Not required		✅ Required
+Remembers Last Value					❌ No				✅ Yes
+Emits Last Value to New Subscribers		❌ No				✅ Yes
+Common Use Cases						Clicks, events		State, auth status, form values
+=================================================================================
+
+🔷 What is an Observable?
+An Observable is a data source that emits data (or events) over time. It can send zero, one, or multiple values to its 
+	subscribers (observers).
+
+✅ Think of it like:
+A YouTube channel — it can post videos anytime. Whoever subscribes to it (observer) gets notified when new videos (data) come in.
+
+Example:
+import { Observable } from 'rxjs';
+
+const observable = new Observable(observer => {
+  observer.next('Hello');
+  observer.next('World');
+  observer.complete(); // marks completion
+});
+🔷 What is an Observer?
+An Observer is the subscriber to an Observable. It defines how to handle the values emitted by the Observable.
+
+It has 3 main methods:
+const observer = {
+  next: value => console.log('Received:', value),
+  error: err => console.error('Error:', err),
+  complete: () => console.log('Completed')
+};
+
+observable.subscribe(observer);
+
+🔁 Observable vs Observer
+Concept			Observable						Observer (Subscriber)
+Role			Emits data (values/events)		Listens to data from observable
+Who creates		You or RxJS operators			Automatically created when you subscribe
+Methods			.next(), .error(), .complete()	next(), error(), complete()
+
+🔍 Types of Observables (based on multicasting behavior)
+1. Cold Observable
+Starts emitting data only when subscribed. Each subscriber gets a separate execution.
+
+🔹 Example: HTTP call
+Each component gets a fresh request.
+
+2. Hot Observable
+Starts emitting data regardless of subscription. Subscribers get only current or future data.
+
+🔹 Example: Subject, BehaviorSubject, EventEmitter, etc.
+All subscribers share the same execution.
+
+🔧 Types of Observables in RxJS
+Observable Type		Description
+Observable			Basic observable (cold by default)
+Subject				Hot observable; can multicast manually
+BehaviorSubject		Remembers last value; emits it to new subscribers
+ReplaySubject		Stores all or a specific number of previous values
+AsyncSubject		Emits only the last value on complete
+
+🧠 Real-Life Analogy
+Concept				Real-Life Example
+Observable			YouTube channel
+Observer			You (subscriber)
+Subject				WhatsApp group broadcast
+BehaviorSubject		A WhatsApp pinned message
+ReplaySubject		A recorder that plays last 5 messages to each new member
+AsyncSubject		Teacher tells result only after exam is over
+
