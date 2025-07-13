@@ -1,0 +1,123 @@
+⚡ What is the Circuit Breaker Pattern?
+The Circuit Breaker Pattern is used to detect failures and stop making requests to a failing service. This prevents your
+	application from repeatedly trying something that is likely to fail — helping you fail fast and recover gracefully.
+
+🧠 Real-Life Analogy
+Think of a circuit breaker in your home:
+When there’s an overload or fault in the electrical system, the circuit breaker trips to stop further damage.
+After some time, you can reset it and check if things are back to normal.
+
+Same thing in software:
+State		Description
+Closed		Everything works. Requests go through.
+Open		Too many failures. Stop all requests.
+Half-Open	Wait and test if the service is healthy again.
+
+🔁 Circuit Breaker States
+1. Closed
+Service is healthy.
+All requests go to the service.
+
+2. Open
+Too many failures occurred.
+Circuit is opened — requests are blocked for a period.
+Fallback logic (like cached data or error response) is triggered.
+
+3. Half-Open
+After some wait, the system tries a few test requests.
+If successful → back to Closed.
+If failed → go back to Open.
+
+✅ Benefits
+Prevents cascading failures
+Improves system stability
+Offers graceful fallback
+Allows service recovery time
+
+🔧 Example in Java using Resilience4j
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import org.springframework.stereotype.Service;
+
+@Service
+public class ProductService {
+
+  @CircuitBreaker(name = "productService", fallbackMethod = "fallbackMethod")
+  public String getProducts() {
+    // Simulate API call
+    throw new RuntimeException("Service unavailable");
+  }
+
+  public String fallbackMethod(Throwable t) {
+    return "Fallback: Product service is down!";
+  }
+}
+In application.yml:
+resilience4j.circuitbreaker.instances.productService:
+  registerHealthIndicator: true
+  slidingWindowSize: 5
+  minimumNumberOfCalls: 3
+  failureRateThreshold: 50
+  waitDurationInOpenState: 10s
+  
+🧪 When to Use
+Calling external APIs or microservices
+Database or network-dependent operations
+Expensive or slow operations
+====================================================================
+
+🌐 What is SSE (Server-Sent Events)?
+Server-Sent Events is a unidirectional communication method where the server continuously pushes data to the client (usually a 
+	browser) over a single long-lived HTTP connection.
+
+✅ Key Features of SSE
+Feature			Description
+Direction		One-way: server → client
+Protocol		Standard HTTP (not WebSocket)
+Auto-reconnect	Built-in client reconnection support
+Simplicity		Very easy to use with EventSource API (browser)
+Format			Text/event-stream MIME type
+
+📥 Client-side (Browser/Angular)
+const eventSource = new EventSource('http://localhost:8080/sse');
+
+eventSource.onmessage = (event) => {
+  console.log('New message from server:', event.data);
+};
+
+eventSource.onerror = (error) => {
+  console.error('SSE error:', error);
+};
+
+📤 Server-side (Java – Spring Boot Example)
+✅ Maven Dependency:
+<!-- Spring Web dependency is enough -->
+
+✅ Controller Code:
+@RestController
+public class SSEController {
+
+    @GetMapping(value = "/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<String> streamEvents() {
+        return Flux.interval(Duration.ofSeconds(2))
+                   .map(seq -> "Update at: " + LocalTime.now());
+    }
+}
+This will send a new message every 2 seconds.
+
+🧠 SSE vs WebSocket
+Feature				SSE								WebSocket
+Direction			One-way (server to client)		Two-way
+Protocol			HTTP							Full-duplex TCP
+Reconnect support	Automatic						Manual
+Simplicity			Very simple (EventSource)		Requires more setup
+Use case			Notifications, stock prices		Chats, games, live editing
+
+🔥 Use Cases for SSE
+Real-time notifications
+Live news feeds
+Stock market updates
+IoT device monitoring
+Log streaming
+
+=======================================================================
+
