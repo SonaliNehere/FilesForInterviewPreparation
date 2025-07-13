@@ -274,4 +274,269 @@ Request/Session: When building web apps that require per-request or per-user dat
 
 ================================================================================
 
+🔐 What is Transaction Management?
+A transaction is a sequence of operations that must either all succeed or all fail as a single unit.
+In Spring Boot, transaction management ensures data consistency, especially across multiple database operations.
+
+🧾 Example Scenario:
+Deduct ₹500 from Account A ✅
+Add ₹500 to Account B ✅
+Both should succeed or both should fail — this is what a transaction ensures.
+
+✅ Key Concepts
+Term			Meaning
+Atomicity		All steps complete or none do
+Consistency		DB moves from one valid state to another
+Isolation		Transactions are isolated from each other
+Durability		Once committed, the changes are permanent
+These are known as the ACID properties.
+
+🚀 Spring Boot Transaction Management
+✅ Using @Transactional
+@Service
+public class TransferService {
+
+    @Autowired
+    private AccountRepository accountRepository;
+
+    @Transactional
+    public void transferMoney(Long fromId, Long toId, double amount) {
+        Account from = accountRepository.findById(fromId).orElseThrow();
+        Account to = accountRepository.findById(toId).orElseThrow();
+
+        from.setBalance(from.getBalance() - amount);
+        to.setBalance(to.getBalance() + amount);
+
+        accountRepository.save(from);
+        accountRepository.save(to);
+    }
+}
+✅ If any exception occurs inside transferMoney(), all changes will be rolled back.
+
+⚙️ Configuration (Optional)
+Spring Boot automatically configures transactions if you use:
+Spring Data JPA
+Spring JDBC
+A DataSource bean
+Just annotate your service method with @Transactional.
+
+🔄 Rollback Control
+By default:
+Rollback happens for unchecked exceptions (RuntimeException, Error)
+No rollback for checked exceptions (IOException, etc)
+
+✅ To rollback on checked exceptions:
+@Transactional(rollbackFor = Exception.class)
+⚠️ Common Mistakes
+Mistake													Why it's wrong
+Calling a @Transactional method from the same class		Spring AOP won’t intercept → no transaction
+Forgetting @Transactional								DB changes won't rollback on failure
+Not handling exceptions properly						Unexpected commit or partial updates
+
+🧪 Interview Tip:
+"Spring uses AOP (Aspect-Oriented Programming) behind the scenes to manage transactions using proxies. When you annotate a 
+	method with @Transactional, Spring creates a proxy and wraps the method call to start, commit, or rollback the transaction."
+
+🔧 Transaction Propagation Types
+Type			Meaning
+REQUIRED		Join existing or create a new transaction (default)
+REQUIRES_NEW	Always start a new transaction
+NESTED			Start a nested transaction
+NOT_SUPPORTED	Run without a transaction
+NEVER			Fail if a transaction exists
+MANDATORY		Must run in an existing transaction
+
+==============================================================
+
+🎯 What is AOP in Simple Terms?
+AOP means writing extra code (like logging, security, transactions) separately from your main business logic, but it still runs 
+	automatically when needed.
+
+You don’t need to write logging or security code in every method. Just write it once, and AOP will apply it everywhere you need.
+
+🧠 Real-Life Example:
+Imagine a salon 💇‍♀️
+You go for:
+Haircut ✂️ (Main logic)
+
+The salon also:
+Sanitizes chair 🧼 (before)
+Says thank you 🙏 (after)
+
+Now, instead of writing these steps (sanitize, thank you) in every haircut method, you write it once using AOP.
+
+🤖 In Code Terms:
+Without AOP:
+public void bookAppointment() {
+  System.out.println("Sanitize chair");
+  System.out.println("Doing haircut...");
+  System.out.println("Say thank you");
+}
+You repeat "sanitize" and "thank you" in every method.
+
+With AOP:
+@Before
+public void sanitizeChair() {}
+
+@After
+public void sayThankYou() {}
+
+public void bookAppointment() {
+  System.out.println("Doing haircut...");
+}
+✅ Now these actions happen automatically. You keep your main logic clean!
+
+🔧 How to Use AOP in Spring Boot
+Add @Aspect class
+Write code with @Before, @After, @Around, etc.
+Target where you want it to apply (e.g., all methods in a package)
+
+🔥 Where You See AOP in Real Projects
+Task				AOP Used?	How It Helps
+Logging					✅			Print logs before/after method
+Transactions			✅			Start/commit/rollback automatically
+Security checks			✅			Check token/roles before method
+Validation				✅			Validate inputs globally
+
+📌 Summary
+Term		Means
+Aspect		Extra logic (like logging)
+Advice		When that logic should run
+Pointcut	Where (which method/package)
+JoinPoint	Exact place (method call)
+
+==========================================================================
+
+🔄 What is a Circular Dependency?
+A circular dependency happens when Bean A depends on Bean B, and Bean B also depends on Bean A — directly or indirectly.
+This creates a loop and Spring fails to inject the beans.
+
+❌ Example of Circular Dependency
+@Component
+public class A {
+    @Autowired
+    private B b;
+}
+
+@Component
+public class B {
+    @Autowired
+    private A a;
+}
+
+This will throw:
+org.springframework.beans.factory.UnsatisfiedDependencyException:
+Circular reference involving A and B
+
+✅ How to Fix It
+✅ Option 1: Use @Lazy
+@Component
+public class A {
+    @Autowired
+    @Lazy
+    private B b;
+}
+✅ This tells Spring: "Delay the creation of B until it’s really needed," breaking the cycle.
+
+✅ Option 2: Use Constructor Injection + @Lazy
+@Component
+public class A {
+    private final B b;
+    public A(@Lazy B b) {
+        this.b = b;
+    }
+}
+🔍 Constructor injection is preferred for testability and immutability.
+
+✅ Option 3: Refactor Dependencies
+Split common logic into a third bean (C) and inject that instead.
+@Component
+public class CommonService {}
+
+@Component
+public class A {
+    @Autowired
+    private CommonService common;
+}
+
+@Component
+public class B {
+    @Autowired
+    private CommonService common;
+}
+✅ This is the best long-term fix — it removes tight coupling between A and B.
+
+✅ Option 4: Use Setter Injection
+If you don’t want to use @Lazy, you can break the cycle with setter injection:
+@Component
+public class A {
+    private B b;
+
+    @Autowired
+    public void setB(B b) {
+        this.b = b;
+    }
+}
+🧠 Pro Tips
+Situation						Recommended Fix
+Tight loop between 2 beans		Use @Lazy on one
+Too much coupling				Refactor shared logic to new bean
+Complex service dependencies	Consider event listeners or design changes
+=========================================================================
+
+✅ What is a Spring Bean?
+A Spring Bean is any object that is managed by the Spring container (created, injected, and destroyed by Spring).
+
+🟨 1. @Component – Annotation-based Bean
+@Component
+public class MyService {
+    // automatically registered as a bean
+}
+✅ Key Points:
+Use it on classes
+Works with component scanning
+Can be used with @Service, @Repository, @Controller (they are specializations of @Component)
+Automatically picked up if the package is scanned
+
+🟩 2. @Bean – Method-based Bean
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+✅ Key Points:
+Use it on methods
+Typically used when:
+You need to create a bean manually
+You don’t have access to modify the source class
+Often used with third-party libraries
+
+🆚 Component vs Bean – Clear Comparison
+Feature					@Component						@Bean
+Where used				On a class						On a method inside a @Configuration class
+Who creates it			Spring via component scanning	You create manually in a config method
+When to use				For your own classes			For external classes or complex logic
+Autowiring support		✅ Yes							✅ Yes
+Custom creation logic	❌ No							✅ Yes (you control creation)
+
+🧠 Real-life Analogy
+Situation															Use
+You wrote the class													@Component
+Class comes from a library (3rd party)								@Bean
+You need full control over bean creation (e.g., constructor args)	@Bean
+
+✅ Bonus: Other @Component Variants
+Annotation		Meaning
+@Component		Generic bean
+@Service		Business logic layer
+@Repository		DAO/persistence layer
+@Controller		Web layer (MVC controller)
+
+All of them behave like @Component — just semantically different.
+==============================================================================
+
+
 
