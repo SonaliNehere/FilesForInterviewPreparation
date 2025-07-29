@@ -1,0 +1,1178 @@
+✅ 1. What is Spring MVC? (Theory)
+Spring MVC (Model-View-Controller) is a web framework within the Spring Framework. It helps in building web applications by 
+	following the MVC architectural pattern, where:
+Model → Data or business logic (Java objects, typically with service layer)
+View → UI (e.g., JSP, Thymeleaf, JSON if REST API)
+Controller → Handles incoming HTTP requests and returns a response
+
+👉 Spring MVC separates concerns: front-end (View), request handling (Controller), and business logic (Model).
+
+✅ 2. Spring MVC Flow (Interview explanation)
+Client sends HTTP request to a Controller.
+Controller processes request (calls service layer if needed).
+Returns a ModelAndView (for JSP/Thymeleaf) or just JSON (for REST APIs).
+DispatcherServlet routes request & handles the response.
+
+✅ 3. Real Example: Simple Spring MVC REST Controller
+Let's say you want to build a REST API to get user data.
+
+java
+// UserController.java
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUserById(@PathVariable Long id) {
+        User user = new User(id, "Sonali", "sonali@example.com");
+        return ResponseEntity.ok(user);
+    }
+}
+
+// User.java
+public class User {
+    private Long id;
+    private String name;
+    private String email;
+
+    // constructor, getters, setters
+}
+🧠 What happens here:
+@RestController handles web requests
+@GetMapping("/{id}") maps /users/1 to getUserById(1)
+Returns JSON of a user
+
+✅ 4. Common Annotations in Spring MVC
+Annotation						Purpose
+@Controller						Marks a class as a web controller (returns View)
+@RestController					Shortcut for @Controller + @ResponseBody (returns JSON)
+@RequestMapping					Maps URL to methods
+@GetMapping, @PostMapping		Shortcut for specific HTTP methods
+@RequestParam, @PathVariable	To capture request parameters
+@RequestBody					Converts JSON to Java object
+@ResponseBody					Sends Java object as JSON
+
+✅ 5. Real-world Scenario (for interview)
+Q: How would you design a login API using Spring MVC?
+
+java
+@RestController
+@RequestMapping("/auth")
+public class AuthController {
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody LoginRequest request) {
+        if ("admin".equals(request.getUsername()) && "password".equals(request.getPassword())) {
+            return ResponseEntity.ok("Login successful");
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+    }
+}
+
+// LoginRequest.java
+public class LoginRequest {
+    private String username;
+    private String password;
+    // getters and setters
+}
+✅ 6. Interview Tips
+If asked “Have you used Spring MVC in your projects?” — you can say:
+“Yes, I’ve used it in my personal learning projects. I built REST APIs using @RestController and handled HTTP requests using 
+	mappings like @GetMapping and @PostMapping. I also understand the request flow handled by DispatcherServlet.”
+	
+	
+✅ 1. @RequestBody vs @RequestParam (Theory + Example)
+🔹 @RequestBody
+Used when you want to bind the entire JSON payload from the request body to a Java object.
+🧠 Best for POST, PUT APIs where the client sends JSON.
+
+java
+@PostMapping("/register")
+public ResponseEntity<String> registerUser(@RequestBody User user) {
+    return ResponseEntity.ok("User registered: " + user.getName());
+}
+
+📦 Sample JSON sent from client:
+json
+{
+  "name": "Sonali",
+  "email": "sonali@example.com"
+}
+
+🔹 @RequestParam
+Used to extract query parameters from the URL.
+
+🧠 Best for GET requests with small inputs.
+java
+@GetMapping("/search")
+public ResponseEntity<String> searchUser(@RequestParam String name) {
+    return ResponseEntity.ok("Searched user: " + name);
+}
+
+🌐 URL:
+pgsql
+/search?name=Sonali
+
+✅ Summary Table:
+Use Case			Annotation		Example
+JSON from body		@RequestBody	@RequestBody User user
+Query param in URL	@RequestParam	@RequestParam String name
+
+✅ 2. What is DispatcherServlet?
+DispatcherServlet is the front controller in Spring MVC.
+
+🔹 Role:
+Receives all HTTP requests
+Delegates to correct Controller
+Processes result (View or JSON) and sends the response
+
+🧠 Lifecycle:
+Client sends request
+DispatcherServlet checks HandlerMapping
+Calls appropriate @Controller
+Returns ModelAndView or JSON
+Response sent back to client
+
+📌 Located in web.xml or auto-configured in Spring Boot.
+java
+// In Spring Boot, it's auto-configured:
+@SpringBootApplication
+public class MyApp {
+    public static void main(String[] args) {
+        SpringApplication.run(MyApp.class, args);
+    }
+}
+
+✅ 3. Exception Handling in Spring MVC
+Spring provides multiple ways to handle exceptions.
+
+🔹 Global exception handler using @ControllerAdvice
+java
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleAll(Exception ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                             .body("Error occurred: " + ex.getMessage());
+    }
+}
+
+🔹 Local method-level @ExceptionHandler
+java
+@RestController
+public class DemoController {
+
+    @GetMapping("/test")
+    public String test() {
+        throw new RuntimeException("Something went wrong");
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntime(RuntimeException ex) {
+        return ResponseEntity.badRequest().body("Handled: " + ex.getMessage());
+    }
+}
+
+✅ 4. Form Handling with ModelAndView (for JSP/Thymeleaf)
+If you're using JSP or Thymeleaf, you'll use ModelAndView.
+
+🔹 Example:
+java
+
+@Controller
+public class FormController {
+
+    @GetMapping("/form")
+    public ModelAndView showForm() {
+        return new ModelAndView("form", "user", new User());
+    }
+
+    @PostMapping("/form")
+    public ModelAndView submitForm(@ModelAttribute("user") User user) {
+        return new ModelAndView("result", "name", user.getName());
+    }
+}
+
+📌 JSP page name: form.jsp and result.jsp
+🧠 @ModelAttribute is used to bind form fields to Java objects.
+
+✅ Summary for Interview
+You can say:
+“In Spring MVC, I understand how @RequestBody is used to receive full JSON input, while @RequestParam is used for simple 
+	query params. DispatcherServlet is the core front controller that routes every HTTP request to the appropriate controller 
+	method. I’ve also explored exception handling using @ControllerAdvice and form submissions using ModelAndView with 
+	@ModelAttribute.”
+	
+	
+✅ 1. REST API Design in Spring MVC / Spring Boot
+Even though Spring MVC was originally designed for web (JSP), it’s now mostly used to build REST APIs using annotations like
+ @RestController.
+
+🔹 Key Concepts:
+Concept								Purpose
+@RestController						Used to create RESTful controllers
+@GetMapping, @PostMapping, etc.		Handle different HTTP methods
+@PathVariable						Capture values from URI path
+@RequestParam						Capture query parameters
+@RequestBody						Parse JSON input
+@ResponseEntity						Customize response status and body
+
+🔹 Example: Simple CRUD API
+java
+
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    // GET /api/users/1
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getUser(@PathVariable Long id) {
+        User user = new User(id, "Sonali", "sonali@example.com");
+        return ResponseEntity.ok(user);
+    }
+
+    // POST /api/users
+    @PostMapping
+    public ResponseEntity<String> createUser(@RequestBody User user) {
+        return ResponseEntity.status(HttpStatus.CREATED).body("User created: " + user.getName());
+    }
+}
+✅ 2. Spring Boot vs Spring MVC
+Feature						Spring MVC					Spring Boot
+Requires setup				Yes (xml or java config)	No setup — runs with @SpringBootApplication
+Embedded server				No							Yes (Tomcat/Jetty/Undertow)
+Starter dependencies		Manual						Provided by spring-boot-starter-*
+Production-ready tools		No							Yes (Actuator, DevTools, Metrics, etc.)
+
+🧠 Interview answer:
+
+“Spring MVC is the web layer of Spring. Spring Boot simplifies the configuration of Spring MVC and adds production-ready
+	features like auto-configuration, embedded server, and starters. So, when I build REST APIs, I use Spring Boot which 
+	internally uses Spring MVC.”
+
+✅ 3. @ModelAttribute (For Form Data)
+Used to bind form fields (typically HTML form inputs) to Java objects.
+
+java
+@Controller
+public class FormController {
+
+    @GetMapping("/register")
+    public String showForm(Model model) {
+        model.addAttribute("user", new User());
+        return "register";  // maps to register.jsp or register.html
+    }
+
+    @PostMapping("/register")
+    public String submitForm(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("message", "Registered " + user.getName());
+        return "success";
+    }
+}
+📌 This is mostly used with Thymeleaf or JSP for UI form binding.
+
+✅ 4. Input Validation in Spring MVC using @Valid and @Validated
+You can validate incoming data using Java Bean Validation (JSR 380).
+
+🔹 Step 1: Add validation annotations to DTO
+java
+
+public class User {
+    @NotBlank(message = "Name is required")
+    private String name;
+
+    @Email(message = "Enter valid email")
+    private String email;
+
+    // getters & setters
+}
+🔹 Step 2: Use @Valid in controller
+java
+
+@PostMapping("/create")
+public ResponseEntity<?> createUser(@Valid @RequestBody User user, BindingResult result) {
+    if (result.hasErrors()) {
+        return ResponseEntity.badRequest().body(result.getAllErrors());
+    }
+    return ResponseEntity.ok("User created successfully");
+}
+✅ Summary Interview Points
+You can say:
+“I’ve used Spring Boot to create REST APIs using Spring MVC under the hood. I know how to design CRUD APIs using
+	@RestController, and handle input using @RequestBody, @RequestParam, and @PathVariable. I’ve also worked with input
+	validation using @Valid and used @ResponseEntity to customize responses.”
+
+✅ Real Interview Q&A
+Q: What’s the difference between @RestController and @Controller?
+A:
+@RestController = @Controller + @ResponseBody. It returns JSON directly.
+@Controller is used for returning views (like JSP/Thymeleaf pages).
+	
+
+✅ 1. Spring Boot Project Structure (Theory + Hands-on)
+When you create a Spring Boot app using Spring Initializr or IDE (IntelliJ/Eclipse), the typical structure is:
+
+src/
+├── main/
+│   ├── java/
+│   │   └── com.example.myapp/
+│   │       ├── MyAppApplication.java       // Main class with @SpringBootApplication
+│   │       ├── controller/                 // REST Controllers
+│   │       ├── service/                    // Business logic
+│   │       ├── repository/                 // Interfaces for DB access (JPA)
+│   │       └── model/                      // Entities or DTOs
+│   └── resources/
+│       ├── application.properties         // Config
+│       ├── static/                        // Static content (CSS/JS)
+│       └── templates/                     // Thymeleaf templates (if UI)
+└── test/
+
+✅ 2. Auto-Configuration in Spring Boot
+🔹 What is Auto-Configuration?
+Spring Boot tries to automatically configure your app based on the dependencies present in your classpath.
+
+✅ No need to write XML or Java configuration manually.
+
+Example:
+If you have Spring Web, it sets up DispatcherServlet, Jackson for JSON, etc.
+
+If you include Spring Data JPA, it auto-configures EntityManager, Hibernate, and DB connection.
+
+🔹 How it works?
+Spring Boot uses @EnableAutoConfiguration (part of @SpringBootApplication).
+
+java
+
+@SpringBootApplication  // Includes @EnableAutoConfiguration
+public class MyAppApplication {
+    public static void main(String[] args) {
+        SpringApplication.run(MyAppApplication.class, args);
+    }
+}
+
+✅ 3. Dependency Injection in Spring Boot
+🔹 What is Dependency Injection (DI)?
+Instead of creating objects manually, Spring injects them where needed — loosely coupled design.
+
+🔹 Example using @Autowired
+java
+
+@Service
+public class UserService {
+    public String greet() {
+        return "Hello from service";
+    }
+}
+
+@RestController
+public class HelloController {
+
+    @Autowired
+    private UserService userService;
+
+    @GetMapping("/hello")
+    public String sayHello() {
+        return userService.greet();
+    }
+}
+✅ Spring manages the lifecycle of UserService and injects it wherever needed.
+
+✅ 4. Spring Data JPA Basics
+You can access the database without writing complex SQL.
+
+🔹 Step 1: Entity
+java
+
+@Entity
+public class User {
+    @Id @GeneratedValue
+    private Long id;
+    private String name;
+    private String email;
+}
+
+🔹 Step 2: Repository
+java
+
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByName(String name);  // Custom method
+}
+
+🔹 Step 3: Use in Controller/Service
+java
+
+@RestController
+public class UserController {
+
+    @Autowired
+    private UserRepository repo;
+
+    @GetMapping("/users")
+    public List<User> getAll() {
+        return repo.findAll();
+    }
+}
+
+✅ 5. Writing Unit Tests with JUnit and Mockito
+🔹 JUnit Test for a service:
+java
+Copy
+Edit
+@SpringBootTest
+public class UserServiceTest {
+
+    @Autowired
+    private UserService userService;
+
+    @Test
+    void testGreet() {
+        assertEquals("Hello from service", userService.greet());
+    }
+}
+
+✅ Summary for Interview
+You can confidently say:
+“In Spring Boot, I understand the auto-configuration concept that reduces boilerplate. I use @Autowired for dependency 
+	injection, and organize my code with controller-service-repository layers. I also use Spring Data JPA for easy database
+	operations, and write unit tests with JUnit for testing the business logic.”
+	
+
+
+✅ 1. Mock Interview Q&A Sheet (Java + Spring Boot)
+🔸 Q1: What is Spring Boot and how is it different from Spring MVC?
+A:
+Spring Boot is a framework that simplifies Spring application development. It provides:
+Auto-configuration
+Embedded server (like Tomcat)
+Production-ready features (like Actuator, Metrics)
+
+Spring MVC is a module within Spring for handling web requests using the Model-View-Controller architecture.
+In short, Spring Boot uses Spring MVC under the hood but simplifies setup and deployment.
+
+🔸 Q2: What annotations are commonly used in a Spring Boot REST API?
+A:
+
+Annotation						Purpose
+@RestController					REST Controller
+@GetMapping, @PostMapping		Map HTTP requests
+@RequestParam					Extract query param
+@RequestBody					Convert JSON to object
+@Autowired						Inject dependencies
+@Entity, @Id					For DB entity
+@Repository						DAO layer
+@Service						Business logic layer
+
+🔸 Q3: How do you perform CRUD operations using Spring Data JPA?
+A:
+
+Annotate your class with @Entity
+Create a repository that extends JpaRepository
+Use built-in methods like findAll(), save(), deleteById() in controller or service
+
+Example:
+
+java
+public interface UserRepository extends JpaRepository<User, Long> {
+    List<User> findByName(String name);
+}
+
+🔸 Q4: What is the role of @RequestParam vs @RequestBody?
+A:
+
+@RequestParam is used for query parameters like /users?name=sonali
+@RequestBody is used to accept JSON payload and bind to a Java object
+
+🔸 Q5: How do you secure endpoints in Spring Boot?
+A:
+
+Use Spring Security
+Add users/roles in application.properties
+Customize access using @PreAuthorize, @Secured
+Use JWT or basic auth based on use-case
+
+🔸 Q6: What is Dependency Injection? How is it achieved in Spring?
+A:
+It’s a design pattern where the object is not created manually but is injected by the framework.
+Spring achieves DI using annotations like @Autowired, @Component, @Service, etc.
+
+🔸 Q7: How does exception handling work in Spring Boot?
+A:
+
+Use:
+@ControllerAdvice for global exception handling
+@ExceptionHandler inside controllers
+
+java
+@ExceptionHandler(Exception.class)
+public ResponseEntity<String> handleError(Exception e) {
+    return ResponseEntity.status(500).body("Error: " + e.getMessage());
+}
+
+🔸 Q8: What are Java collections you use daily?
+A:
+ArrayList for ordered list
+HashMap for key-value lookup
+HashSet for unique elements
+LinkedHashMap for maintaining order
+
+🔸 Q9: How is a Spring Boot application deployed in Docker?
+Create a JAR file:
+mvn clean package
+
+Create a Dockerfile:
+
+dockerfile
+Copy
+Edit
+FROM openjdk:17
+COPY target/demo.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+Build and run:
+
+bash
+docker build -t demo-app .
+docker run -p 8080:8080 demo-app
+
+🔸 Q10: Can you explain your recent mini project?
+You can say:
+
+"I built a REST API in Spring Boot for user management. It had endpoints for register, login, and view profile. I used:
+@RestController for APIs
+@Service for business logic
+@Repository with Spring Data JPA to save users
+Exception handling using @ControllerAdvice
+Input validation using @Valid
+Docker for containerizing the app"
+
+✅ 2. Mini Project You Can Mention
+Project: User Registration and Search API
+POST /users → Register user (@RequestBody, @Valid)
+GET /users → Get all users (findAll())
+GET /users/search?name=xyz → Search users by name (findByName(String name))
+Security: Basic Auth (admin/admin)
+DB: In-memory H2 or MySQL
+Validation: @NotBlank, @Email in model
+Exception handling: @ControllerAdvice
+
+✅ 3. Behavioral Questions (Short Answers)
+Q: Tell me about yourself.
+I'm a Software Developer with 3 years of Java experience. I’ve recently added Spring Boot to my stack and built some 
+	real-world REST APIs using it. I'm strong in Java fundamentals, OOP, collections, and have worked on backend development, 
+	and now eager to apply this knowledge in professional Spring Boot projects.
+
+Q: What challenges did you face while learning Spring Boot?
+The biggest challenge was understanding how auto-configuration and annotations work behind the scenes. I overcame it by 
+	building small projects, debugging startup logs, and using Spring documentation and online tutorials.
+
+Q: Why should we hire you?
+I’m a quick learner who has already self-learned Spring Boot, and I come with strong Java development experience. I understand 
+	how to build REST APIs with clean code, I practice writing tests, and I'm ready to contribute from day one.
+
+
+
+✅ Option 1: Last-Minute Revision Cheat Sheet (Spring Boot + Java)
+You can revise this before your interview — keep this handy.
+
+🔹 SPRING BOOT CORE
+Topic					Key Points
+@SpringBootApplication	Main entry point, includes @EnableAutoConfiguration
+Starter dependencies	e.g., spring-boot-starter-web, spring-boot-starter-data-jpa
+Embedded server			Tomcat by default
+Configuration			application.properties or application.yml
+Profiles				Use spring.profiles.active=dev for env-specific config
+Actuator				Use for health check and metrics (add spring-boot-starter-actuator)
+
+🔹 SPRING MVC / REST API
+Use Case				Annotation / Feature
+Create REST API			@RestController
+URL Mapping				@GetMapping, @PostMapping, etc.
+Path param				@PathVariable
+Query param				@RequestParam
+JSON body input			@RequestBody
+JSON output				Return ResponseEntity<> or object directly
+Exception handling		@ControllerAdvice + @ExceptionHandler
+
+🔹 SPRING DATA JPA
+Element				Use
+Entity				@Entity, @Id, @GeneratedValue
+Repository			JpaRepository<User, Long>
+Custom queries		findByName(String name)
+Pagination			Pageable pageable = PageRequest.of(page, size)
+DB Config			spring.datasource.*, H2/MySQL/Postgres supported
+
+🔹 SPRING SECURITY
+Purpose						Feature
+Basic Auth					Add username/password in properties
+Role-based access			@PreAuthorize("hasRole('ADMIN')")
+Password encoding			BCryptPasswordEncoder
+Disable security (for dev)	spring.security.enabled=false
+
+🔹 VALIDATION
+Annotation						Purpose
+@NotNull, @NotBlank, @Email		Field-level validation
+@Valid							Used in controller method param
+BindingResult					To get validation errors
+
+🔹 DOCKER
+dockerfile
+
+FROM openjdk:17
+COPY target/app.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+bash
+
+docker build -t myapp .
+docker run -p 8080:8080 myapp
+
+🔹 JAVA CORE QUICK FACTS
+ArrayList vs LinkedList: ArrayList faster for access, LinkedList for insert/delete
+HashMap vs TreeMap: HashMap is unordered, TreeMap is sorted
+== vs .equals(): == compares references, .equals() compares values
+Exception Handling: Always catch specific exceptions first
+OOP: Encapsulation, Abstraction, Inheritance, Polymorphism
+Threads: Implement Runnable or extend Thread
+
+=================================================================================
+
+✅ 1. What is a Singleton Class?
+A Singleton class in Java ensures only one instance of the class is created throughout the application lifecycle.
+It’s a part of the creational design pattern family.
+
+✅ 2. When to Use Singleton?
+When you need to share a common resource (e.g., logging, configuration, DB connection manager).
+Global access point for shared objects.
+
+✅ 3. Key Characteristics:
+Private constructor
+Static variable to hold the instance
+Static method to get the instance
+
+✅ 4. Basic Singleton (Not Thread-safe)
+java
+public class MySingleton {
+    private static MySingleton instance;
+
+    private MySingleton() {} // private constructor
+
+    public static MySingleton getInstance() {
+        if (instance == null) {
+            instance = new MySingleton();
+        }
+        return instance;
+    }
+}
+❌ Not thread-safe. In multithreading, multiple instances can be created.
+
+✅ 5. Thread-safe Singleton (Synchronized Method)
+java
+public class MySingleton {
+    private static MySingleton instance;
+
+    private MySingleton() {}
+
+    public static synchronized MySingleton getInstance() {
+        if (instance == null) {
+            instance = new MySingleton();
+        }
+        return instance;
+    }
+}
+✅ Thread-safe but slow due to synchronization on every call.
+
+✅ 6. Double-Checked Locking (Efficient & Thread-safe)
+java
+public class MySingleton {
+    private static volatile MySingleton instance;
+
+    private MySingleton() {}
+
+    public static MySingleton getInstance() {
+        if (instance == null) {
+            synchronized (MySingleton.class) {
+                if (instance == null) {
+                    instance = new MySingleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+✅ Most efficient and commonly used approach in real-world projects.
+
+✅ 7. Bill Pugh Singleton (Best Modern Approach)
+java
+public class MySingleton {
+    private MySingleton() {}
+
+    private static class SingletonHelper {
+        private static final MySingleton INSTANCE = new MySingleton();
+    }
+
+    public static MySingleton getInstance() {
+        return SingletonHelper.INSTANCE;
+    }
+}
+✅ Lazy-loaded, thread-safe, no synchronization overhead.
+
+✅ 8. Singleton with Enum (Recommended by Effective Java)
+java
+public enum SingletonEnum {
+    INSTANCE;
+
+    public void doSomething() {
+        System.out.println("Doing something...");
+    }
+}
+✅ Enum Singleton is simplest and handles serialization/deserialization safely.
+
+======================================================================================= 
+
+✅ 1. What is a REST API?
+A REST API (Representational State Transfer) is a web service architecture style that allows clients to access and manipulate
+ resources via standard HTTP methods.
+
+It is:
+Stateless
+Client-server based
+Cacheable
+Uses HTTP verbs: GET, POST, PUT, DELETE
+
+✅ 2. HTTP Methods and Their Meaning
+Method		Description					Example Use Case
+GET			Retrieve data				Fetch user details
+POST		Create new resource			Register a new user
+PUT			Update existing resource	Update user profile
+DELETE		Delete resource				Delete a user
+
+✅ 3. How to Create REST API in Spring Boot?
+✨ Step 1: Add Spring Web Dependency
+Add this in pom.xml:
+
+xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+✨ Step 2: Create a Model Class
+java
+public class User {
+    private int id;
+    private String name;
+    private String email;
+
+    // getters and setters
+}
+✨ Step 3: Create a Controller
+java
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    private List<User> users = new ArrayList<>();
+
+    // GET all users
+    @GetMapping
+    public List<User> getAllUsers() {
+        return users;
+    }
+
+    // GET user by ID
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable int id) {
+        return users.stream()
+                    .filter(u -> u.getId() == id)
+                    .findFirst()
+                    .orElse(null);
+    }
+
+    // POST create user
+    @PostMapping
+    public String createUser(@RequestBody User user) {
+        users.add(user);
+        return "User added";
+    }
+
+    // PUT update user
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable int id, @RequestBody User updatedUser) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                user.setName(updatedUser.getName());
+                user.setEmail(updatedUser.getEmail());
+                return "User updated";
+            }
+        }
+        return "User not found";
+    }
+
+    // DELETE user
+    @DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable int id) {
+        users.removeIf(u -> u.getId() == id);
+        return "User deleted";
+    }
+}
+✅ 4. Testing the API
+You can test this using Postman or cURL.
+
+GET http://localhost:8080/users
+
+POST http://localhost:8080/users (with JSON body)
+
+PUT http://localhost:8080/users/1
+
+DELETE http://localhost:8080/users/1
+
+✅ 5. Best Practices
+Use @ResponseStatus for meaningful HTTP status codes
+Return ResponseEntity instead of raw strings
+Use DTOs (Data Transfer Objects) to expose only needed data
+Use proper validation using @Valid and @NotNull, @Email, etc.
+
+=====================================================================================
+
+✅ 1. Use RestTemplate (Simple & Synchronous)
+Spring Boot provides RestTemplate for making HTTP calls.
+
+👉 Example: Call external REST API
+java
+
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.ResponseEntity;
+
+public class ExternalApiClient {
+
+    public void callExternalApi() {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String url = "https://jsonplaceholder.typicode.com/posts/1"; // Dummy API
+
+        ResponseEntity<String> response = restTemplate.getForEntity(url, String.class);
+
+        System.out.println("Response: " + response.getBody());
+    }
+}
+
+✅ 2. Use WebClient (Reactive & Modern - Recommended for WebFlux)
+If you’re using Spring Boot 2+ and prefer non-blocking HTTP calls, use WebClient.
+
+java
+
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+
+public class WebClientExample {
+
+    private final WebClient webClient = WebClient.create();
+
+    public void fetch() {
+        String url = "https://jsonplaceholder.typicode.com/posts/1";
+
+        Mono<String> response = webClient.get()
+                .uri(url)
+                .retrieve()
+                .bodyToMono(String.class);
+
+        response.subscribe(System.out::println); // asynchronous
+    }
+}
+
+✅ 3. Real Use Case: Microservice A calls Microservice B
+Microservice A:
+
+java
+
+@GetMapping("/get-user-data")
+public String getUserDataFromOtherService() {
+    RestTemplate restTemplate = new RestTemplate();
+    String url = "http://localhost:8081/api/users/1";
+    return restTemplate.getForObject(url, String.class);
+}
+Microservice B:
+
+java
+
+@GetMapping("/api/users/{id}")
+public User getUser(@PathVariable int id) {
+    return userService.getUserById(id);
+}
+
+🔐 4. How to Send Headers, Auth, POST Body?
+POST with Body + Headers
+java
+
+HttpHeaders headers = new HttpHeaders();
+headers.setContentType(MediaType.APPLICATION_JSON);
+headers.set("Authorization", "Bearer token");
+
+User user = new User(1, "Sonali", "sonali@email.com");
+
+HttpEntity<User> request = new HttpEntity<>(user, headers);
+
+RestTemplate restTemplate = new RestTemplate();
+ResponseEntity<String> response = restTemplate.postForEntity("http://api.com/add", request, String.class);
+
+📦 5. Use Cases in Real Projects
+Use Case								Description
+Microservice communication				A service requests data from another microservice
+Calling 3rd-party APIs					Weather API, Payment gateway API, etc.
+Uploading data to external systems		Push logs, analytics, or alerts to other systems
+Integration with legacy applications	REST interface to older ERP/CRM systems
+
+
+========================================================================================
+
+✅ RESTful Web Services in Java (Spring Boot)
+RESTful web services allow systems to communicate over HTTP by following REST principles. In Spring Boot, building RESTful
+ services is simple using annotations.
+
+📌 What is a RESTful Web Service?
+A RESTful web service exposes resources using standard HTTP methods:
+
+HTTP Method		Purpose	Example
+GET				Read	/users → Get users
+POST			Create	/users → Create user
+PUT				Update	/users/1 → Update user 1
+DELETE			Delete	/users/1 → Delete user 1
+
+✅ Basic Setup: Spring Boot RESTful API
+1. Add Dependency (if using manually)
+xml
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+2. Create a Model
+java
+
+public class User {
+    private int id;
+    private String name;
+    private String email;
+    // Getters and Setters
+}
+
+3. Create a REST Controller
+java
+
+import org.springframework.web.bind.annotation.*;
+import java.util.*;
+
+@RestController
+@RequestMapping("/users")
+public class UserController {
+
+    List<User> users = new ArrayList<>();
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return users;
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable int id) {
+        return users.stream().filter(u -> u.getId() == id).findFirst().orElse(null);
+    }
+
+    @PostMapping
+    public String addUser(@RequestBody User user) {
+        users.add(user);
+        return "User added!";
+    }
+
+    @PutMapping("/{id}")
+    public String updateUser(@PathVariable int id, @RequestBody User updatedUser) {
+        for (User user : users) {
+            if (user.getId() == id) {
+                user.setName(updatedUser.getName());
+                user.setEmail(updatedUser.getEmail());
+                return "User updated!";
+            }
+        }
+        return "User not found";
+    }
+
+    @DeleteMapping("/{id}")
+    public String deleteUser(@PathVariable int id) {
+        users.removeIf(user -> user.getId() == id);
+        return "User deleted!";
+    }
+}
+
+📂 Folder Structure
+
+src
+ └── main
+      └── java
+           └── com.example.demo
+                ├── DemoApplication.java
+                ├── controller
+                │    └── UserController.java
+                └── model
+                     └── User.java
+
+📫 Testing the API
+Use Postman or curl to test endpoints:
+GET /users
+GET /users/1
+
+POST /users with JSON body:
+
+json
+
+{
+  "id": 1,
+  "name": "Sonali",
+  "email": "sonali@email.com"
+}
+
+PUT /users/1
+
+DELETE /users/1
+
+🚀 Real-World Enhancements
+Feature					Tool/Approach
+Validation				@Valid, @NotNull, @Size
+Exception Handling		@ControllerAdvice
+Service Layer			Create UserService for logic
+Persistence				Use Spring Data JPA & MySQL
+Security				Use Spring Security or JWT
+Swagger Docs			Use SpringFox or OpenAPI
+
+
+✅ Are REST API and RESTful Web Services the Same?
+They are closely related but not exactly the same. Here's the difference:
+
+🔹 1. REST API (Application Programming Interface)
+Refers to any API that follows REST principles.
+It's a standardized way for systems to communicate over HTTP using endpoints.
+REST API is the interface that clients use to access a RESTful web service.
+
+🧠 Think of it like:
+A REST API is the contract or specification describing what operations can be done (like a menu in a restaurant).
+
+🔹 2. RESTful Web Service
+Refers to the actual web service implementation on the server that fulfills the contract of the REST API.
+It returns data (often JSON or XML) and performs logic.
+
+🧠 Think of it like:
+A RESTful Web Service is the kitchen that prepares and serves the food when ordered via the menu (API).
+
+🔁 Summary
+Term					Meaning
+REST API				Interface that exposes resources via HTTP in a REST-compliant way.
+RESTful Web Service		Server-side implementation of REST API using web technologies (like Spring Boot).
+
+✅ In Practice:
+You’ll often hear developers use the terms interchangeably, especially in Spring Boot or Node.js projects, and that’s okay 
+	— but technically:
+A RESTful Web Service implements a REST API.
+
+===============================================================================
+
+✅ Are RESTful Web Services Stateless or Stateful?
+🔹 RESTful Web Services are inherently stateless.
+
+📘 What does Stateless Mean?
+Each HTTP request is independent.
+The server does not store any context or session about the client.
+Every request must contain all the necessary information for the server to understand and respond.
+
+🔁 Example:
+Suppose a client wants to retrieve a user’s profile:
+
+
+GET /users/101
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI...
+
+Server processes this request without remembering anything from previous requests.
+
+It does not maintain session data like login or cart across requests.
+
+✅ Why REST is Stateless?
+Scalability – Any request can go to any server (good for load balancing).
+
+Simplicity – No need to manage sessions or memory for clients.
+
+Reliability – Server crashes don’t affect clients because no session state is lost.
+
+❗ Can REST be Stateful?
+Technically, yes — you can implement stateful behavior (e.g., using cookies or session tokens), but then it's no longer
+ purely RESTful.
+ 
+ 🧠 Interview Tip:
+"RESTful Web Services are stateless by design. This helps with horizontal scaling and makes the system more robust. However,
+	some applications introduce stateful behavior using workarounds like tokens or session storage, which slightly breaks
+		the REST principle."
+		
+==========================================================================
+
+JDBC connection
+
+// This code is for establishing connection with MySQL
+// database and retrieving data
+// from db Java Database connectivity
+
+/*
+ *1. import --->java.sql
+ *2. load and register the driver ---> com.jdbc.
+ *3. create connection
+ *4. create a statement
+ *5. execute the query
+ *6. process the results
+ *7. close
+ */
+
+import java.sql.*;
+
+class Geeks {
+    public static void main(String[] args) throws Exception {
+        String url = "jdbc:mysql://localhost:3306/database_name"; // Database details
+        String username = "rootgfg"; // MySQL credentials
+        String password = "gfg123";
+        String query = "select * from students"; // Query to be run
+
+        // Load and register the driver
+        Class.forName("com.mysql.cj.jdbc.Driver");
+
+        // Establish connection
+        Connection con = DriverManager.getConnection(url, username, password);
+        System.out.println("Connection Established successfully");
+
+        // Create a statement
+        Statement st = con.createStatement();
+
+        // Execute the query
+        ResultSet rs = st.executeQuery(query);
+
+        // Process the results
+        while (rs.next()) {
+            String name = rs.getString("name"); // Retrieve name from db
+            System.out.println(name); // Print result on console
+        }
+
+        // Close the statement and connection
+        st.close();
+        con.close();
+        System.out.println("Connection Closed....");
+    }
+}
+
+=========================================================================
+
+
+
+ 
+ 
+
+
+
+
+	
