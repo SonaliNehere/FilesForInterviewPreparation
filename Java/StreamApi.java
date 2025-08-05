@@ -229,25 +229,25 @@ public class StreamApi {
 		
 //		✅ 4. Find employee with max salary
 
-		class Emp {
-		    String name;
-		    double salary;
-
-		    Emp(String name, double salary) {
-		        this.name = name;
-		        this.salary = salary;
-		    }
-
-		    public String toString() {
-		        return name + " - " + salary;
-		    }
-		}
-
-		List<Emp> emps = List.of(
-		    new Emp("Alice", 50000),
-		    new Emp("Bob", 55000),
-		    new Emp("Charlie", 55000)
-		);
+//		class Emp {
+//		    String name;
+//		    double salary;
+//
+//		    Emp(String name, double salary) {
+//		        this.name = name;
+//		        this.salary = salary;
+//		    }
+//
+//		    public String toString() {
+//		        return name + " - " + salary;
+//		    }
+//		}
+//
+//		List<Emp> emps = List.of(
+//		    new Emp("Alice", 50000),
+//		    new Emp("Bob", 55000),
+//		    new Emp("Charlie", 55000)
+//		);
 
 //		Optional<Emp> maxSalEmp = emps.stream()
 //		    .max(Comparator.comparing(e -> e.salary));
@@ -255,13 +255,53 @@ public class StreamApi {
 //		maxSalEmp.ifPresent(System.out::println); // Output: Bob - 60000.0
 		
 		//grpbysalary
-		Map<Double, List<Emp>> grpbysalary = emps.stream().collect(Collectors.groupingBy(e -> e.salary));
-		System.out.println(grpbysalary);
+//		Map<Double, List<Emp>> grpbysalary = emps.stream().collect(Collectors.groupingBy(e -> e.salary));
+//		System.out.println(grpbysalary);
+//		
+//		Map<Double, List<Emp>> groupedByDept = emps.stream()
+//			    .collect(Collectors.groupingBy(e -> e.salary));
+//
+//			System.out.println(groupedByDept);
 		
-		Map<Double, List<Emp>> groupedByDept = emps.stream()
-			    .collect(Collectors.groupingBy(e -> e.salary));
+		
+		
+		
+//		✅ Parallel Stream in Java:
+//			parallelStream() is a feature of the Java Stream API that allows stream operations to be executed in parallel—across multiple threads—using the ForkJoinPool under the hood.
+//
+//			🔹 Usage Example:
 
-			System.out.println(groupedByDept);
+			     List<Integer> numbers = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+			     int sum = numbers.parallelStream()
+			                         .mapToInt(i -> i * 2)
+			                         .sum();
+			      System.out.println("Sum: " + sum);
+			
+//			✅ Advantages / Uses of Parallel Streams:
+//			Advantage	Explanation
+//			Performance	Can significantly reduce processing time for large collections by leveraging multiple cores.
+//			Simplicity	Enables parallel processing without manual thread management.
+//			Declarative Syntax	Same syntax as normal streams—easy to switch from stream() to parallelStream() or use .parallel().
+
+//			⚠️ Drawbacks / Limitations of Parallel Streams:
+//			Drawback	Explanation
+//			Overhead for small data	For small collections, parallel streams may be slower due to thread creation & context switching.
+//			Thread-safety required	Must ensure operations inside stream are thread-safe; mutable shared state can cause issues.
+//			Unpredictable order	Output order is not guaranteed unless .forEachOrdered() is used.
+//			Debugging difficulty	Harder to debug due to multiple threads executing in parallel.
+//			ForkJoinPool sharing	All parallel streams share the same common ForkJoinPool, which can lead to thread starvation in complex apps.
+
+//			🔍 When to Use Parallel Stream:
+//			✅ Use when:
+//			You work with large collections.
+//			Stream operations are stateless and independent.
+//			Computation is CPU-intensive (not IO-bound).
+//			Order of processing is not critical.
+//
+//			❌ Avoid when:
+//			Dataset is small.
+//			Operation is IO-bound (e.g., reading files, database).
+//			You rely on side effects or order of execution.
 		
 		
 		
