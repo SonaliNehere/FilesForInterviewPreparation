@@ -22,4 +22,30 @@ CI (Continuous Integration) = Code is integrated (committed) to Git.
 CD (Continuous Delivery) = Jenkins builds and delivers (uploads) the release ZIP to Artifactory.
 
 📢 How You Can Say It in Interview:
-"In my project, we follow CI/CD. I commit code to Git. When a release is needed, we trigger a Jenkins job that builds the code and automatically uploads the release ZIP to Artifactory. This makes the release process smooth and automated."
+"In my project, we follow CI/CD. I commit code to Git. When a release is needed, we trigger a Jenkins job that builds the code
+	and automatically uploads the release ZIP to Artifactory. This makes the release process smooth and automated."
+
+✅ Correct!
+In your case, Continuous Deployment is not done.
+
+Here's why:
+You said:
+“I commit. Then when we want to give a release, we do build and release on Jenkins. After that, the ZIP is uploaded to
+	Artifactory.”
+
+That means:
+The release is manually triggered.
+Jenkins uploads the ZIP to Artifactory.
+But the code is not automatically deployed to a server (like production or staging).
+
+So this is:
+CI/CD Term	Meaning	Is it in your process?
+CI (Continuous Integration)	- Automatically building and testing code after commit	✅ Yes
+CD (Continuous Delivery)	- Automatically preparing the build and storing it (e.g., in Artifactory)	✅ Yes
+CD (Continuous Deployment)	- Automatically deploying the build to live servers	❌ No (you do this manually or not at all)
+
+📌 In simple words:
+"In our project, we follow CI and Continuous Delivery, but not Continuous Deployment. Code is built and released through 
+	Jenkins, and the release ZIP goes to Artifactory. But actual deployment to production is done manually."
+	
+======================================================
