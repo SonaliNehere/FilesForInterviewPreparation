@@ -1,1 +1,25 @@
+🧩 Your CI/CD Process — Simple Explanation:
+You write code and commit to Git
+👉 This means you're saving your latest changes in the shared project.
 
+When your team wants to give a release,
+👉 You go to Jenkins, and start a build + release job.
+
+Jenkins starts working:
+
+It pulls the latest code from Git.
+
+It builds the project (compiles code, runs tests, etc.).
+
+If build is successful, it creates a ZIP file (the final release package).
+
+That ZIP file is automatically uploaded to Artifactory
+👉 So other teams or servers can use it to deploy the app.
+
+🤖 So What is CI/CD in This?
+CI (Continuous Integration) = Code is integrated (committed) to Git.
+
+CD (Continuous Delivery) = Jenkins builds and delivers (uploads) the release ZIP to Artifactory.
+
+📢 How You Can Say It in Interview:
+"In my project, we follow CI/CD. I commit code to Git. When a release is needed, we trigger a Jenkins job that builds the code and automatically uploads the release ZIP to Artifactory. This makes the release process smooth and automated."
