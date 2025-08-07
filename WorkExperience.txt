@@ -49,3 +49,95 @@ CD (Continuous Deployment)	- Automatically deploying the build to live servers	�
 	Jenkins, and the release ZIP goes to Artifactory. But actual deployment to production is done manually."
 	
 ======================================================
+
+🔐 SSH, 🖥️ MobaXterm, 💻 CMD, PowerShell, Git Bash — and how they differ.
+🔐 What is SSH?
+SSH (Secure Shell) is a secure way to connect to a remote server using the command line.
+It encrypts communication
+Lets you run commands on another system
+Mostly used to manage Linux servers from your own laptop
+
+👉 Example:
+ssh username@server_ip
+
+🖥️ What is MobaXterm?
+MobaXterm is a Windows tool that gives:
+A Linux-like terminal
+Built-in SSH client to connect to remote servers
+Graphical file transfer (SFTP) on the left pane
+GUI + terminal = easier for beginners
+✅ Great for logging into Linux servers from Windows.
+
+🧰 What is CMD (Command Prompt)?
+Built-in Windows terminal
+Used to run Windows commands
+Old, but still works for basic operations
+
+👉 Example command in CMD:
+dir    ← shows files (like `ls` in Linux)
+ipconfig  ← shows IP info
+
+⚡ What is PowerShell?
+A modern terminal for Windows
+More powerful than CMD
+Uses its own scripting language (.ps1 files)
+
+👉 Example:
+Get-Process
+
+🐙 What is Git Bash?
+A Linux-style terminal for Windows that comes with Git
+Supports Linux commands like ls, cd, mkdir
+Useful when working with Git or servers
+You can use it to run SSH, Git commands, and shell scripts
+
+🧭 What’s the Difference Between All of Them?
+| Feature                     | CMD (Windows)        | PowerShell (Windows) | Git Bash (Windows)     | Linux Terminal    | MobaXterm (Windows)        |
+| --------------------------- | -------------------- | -------------------- | ---------------------- | ----------------- | -------------------------- |
+| **Platform**                | Windows              | Windows              | Windows                | Linux/macOS       | Windows                    |
+| **Supports Linux commands** | No                   | Limited              | Yes                    | Yes               | Yes                        |
+| **SSH available**           | Yes (Windows 10/11+) | Yes (Windows 10/11+) | Yes                    | Yes               | Yes                        |
+| **Scripting type**          | Batch scripts        | PowerShell scripts   | Bash scripts           | Bash/zsh scripts  | Bash + GUI                 |
+| **GUI for file transfer**   | No                   | No                   | No                     | No                | Yes                        |
+| **Best use**                | Basic Windows tasks  | Windows system admin | Git & Linux-like tasks | Linux development | Remote server access + GUI |
+
+
+🪟 Windows vs 🐧 Linux Terminals
+| Platform    | Common Terminal                        |
+| ----------- | -------------------------------------- |
+| **Windows** | CMD, PowerShell, Git Bash, MobaXterm   |
+| **Linux**   | Bash (default), zsh, terminal emulator |
+| **macOS**   | Bash/zsh in Terminal or iTerm2         |
+
+🧠 In Simple Terms:
+SSH = Login securely to another machine
+CMD / PowerShell = Native Windows terminals
+Git Bash = Linux-like terminal for Git work
+MobaXterm = Best all-in-one tool for Windows users connecting to Linux servers
+
+=================================================================
+
+All Repositories access - on phabricator http://10.64.111.61:8080/
+register and login in phabricator. generate ssh public key and download it. 
+on eclipse set path to ssh key file.
+using ssh link import project in eclipse
+
+====================================================================
+
+1) Login into phabricator (10.64.111.61:8080)
+2) On right side above near search bar. Click on your name/profile
+Then go to setting.
+Click on ssh public key. You will find ssh key action. Click on it and then generate keypair.
+Then click on generate then download.
+3) open elicpse - preference - search ssh2.
+Then in private keys - click on add private key.
+Add coma separated path of the above downloaded phabricator.key. ( then apply and close).
+How to clone project from phabricator (server) to local machine
+4) then go to eclipse, then windows - show view- others- search git repository- open.
+5) after this click on clone a got repo. Paste the URI of project that you wanted to clone ( you can find project from phabricator)
+Then next, next then finish.
+6) the eclipse will downlod the project then you can see it in your git repository
+7) explore the project then go inside working tree right click on your project then import.
+The project will comes into project explorer.
+============================================================================
+
