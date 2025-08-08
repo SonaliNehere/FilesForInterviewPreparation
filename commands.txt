@@ -32,6 +32,12 @@ top  -> for cpu and memory percentage utilisation
 wget --user=nefdevuser --password=Nefdevuser@1 http://10.64.217.191:8082/artifactory/jenkinsiot/com/jio/fiveg/jio5gbr/2.0.10/jio5gbr-2.0.10.zip
 curl -u nefdevuser:Nefdevuser@1 -X PUT "http://10.64.217.191:8082/artifactory/jenkinsiot/com/jio/fiveg/jio5gbr/2.0.10/jio5g_br_v_2.0.10.tar" -T jio5g_br_v_2.0.10.tar
 
+create copy of container of another server:
+docker commit jio_iam_cont jio_iam_r_4_2_3_2_latest - commit container to image
+docker save -o jio_iam_r_4_2_3_2_latest.tar jio_iam_r_4_2_3_2_latest - save image as tar
+docker load -i jio_iam_r_4_2_3_2_latest.tar - load the tar on another server . then image will create.
+docker run --privileged --name jio_iam_cont --network host --restart always -itd jio_iam_r_4_2_3_2_latest - create container from image
+
 File and Directory Management:
 ls: Lists the contents of a directory.
 cd: Changes the current working directory.
