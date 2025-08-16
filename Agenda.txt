@@ -8,3 +8,6 @@ Project
 5 strenghts
 5 weakness
 Angular
+Microservices
+System Design
+DSA
