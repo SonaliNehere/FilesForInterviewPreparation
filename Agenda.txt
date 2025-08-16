@@ -1,0 +1,10 @@
+Java
+Spring Boot
+Elastic Search
+Redis
+Docker
+Project
+3 critical scenarios how you handled
+5 strenghts
+5 weakness
+Angular
