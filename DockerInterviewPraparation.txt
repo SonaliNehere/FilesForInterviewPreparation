@@ -1,0 +1,121 @@
+✅ What is Docker?
+Docker is a platform that allows you to build, ship, and run applications inside containers.
+
+A container is a lightweight, portable, isolated environment that includes everything needed to run an app (code, runtime, 
+libraries, dependencies).
+
+👉 In short: Docker makes sure “it works on my machine” = “it works everywhere”.
+
+🔹 Why use Docker?
+Consistency → Same environment from dev → test → production.
+Lightweight → Faster than VMs (no full OS overhead).
+Portability → Runs anywhere (Linux, Windows, cloud, on-premise).
+Scalability → Works great with microservices & Kubernetes.
+
+🔹 Key Docker Concepts
+Image → Blueprint of an application (like a class in Java).
+Built from a Dockerfile.
+
+Container → Running instance of an image (like an object in Java).
+
+Dockerfile → A text file with instructions to build an image.
+
+Docker Hub → Public registry to store and share images.
+
+Volumes → Persist data outside the container.
+
+Networks → Allow containers to talk to each other.
+
+🔹 Dockerfile Basics
+A Dockerfile is a script with instructions to build a Docker image.
+
+Example: Node.js app
+
+# 1. Base image
+FROM node:18  
+
+# 2. Set working directory
+WORKDIR /app  
+
+# 3. Copy dependencies file
+COPY package*.json ./  
+
+# 4. Install dependencies
+RUN npm install  
+
+# 5. Copy source code
+COPY . .  
+
+# 6. Expose port
+EXPOSE 3000  
+
+# 7. Start app
+CMD ["node", "server.js"]
+
+🔹 Dockerfile Instructions Explained:
+FROM → Defines the base image.
+WORKDIR → Sets the working directory inside the container.
+COPY → Copies files from host to container.
+RUN → Executes a command at build time (e.g., install packages).
+EXPOSE → Documents which port the app uses.
+CMD → Defines the default command to run when container starts.
+
+🔹 Common Docker Commands
+# Build image
+docker build -t myapp:1.0 .
+
+# Run container
+docker run -d -p 8080:3000 myapp:1.0
+
+# List running containers
+docker ps
+
+# Stop container
+docker stop <container_id>
+
+# Remove container
+docker rm <container_id>
+
+# List images
+docker images
+
+# Remove image
+docker rmi myapp:1.0
+
+# Use Docker Hub image
+docker pull mysql:8.0
+
+🔹 How to Use Docker (Workflow)
+Write a Dockerfile for your app.
+Build an image: docker build -t myapp .
+Run a container: docker run -d -p 8080:3000 myapp
+Share via Docker Hub:
+docker tag myapp username/myapp
+docker push username/myapp
+
+🔹 Frequently Asked Interview Q&A
+
+Q1: What is Docker and how is it different from a VM?
+Docker uses containers → lightweight, shares host OS kernel.
+VMs → heavy, each VM has its own OS.
+
+Q2: What is inside a Dockerfile?
+Instructions to build an image: FROM, COPY, RUN, EXPOSE, CMD.
+
+Q3: How do you persist data in Docker?
+Using volumes:
+docker run -v /host/path:/container/path myapp
+
+Q4: How do containers communicate?
+Using Docker networks. By default, containers on the same network can talk to each other.
+
+Q5: How do you reduce Docker image size?
+Use smaller base images (alpine).
+
+Combine commands.
+Use .dockerignore to exclude unnecessary files.
+
+✅ Quick Interview Tip:
+If asked “Have you used Docker?” → You can say:
+“Yes, I’ve written Dockerfiles for my Java/Node/Angular apps, built images, ran containers, exposed ports, and used volumes
+ for persistence. I also pushed images to Docker Hub and used Docker Compose for multi-container apps.”
