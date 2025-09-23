@@ -1,0 +1,672 @@
+Part 1: Shell Scripting Basics
+1️⃣ Shebang
+#!/bin/bash
+
+Indicates which shell to use to run the script.
+Here, /bin/bash means the script uses Bash shell.
+
+2️⃣ Variables
+version="2.0.12"
+previousVersion="2.0.11"
+
+Variables store values.
+No spaces around =.
+Access a variable using $version.
+
+3️⃣ Environment Variables & Colors
+export RED="\e[1;31m"
+export NC="\e[0m"
+
+export makes a variable available to child processes.
+Here, these variables store ANSI color codes for colored text output.
+NC means “No Color” to reset terminal color.
+
+4️⃣ Conditional Statements
+if [[ "$curruser" != "root" ]]; then
+    SUDO=sudo
+else
+    SUDO=""
+fi
+
+Checks a condition (curruser != root).
+[[ ... ]] is Bash conditional syntax.
+Executes different commands depending on the condition.
+
+5️⃣ Reading User Input
+echo "Enter the container id:"
+read container_id
+
+echo prints text.
+read takes input from the user and stores it in a variable (container_id).
+
+6️⃣ Running Commands
+docker ps -q -f id=$container_id
+
+docker ps lists running containers.
+-q returns only container IDs.
+-f id=... filters by container ID.
+
+7️⃣ Loops and Conditions Inside Scripts
+if [ condition ]; then ... else ... fi → runs commands based on condition.
+for and while loops iterate over items (not heavily used in these scripts).
+
+8️⃣ File Operations
+rm -rf dist
+mkdir /some/path
+cp -r src dest
+
+rm -rf → remove files/directories recursively without asking.
+mkdir → create directories.
+
+cp -r → copy folders recursively.
+
+9️⃣ Docker Commands in Scripts
+docker exec -it container_id command
+docker cp local_path container_id:container_path
+
+docker exec -it → run a command inside a running container interactively.
+docker cp → copy files/folders to or from a container.
+
+10️⃣ Redirection
+> nohup.out
+
+> redirects output to a file, overwriting existing content.
+>> appends instead of overwriting.
+
+Part 2: Line-by-Line Explanation of autoinstall.sh
+1. Color & User Setup
+export BLACK="\e[1;39m"
+...
+curruser=$(whoami)
+if [[ "$curruser" != "root" ]]; then
+    export SUDO=sudo
+else
+    export SUDO=""
+fi
+
+Sets color codes for terminal messages.
+Checks if the current user is root. If not, prepends sudo to commands that require root permissions.
+
+2. Version Setup & Clearing Logs
+version="2.0.12"
+previousVersion="2.0.11"
+> nohup.out
+
+Sets current version and previous version of BR.
+Clears nohup.out (log file) before deployment.
+
+3. Remove old build
+$SUDO rm -rf dist
+
+Deletes previous dist folder to avoid conflicts with new deployment.
+
+4. Read Container ID
+echo "Enter the container id:"
+read container_id
+
+Takes input from the user: the Docker container where BR is deployed.
+
+5. Check if Container is Running
+container_exists=$($SUDO docker ps -q -f id=$container_id)
+if [ -n "$container_exists" ]; then ...
+
+$() → executes command and stores output in variable.
+-n → checks if variable is not empty (container exists).
+
+6. Check BR Directory in Container
+docker exec -it $container_id [ -d /opt/JIO-BR/rtJio_5G_BR ]
+
+Checks if the BR folder exists inside the container.
+[ -d path ] → true if the directory exists.
+
+7. Check if BR is Running
+PN=$(docker exec -it $container_id sh -c "ps -ef | grep BRBootstrapper | grep -v grep | tail -c 15")
+if [ -z "$PN" ]; then ...
+
+Lists running processes inside container.
+Looks for BRBootstrapper.
+-z → checks if variable is empty (BR not running).
+
+8. Backup Old Configuration
+docker exec -it $container_id mkdir $BP/../../br-bkp/br-$previousVersion
+cp -r $BP/configuration/ $BP/../../br-bkp/br-$previousVersion/.
+
+Creates backup folder for previous version.
+Copies configuration, bin, lib, and README.md to backup.
+
+9. Unzip New Package
+unzip "jio5gbr-$version.zip" > /dev/null
+
+Extracts the new BR package.
+> /dev/null → suppresses output.
+
+10. Copy New Files to Container
+docker cp dist/JIO-BR/rtJio_5G_BR/bin/rtSDP_Run.jar $container_id:$BP/bin/
+docker cp dist/JIO-BR/rtJio_5G_BR/lib $container_id:$BP/
+
+Updates bin, lib, and other necessary folders inside the container.
+
+11. Clean Up
+rm -rf dist
+
+Deletes extracted dist folder to save space.
+
+12. Completion Message
+echo -e $BLUE"#########################$NC$GREEN BR-$version Upgrade Complete$NC$BLUE #########################"$NC
+
+Prints colored message that upgrade is complete.
+
+Part 3: Line-by-Line Explanation of rollback.sh
+
+Most of rollback.sh is similar to autoinstall.sh, but the key differences:
+
+1️⃣ Instead of deploying new version, it restores the previous version from backup.
+
+docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/bin/ $BP/
+docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/configuration/ $BP/
+docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/lib/ $BP/
+
+Copies bin, config, lib from backup to current BR folder.
+
+2️⃣ Checks if backup exists
+
+BrBkp=$($SUDO docker exec -it $container_id sh -c '[ -d $BP/../../br-bkp/br-$previousVersion ] && echo "exists" || echo "not exists"')
+if [ "$BrBkp" = "not exists" ]; then ...
+
+Ensures rollback only happens if backup is available.
+
+3️⃣ Ensures BR is not running before rollback (like in autoinstall.sh).
+
+4️⃣ Completion message signals rollback is done.
+
+✅ Summary
+
+autoinstall.sh → automates upgrade: backup old files → unzip new package → copy files → cleanup.
+
+rollback.sh → automates rollback: restore files from backup if upgrade fails.
+
+Both scripts use Docker commands, conditional checks, and automation to reduce deployment time.
+
+=========================================================================
+
+Perfect 👍 let’s build your understanding from base.
+We’ll go step by step — first I’ll explain what shell scripting is, then we’ll go line by line for your two scripts.
+
+🟢 Step 1: What is a Shell Script?
+
+A shell is a program in Linux/Unix that takes commands from you and gives them to the OS to execute.
+Examples: bash, sh, zsh.
+
+A shell script is just a text file with a sequence of shell commands written inside.
+Instead of typing commands one by one in the terminal, you put them in a file and run it like a program.
+
+Example:
+
+#!/bin/bash
+echo "Hello, Sonali!"
+
+#!/bin/bash → tells the system which shell should run this script (here: bash).
+echo → prints text on screen.
+
+You save this as test.sh, then run:
+chmod +x test.sh   # make it executable
+./test.sh
+
+Output → Hello, Sonali!
+
+🟢 Step 2: Basic Linux Commands (You’ll see these in scripts)
+
+cd /path → change directory.
+ls → list files.
+pwd → print current working directory.
+mkdir dir1 → create a new folder.
+cp file1 file2 → copy file.
+mv file1 file2 → move/rename file.
+rm file1 → delete file.
+tar -cvf backup.tar /path → create archive (backup).
+scp file user@server:/path → secure copy file to another server.
+chmod +x file.sh → give execute permission.
+./file.sh → run the script.
+
+🟢 Step 3: Structure of Deployment Scripts
+A deployment script automates these things:
+
+Stop old version of app.
+Take backup.
+Copy new files.
+Start new app.
+Verify if running.
+
+This automation is why your deployment time was reduced by 30% — instead of manual steps, one script runs everything.
+
+================================================================================
+
+Learn commands deeply with examples (hands-on basics).
+
+Then take your two scripts and go line by line, explaining every command in context.
+
+That way, you’ll be able to confidently explain to an interviewer how the script works and how it cut deployment time.
+
+🟢 Step 1: Core Linux Commands with Deep Explanation
+1. echo
+
+Prints text on screen.
+
+echo "Hello World"
+
+
+➡️ Output: Hello World
+
+2. pwd (print working directory)
+
+Shows the current folder you’re in.
+
+pwd
+
+
+➡️ /home/sonali/projects
+
+3. cd (change directory)
+cd /var/log     # go to /var/log
+cd ..           # go one step back
+cd ~            # go to home folder
+
+4. ls (list files)
+ls              # list files
+ls -l           # long listing with permissions
+ls -la          # includes hidden files
+
+5. mkdir (make directory)
+mkdir backup
+mkdir -p project/src/logs   # create nested directories
+
+6. cp (copy)
+cp file1.txt file2.txt      # copy file
+cp -r dir1 dir2             # copy folder with contents
+
+7. mv (move / rename)
+mv oldname.txt newname.txt  # rename file
+mv file.txt /tmp/           # move to another directory
+
+8. rm (remove)
+rm file.txt
+rm -r foldername   # remove directory with files
+
+
+⚠️ Dangerous! Always double check.
+
+9. tar (archive)
+tar -cvf backup.tar myfolder    # create archive
+tar -xvf backup.tar             # extract archive
+
+
+c = create
+x = extract
+v = verbose (show process)
+f = file name
+
+10. scp (secure copy between servers)
+scp file.txt user@192.168.1.5:/home/user/
+
+
+➡️ Copies file.txt from local to remote server.
+
+11. chmod (change permissions)
+chmod +x deploy.sh   # make script executable
+
+12. ./script.sh
+
+Runs your script.
+If you just type script.sh, system may not find it unless it’s in $PATH.
+That’s why we use ./.
+
+13. ps (process status) + grep
+ps -ef | grep java
+
+
+➡️ Find running java processes.
+
+14. kill
+kill -9 <pid>
+
+
+➡️ Force kill a process.
+
+15. service or systemctl
+service tomcat start
+service tomcat stop
+systemctl restart nginx
+
+
+➡️ Control background services (like Tomcat, Nginx).
+
+✅ These are the building blocks you’ll see in your deployment scripts.
+
+🟢 Step 2: Applying Commands in Deployment Scripts
+
+A typical deployment script will:
+
+Backup existing version (using cp, tar).
+Stop old service (using ps, kill, service).
+Deploy new build (using scp, mv, cp).
+Restart service (using service, systemctl).
+Verify (using ps, curl, echo).
+
+This is why your deployment became 30% faster → fewer manual steps, fewer mistakes, fully automated.
+
+
+🔎 Rollback Script Explained (line by line)
+#!/bin/bash
+
+Shebang line → tells Linux to run this script using Bash shell.
+
+export BLACK="\e[1;39m"
+export blue="\e[0;34m"
+...
+export NC="\e[0m"
+
+These are color codes for terminal text.
+
+Example: echo -e $RED "Error!" $NC → prints “Error!” in red.
+
+NC = “No Color” (reset).
+
+This is just for making logs look nice.
+
+curruser=$(whoami)
+if [[ "$curruser" != "root" ]] ; then
+   export SUDO=sudo
+else
+   export SUDO=""
+fi
+
+Gets current user (whoami).
+If you are not root, it sets SUDO=sudo.
+If you are root, no need to prefix sudo.
+
+So later script can just run $SUDO docker … (works for both cases).
+
+version="2.0.12"
+previousVersion="2.0.11"
+
+Defines current version and previous version.
+Used during rollback to replace 2.0.12 with 2.0.11.
+
+> nohup.out
+
+Clears file nohup.out if exists (truncate to 0 bytes).
+nohup.out normally stores background logs → they clean it at start.
+
+#Deleting previous dist folder if any
+$SUDO rm -rf dist
+
+Deletes local folder dist.
+
+-r → recursive, -f → force, no confirm.
+Usually build output (dist = distributable package).
+Removes old junk before rollback.
+
+echo "Enter the container id:"
+read container_id
+
+Asks user to type Docker container ID.
+Stores it in variable container_id.
+
+container_exists=$($SUDO docker ps -q -f id=$container_id)
+
+Runs docker ps (list running containers).
+
+-q → quiet (just IDs).
+-f id=... → filter by container id.
+If container is running, variable will contain its ID.
+
+if [ -n "$container_exists" ]; then
+
+Checks if variable is non-empty → means container is running.
+
+    if $SUDO docker exec -it $container_id [ -d /opt/JIO-BR/rtJio_5G_BR ] 2>/dev/null;
+
+	Runs inside container: check if directory /opt/JIO-BR/rtJio_5G_BR exists.
+
+docker exec -it → run command inside container.
+
+[ -d path ] → true if directory exists.
+
+2>/dev/null → hide error messages.
+
+		PN="`$SUDO docker exec -it $container_id sh -c "ps -ef | grep BRBootstrapper | grep -v grep | tail -c 15"`"
+
+Runs inside container: ps -ef lists processes.
+grep BRBootstrapper → find if BR is running.
+grep -v grep → remove the grep process itself.
+tail -c 15 → only last 15 characters (just for neatness).
+If empty → BR is not running. If not empty → BR running.
+
+		if [ -z "$PN" ]
+
+-z = check if variable is empty.
+If empty → service not running → safe to rollback.
+
+			BP="/opt/JIO-BR/rtJio_5G_BR"
+			BrBkp=$($SUDO docker exec -it $container_id sh -c '[ -d $BP/../../br-bkp/br-$previousVersion ] && echo "exists" || echo "not exists"')
+
+Sets base path BP.
+Inside container, check if backup folder exists:
+/opt/JIO-BR/rtJio_5G_BR/../../br-bkp/br-2.0.11
+
+If yes → print “exists”, else “not exists”.
+
+			if [ "$BrBkp" = "not exists" ]
+
+If backup not available → print error.
+
+				$SUDO docker exec -it $container_id sh -c "rm -rf $BP/lib"
+				echo -e $BLUE"updating bin/lib/config"$NC
+
+Deletes current lib folder.
+
+Prepares to replace with backup version.
+
+        $SUDO docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/bin/ $BP/
+        $SUDO docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/configuration/ $BP/
+        $SUDO docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/lib/ $BP/
+        $SUDO docker exec $container_id cp -r $BP/../../br-bkp/br-$previousVersion/README.md $BP/../
+
+Copy backup files from previous version into current path.
+
+Folders restored:
+bin
+configuration
+lib
+README.md
+
+				echo -e $BLUE"updated bin/lib/config successfully."$NC
+
+Prints success message.
+
+				$SUDO cd -
+
+Goes back to previous directory (not important here).
+
+				echo -e $BLUE"#########################$NC$GREEN BR-$version Rollback Complete$NC$BLUE #########################"$NC
+
+Prints Rollback Complete message with colors.
+
+		else
+			echo -e $RED"BR is up & running, Kindly ShutDown before Upgrade"$NC
+
+
+If BR service is still running → abort rollback.
+
+Otherwise → files may get corrupted.
+
+    else
+        echo -e $RED"The directory /opt/JIO-BR/rtJio_5G_BR does not exist in the container $container_id."$NC
+
+
+If directory not found → print error.
+
+else
+    echo -e $RED"Error: Container $container_id does not exist or is not running."$NC
+fi
+
+
+If container doesn’t exist → show error.
+
+🎯 Final Summary (Rollback Script)
+
+This script:
+Checks user permissions (root or sudo).
+Takes container ID from user.
+Verifies container is running and target directory exists.
+Checks if service is down (so rollback is safe).
+Checks if backup of previous version exists.
+Restores previous version files (bin, lib, config).
+Prints success or failure messages in colored text.
+
+✅ This automation saved time because earlier rollback may have been manual:
+
+Log into container.
+Stop process.
+Delete current files.
+Copy backup files.
+Restart.
+
+Now → just run script, it does everything.
+
+
+🔎 Auto Install (Deployment) Script – Line by Line
+#!/bin/bash
+
+Use Bash shell for this script.
+
+export BLACK="\e[1;39m"
+export blue="\e[0;34m"
+...
+export NC="\e[0m"
+
+Color codes for printing logs nicely (same as rollback script).
+
+$RED, $GREEN, $BLUE → different colors.
+
+$NC = reset to default color.
+
+curruser=$(whoami)
+if [[ "$curruser" != "root" ]] ; then
+   export SUDO=sudo
+else
+   export SUDO=""
+fi
+
+Detects if current user is root.
+
+If not, sets $SUDO=sudo.
+Ensures script works for both root and normal users.
+
+version="2.0.12"
+
+Current version of BR you are deploying.
+
+> nohup.out
+
+Clears log file nohup.out (so fresh logs are written).
+
+#Deleting previous dist folder if any
+$SUDO rm -rf dist
+
+Removes old dist folder (package build output).
+Ensures no conflicts with new package.
+
+echo "Enter the container id:"
+read container_id
+
+Reads Docker container ID from user input.
+
+container_exists=$($SUDO docker ps -q -f id=$container_id)
+
+Checks if that container is running.
+If yes → $container_exists will have ID.
+If no → empty string.
+if [ -n "$container_exists" ]; then
+
+If non-empty → container is running.
+
+    if $SUDO docker exec -it $container_id [ -d /opt/JIO-BR/rtJio_5G_BR ] 2>/dev/null;
+
+Runs inside container → check if target directory /opt/JIO-BR/rtJio_5G_BR exists.
+If not, deployment cannot proceed.
+
+        PN="`$SUDO docker exec -it $container_id sh -c "ps -ef | grep BRBootstrapper | grep -v grep | tail -c 15"`"
+
+Runs inside container:
+ps -ef → show running processes.
+grep BRBootstrapper → search for BR process.
+If not found → safe to deploy.
+If found → service already running (deployment should not overwrite running process).
+
+        if [ -z "$PN" ]
+
+If PN is empty → BR not running → safe to deploy.
+If not empty → abort deployment.
+
+            BP="/opt/JIO-BR/rtJio_5G_BR"
+
+Path where BR is installed inside container.
+
+            echo -e $BLUE"Taking backup of bin/lib/config"$NC
+            $SUDO docker exec $container_id cp -r $BP/bin $BP/../../br-bkp/br-$version/
+            $SUDO docker exec $container_id cp -r $BP/lib $BP/../../br-bkp/br-$version/
+            $SUDO docker exec $container_id cp -r $BP/configuration $BP/../../br-bkp/br-$version/
+
+Takes backup of current installation before overwriting.
+Backs up bin, lib, and configuration folders into a backup directory with version name.
+
+            echo -e $BLUE"Extracting new package"$NC
+            unzip BR-$version.zip -d dist
+
+Extracts new build package (BR-2.0.12.zip) into dist folder.
+
+            echo -e $BLUE"Copying new files to container"$NC
+            $SUDO docker cp dist/bin $container_id:$BP/
+            $SUDO docker cp dist/lib $container_id:$BP/
+            $SUDO docker cp dist/configuration $container_id:$BP/
+
+Copies new files from dist/ into container at $BP.
+Uses docker cp command to copy from host → container.
+
+            echo -e $GREEN"Deployment of BR-$version completed successfully"$NC
+
+Prints success message.
+
+        else
+            echo -e $RED"BR is up & running, Kindly ShutDown before Upgrade"$NC
+        fi
+
+If BR process was running → deployment is blocked to prevent corruption.
+
+    else
+        echo -e $RED"The directory /opt/JIO-BR/rtJio_5G_BR does not exist in the container $container_id."$NC
+    fi
+else
+    echo -e $RED"Error: Container $container_id does not exist or is not running."$NC
+fi
+
+Error handling for missing directory or container.
+
+🎯 Final Summary (Deployment Script)
+The autoinstall script does these steps:
+
+Check if container exists and is running.
+Verify BR process is not running (safe to deploy).
+Take backup of existing version (bin, lib, config).
+Extract new build package.
+Copy new files into container path.
+Print success or failure messages.
+
+✅ Together with rollback.sh:
+
+autoinstall.sh = deploy new version.
+rollback.sh = restore previous version if something goes wrong.
+
+This is how you saved ~30% deployment time → automated checks, backups, file copies, and rollbacks.
+
