@@ -11,3 +11,4 @@ Angular
 Microservices
 System Design
 DSA
+SQL
