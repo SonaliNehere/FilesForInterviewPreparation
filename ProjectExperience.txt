@@ -1324,4 +1324,8 @@ Used in databases, search engines, and even libraries.
 "Indexing is a way of organizing data to make searching and retrieving information faster and more efficient, like an index 
 in a book."
 
+
 ========================================================================================
+
+✅ Interview Explanation Example:
+"In my project, we use an embedded Jetty server so our application is self-contained and doesn’t require a separate servlet container. We use Ant to build the project, producing an executable JAR. This JAR is then containerized using Docker, which makes deployment consistent and isolated. On the server, we upload this JAR inside a container and run it. When the container starts, Jetty starts inside the JAR, serving the application."
