@@ -1329,3 +1329,57 @@ in a book."
 
 ✅ Interview Explanation Example:
 "In my project, we use an embedded Jetty server so our application is self-contained and doesn’t require a separate servlet container. We use Ant to build the project, producing an executable JAR. This JAR is then containerized using Docker, which makes deployment consistent and isolated. On the server, we upload this JAR inside a container and run it. When the container starts, Jetty starts inside the JAR, serving the application."
+
+No — you cannot use HttpServlet without a server (Tomcat, Jetty, etc.), because servlets are designed to run inside a Servlet Container that implements the Servlet API.
+
+Here’s why:
+1. Why HttpServlet Needs a Server
+HttpServlet is part of the Jakarta Servlet API (javax.servlet / jakarta.servlet).
+It defines methods like doGet() and doPost() for handling HTTP requests.
+But it does not implement HTTP networking itself — it needs a server (Tomcat, Jetty, Undertow, etc.) to:
+Listen on a port (HTTP requests).
+Receive requests and map URLs.
+Create HttpServletRequest and HttpServletResponse objects.
+Call your servlet methods (doGet, doPost, etc.).
+
+Without a servlet container, HttpServlet has no way to run or receive HTTP requests.
+
+Analogy:
+Think of HttpServlet like a driver’s manual. The manual explains what the driver does, but it doesn’t drive the car. You still need the car (server) to actually move.
+
+2. How Embedded Jetty Helps
+
+When you use embedded Jetty, you include the server inside your application. That means you don’t need a separate external Tomcat or Jetty installation — but you still have a server running internally.
+
+Example:
+
+Server server = new Server(8080);
+ServletContextHandler context = new ServletContextHandler();
+context.addServlet(MyServlet.class, "/hello");
+server.setHandler(context);
+server.start();
+server.join();
+
+Here Jetty is your server, and it handles the HTTP part so your servlet can run.
+
+3. Alternatives if You Don’t Want a Server
+If you really don’t want Jetty/Tomcat, then you cannot use HttpServlet. You would need to use something else that handles HTTP directly:
+HTTP framework like:
+Spring Boot (which internally embeds Tomcat/Jetty/Undertow)
+NanoHTTPD (very lightweight HTTP server in Java)
+Or manually write an HTTP server using java.net.ServerSocket — but then you must manually parse HTTP requests, which is complex.
+
+Example with plain Java:
+
+ServerSocket serverSocket = new ServerSocket(8080);
+while (true) {
+    Socket client = serverSocket.accept();
+    // Manually read HTTP request and send response
+}
+
+
+This works but is low-level and not practical for production.
+
+✅ Key takeaway:
+You cannot run HttpServlet without a server. If you want a lightweight approach without an external server, embedded Jetty or embedded Tomcat is the way to go — that’s why your project uses embedded Jetty.
+===================================================================================
