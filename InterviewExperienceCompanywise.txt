@@ -1,0 +1,1453 @@
+20-08-2025	Starthealth
+✅ What is REST?
+
+REST (Representational State Transfer) is an architectural style for building scalable web services that communicate using 
+HTTP.
+
+It uses resources (like users, products, orders) that can be accessed using URLs, and each resource returns a representation 
+(usually JSON).
+
+🔹 Key Principles of REST
+Principle			Simple Explanation
+Client–Server		Frontend (UI) and backend (API) are separate
+Stateless			Server doesn’t store session; each request is independent
+Cacheable			Responses can be cached for performance
+Uniform Interface	Standard way to interact (HTTP methods + URLs)
+Layered System		Multiple layers like load balancer, security middleware
+Resource-Based		Everything is treated as a resource with its own URI
+
+🔹 HTTP Methods Mapping
+HTTP Method		Action					Example
+GET				Fetch data				/users
+POST			Create data				/users
+PUT				Update entire resource	/users/101
+PATCH			Partial update			/users/101 (only name)
+DELETE			Remove data				/users/101
+
+🔹 Status Codes (Common Ones)
+Code	Meaning
+200 OK	
+201 Created	
+400 Bad Request	
+401 Unauthorized	
+403 Forbidden	
+404 Not Found	
+500 Server Error	
+
+🔹 Example Request & Response
+
+✅ Request:
+
+GET /products/5
+
+
+✅ Response (JSON):
+
+{
+  "id": 5,
+  "name": "Laptop",
+  "price": 45000
+}
+
+✅ One-Line Interview Answer
+
+REST is an architectural style that uses stateless, resource-based communication over HTTP using standard methods like GET,
+ POST, PUT, and DELETE.
+
+--------------------------------------------------------
+1️⃣ String vs StringBuffer vs StringBuilder
+Feature			String		StringBuffer		StringBuilder
+Mutability		Immutable	Mutable				Mutable
+Thread-Safe		✅ Yes		✅ Yes				❌ No
+Performance		Slow		Slow (due to sync)	Fast
+Usage			When data doesn’t change	Multi-thread environment	Single-thread environment
+
+2️⃣ Second Largest Element in Array
+
+✔ Yes, you can use Integer instead of int
+✔ Yes, can do it in one scan and two variables
+
+✅ Code:
+
+int first = Integer.MIN_VALUE, second = Integer.MIN_VALUE;
+for (int n : arr) {
+    if (n > first) {
+        second = first;
+        first = n;
+    } else if (n > second && n != first) {
+        second = n;
+    }
+}
+System.out.println("Second Largest: " + second);
+
+3️⃣ Class vs Object
+Class → Blueprint / template
+Object → Instance of class (real entity in memory)
+
+4️⃣ Constructor
+Special method used to initialize an object
+Same name as class
+
+No return type
+
+5️⃣ HashMap vs HashSet
+HashMap					HashSet
+Stores key-value pairs	Stores only unique values
+Allows one null key		Allows one null value
+Uses hashing for keys	Internally uses HashMap
+
+6️⃣ HashMap vs TreeMap
+HashMap			TreeMap
+No ordering		Sorted by keys
+Faster			Slower
+Uses hash table	Uses Red-Black Tree
+
+7️⃣ How HashMap works
+
+Computes hash of key → finds bucket
+Collision → uses LinkedList / TreeNode
+
+✅ O(1) lookup average
+
+8️⃣ OOPs Concepts
+
+9️⃣ Java 15 Features
+
+Sealed Classes (preview)
+Records
+Text Blocks
+Pattern Matching for instanceof
+
+🔟 String equals() vs ==
+==							equals()
+Compares reference address	Compares actual content
+
+Can we assign null?
+Type				Null allowed?
+int (primitive)		❌ No
+Integer (wrapper)	✅ Yes
+
+REST API Implementation
+Controller → @GetMapping @PostMapping
+Service → business logic
+Repository → DB operations
+JSON responses
+Stateless
+Uses HTTP verbs (GET/POST/PUT/DELETE)
+
+✅ Spring
+Dependency Injection
+Object dependencies are injected by Spring container.
+
+@Autowired vs Constructor
+
+If you define a constructor, Spring auto-injects dependencies
+@Autowired optional since Spring 4.3+ when class has one constructor
+
+MVC
+Component	Role
+Model		Business/Data
+View		UI
+Controller	Request handling
+
+✅ SQL
+Second Highest Salary
+SELECT MAX(salary) FROM employees
+WHERE salary < (SELECT MAX(salary) FROM employees);
+
+Joins
+Join	Purpose
+INNER	Common records only
+LEFT	All left + matched right
+RIGHT	All right + matched left
+FULL	All records
+CROSS	Cartesian product
+
+Create Table
+CREATE TABLE emp (
+ id INT,
+ name VARCHAR(30)
+);
+
+Add Primary Key
+ALTER TABLE emp
+ADD CONSTRAINT pk PRIMARY KEY(id);
+
+✅ Column must have unique + NOT NULL values
+❌ If duplicates exist → cannot make it primary key
+
+CHAR vs VARCHAR
+CHAR			VARCHAR
+Fixed length	Variable length
+Fast			Space efficient
+
+View
+Virtual table based on query
+No real storage (except materialized view)
+
+Index
+Speeds up search queries
+Slows insert/update/delete
+
+SQL vs MongoDB
+SQL				MongoDB
+Relational		NoSQL Document store
+Schema-based	Schema-less
+Joins supported	Embedding instead of joins
+ACID			High scalability
+
+Foreign Key
+Maintains referential integrity
+Ensures child row must match parent key
+====================================================================
+20-08-2025	Accelya
+✅ 1️⃣ Comparable vs Comparator
+Comparable				Comparator
+Present inside class	Separate class
+Only one sorting logic	Multiple sorting logics possible
+Method: compareTo()		Method: compare()
+java.lang package		java.util package
+
+Example:
+
+class A implements Comparable<A> {
+    public int compareTo(A o) { return this.id - o.id; }
+}
+
+Comparator<A> comp = (o1, o2) -> o1.name.compareTo(o2.name);
+
+✅ 2️⃣ String .equals() vs ==
+Operator	Compares
+==			reference (memory address)
+.equals()	value/content
+
+✅ 3️⃣ How to create Immutable Class
+
+Rules:
+Make class final
+Make fields private + final
+No setters
+Return new copy of mutable objects in getters
+
+✅ 4️⃣ How to implement Method Overriding
+
+Same method name
+Same parameters
+Inherited from parent class
+Runtime polymorphism
+
+✅ 5️⃣ How to prevent method from overriding
+
+Use final keyword:
+public final void show(){}
+
+
+Other ways:
+Make class final → no inheritance
+Make constructor private → no inheritance
+
+✅ 6️⃣ static Keyword
+
+Used for:
+
+Memory shared among all objects
+static method / variable / block
+Cannot access non-static variables directly.
+
+✅ 7️⃣ String.trim() Method
+Removes leading and trailing spaces only.
+
+✅ 8️⃣ String.intern() Method
+Stores string in String Constant Pool
+If already exists → returns reference of SCP version.
+
+✅ 9️⃣ How to Create a Thread
+
+Two ways:
+
+class A extends Thread {
+  public void run(){}
+}
+
+
+OR
+
+class A implements Runnable {
+  public void run(){}
+}
+
+✅ 🔟 Can we start a Thread twice?
+
+❌ No.
+
+thread.start(); // OK
+thread.start(); // IllegalThreadStateException
+
+✅ 1️⃣1️⃣ wait() vs sleep()
+wait()						sleep()
+Releases lock				Does NOT release lock
+Used for synchronization	Used for delay
+Belongs to Object class		Belongs to Thread class
+
+✅ 1️⃣2️⃣ Execution Flow Order
+1️⃣ static block  → loads class
+2️⃣ instance block → object creation
+3️⃣ constructor  → initialization
+
+✅ 1️⃣3️⃣ Access Modifiers
+Modifier	Scope
+private		same class
+default		same package
+protected	same package + subclass
+public		everywhere
+
+
+✅ SQL INTERVIEW QUESTIONS & ANSWERS
+✅ 1️⃣ Second Highest Salary Query
+
+Method 1:
+
+SELECT MAX(salary)
+FROM employee
+WHERE salary < (SELECT MAX(salary) FROM employee);
+
+
+Method 2 (with limit):
+
+SELECT DISTINCT salary
+FROM employee
+ORDER BY salary DESC
+LIMIT 1 OFFSET 1;
+
+✅ 2️⃣ Transaction — What happens on Success and Failure?
+Phase	Action
+Success	COMMIT → changes saved permanently
+Failure	ROLLBACK → undo all operations
+
+ACID properties followed:
+Atomicity ✅
+Consistency ✅
+Isolation ✅
+Durability ✅
+ACID ensures reliable transactions: either fully complete, keep data valid, run independently, and remain permanently saved 
+after commit.
+
+====================================================================
+16-09-2025	Transbank
+✅ Waterfall Model
+
+Waterfall is a linear and sequential software development model.
+Work flows stage by stage, and each phase must be completed before moving to the next.
+
+🔹 Phases in Waterfall
+
+Requirements
+Design
+Implementation (Development)
+Testing
+Deployment
+Maintenance
+
+🔹 Characteristics
+
+Plan everything upfront
+Changes are costly once development starts
+Best suited for projects with fixed and clear requirements
+
+✅ Advantages
+
+Simple to manage and understand
+Well-documented process
+Good for small teams and predictable environments
+
+❌ Disadvantages
+
+No early working product
+Customer feedback comes very late
+Not adaptable to changes during development
+
+✅ Agile Model
+
+Agile is an iterative and incremental model.
+Development is divided into small cycles called Sprints (usually 2–4 weeks).
+
+🔹 Key Practices
+
+Continuous customer involvement
+Working product delivered early and frequently
+Flexible to changing requirements
+
+🔹 Agile Frameworks
+Scrum (most popular)
+Kanban
+XP, SAFe, etc.
+
+✅ Advantages
+
+High customer satisfaction
+Early delivery of usable software
+Adapts to requirement changes
+Better collaboration within teams
+
+❌ Disadvantages
+
+Requires experienced and skilled team
+Hard to predict exact cost & timeline upfront
+Documentation may be less detailed
+
+🔁 Quick Comparison Table
+Factor					Waterfall					Agile
+Process					Sequential					Iterative & Incremental
+Flexibility				Rigid						Highly flexible
+Customer Involvement	Low							High
+Working Product			Delivered at the end		Delivered early & frequently
+Best For				Stable requirements			Changing requirements
+Risk					High						Lower
+
+📌 Real-world Usage
+Model	Examples
+Waterfall	Banking systems, Government projects, Hardware systems
+Agile	E-commerce, Mobile apps, Startups
+
+--------------------------------------------------------------
+
+✅ What is JWT Token?
+
+JWT (JSON Web Token) is a compact, secure token format used to share information between a client and server.
+It is mainly used for authentication and authorization in web applications.
+
+When a user logs in successfully, the server generates a JWT and sends it to the client.
+The client then sends this token with every request to access protected resources.
+
+🔐 Key Features of JWT
+
+✔ Stateless — Server does not store session data
+✔ Signed — ensures data integrity (usually using HS256 or RS256)
+✔ Compact — easily sent in headers, URL or localStorage
+
+📌 Structure of a JWT
+
+JWT has three parts separated by dots:
+
+Header.Payload.Signature
+
+
+Example:
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.
+eyJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiJ9.
+abc123xyz890signature
+
+🔹 Header
+Contains algorithm & token type (JWT)
+
+🔹 Payload
+Contains user data (claims) like:
+id, email, role, expiry time
+
+🔹 Signature
+Used to verify that the token is not altered
+
+🔁 How JWT Works (Flow)
+
+1️⃣ User logs in with username/password
+2️⃣ Server verifies and generates JWT signed with a secret key
+3️⃣ Client stores token (ex: localStorage / cookies)
+4️⃣ Client sends token in Authorization header:
+
+Authorization: Bearer <token>
+
+
+5️⃣ Server verifies signature and allows access
+
+✅ Why is JWT used?
+Benefit					Description
+Stateless				No session storage on server
+Secure					Signed tokens prevent tampering
+Fast					Less database calls
+Cross-domain capable	Used widely in modern web apps
+
+📌 Example Usage
+Login authentication in Angular/React + Spring Boot/Node.js apps
+API access control (role/permission-based)
+Single Sign-On (SSO)
+
+No session storage on server means the server does not maintain user authentication state.
+The JWT itself contains all necessary information, so the server only verifies the token without storing session details.
+---------------------------------------------------------------------------
+
+✅ Key Points of REST API
+
+1️⃣ Stateless
+Server does not store client state
+Every request must contain all necessary information
+
+2️⃣ Client-Server Architecture
+Client and server are independent
+Client handles UI, server handles data & logic
+
+3️⃣ Resource-Based
+Everything is treated as a resource (User, Product, Order, etc.)
+Each resource is identified by a URI
+Example: /users/101
+
+4️⃣ Uses Standard HTTP Methods
+Method	Purpose
+GET		Retrieve resource
+POST	Create resource
+PUT		Update resource (complete)
+PATCH	Partially update resource
+DELETE	Remove resource
+
+5️⃣ Uniform Interface
+Consistent rules to interact with resources
+Predictable and easy-to-understand API structure
+
+6️⃣ Representation in Multiple Formats
+JSON (most common), XML, YAML, etc.
+
+7️⃣ Stateless Communication
+No client data stored on server (important point repeated because crucial)
+
+8️⃣ Cacheable
+Responses can be stored in cache to improve performance
+
+9️⃣ Layered System
+You can have multiple layers (Load balancer, authentication layer, etc.)
+Client should not know backend complexity
+
+10️⃣ Code On Demand (Optional)
+Server can send executable code (rarely used)
+
+🔁 REST API vs SOAP (Quick Difference)
+REST			SOAP
+Lightweight		Heavy
+Mostly JSON		XML only
+Fast			Slower
+Less secure		More secure (WS-Security)
+Easy to scale	Complex
+
+📌 One-Line Interview Definition
+
+“REST is an architectural style for building scalable, stateless APIs using standard HTTP methods and resource-based 
+communication.”
+-------------------------------------------------------------------------
+
+✅ Java Memory Model (JMM)
+
+The Java Memory Model defines how threads interact through memory and ensures visibility, ordering, and atomicity of shared
+ variables.
+Java Memory Model defines how threads read/write shared variables using working memory and main memory.
+Due to caching, threads may not see latest updates → causing visibility and ordering issues.
+JMM provides rules like happens-before and tools like volatile, synchronized, locks, and atomic classes to ensure atomicity, 
+visibility, and ordering in concurrent programs.
+----------------------------------------------------------------
+
+“If you have a latency of 5 ms, how will you debug it?”
+
+You never start debugging randomly — you isolate where the latency is coming from:
+
+✅ Step-by-Step Debugging Strategy
+1️⃣ Measure & Identify Where the Delay Is
+
+Break latency into layers:
+
+Layer					Tool							What to check
+Client (browser/app)	DevTools, FCP, DOM timings		UI rendering delay?
+Network					Ping, traceroute, Wireshark		Slow hops? Packet loss?
+API/Backend				Application logs, APM tools		Execution bottlenecks?
+Database				Query profiler, slow logs		Index issues? Large scans?
+External Services		Logs & latency from APIs		Dependency delays?
+Infrastructure			CPU, Memory, GC logs			Resource starvation?
+
+👉 First detect where those 5ms come from.
+Is it network? backend? database?
+
+2️⃣ Instrumentation & Logging
+
+Use timestamps for each step:
+
+T1: Request in
+T2: Business logic start
+T3: DB query start
+T4: DB query end
+T5: Response send
+
+
+Then calculate latency segments.
+
+✅ Example:
+
+Network = 1ms
+
+Business logic = 2ms
+
+DB Query = 2ms
+= Total 5ms ✅
+
+Now you know exactly what to optimize.
+
+3️⃣ Common Sources & Fixes
+Cause					Diagnosis				Fix
+DB query slow			EXPLAIN plan			Add index, caching
+Too many service calls	Trace logs / APM		Batch calls, remove unnecessary ones
+Serialization cost		Profiling tools			Optimize JSON/XML parsing
+Thread blocking			Thread dump analysis	Async processing
+GC pause				GC logs					Tune heap, switch GC algorithm
+Network overhead		Trace route				Reduce payloads, compression
+4️⃣ Use Performance Tools
+
+📌 Typical Tools:
+
+APM: New Relic, Datadog, AppDynamics
+Profilers: JMC, VisualVM for Java
+Network: Wireshark, cURL, Ping
+DB Profilers: MySQL EXPLAIN, PG analyze
+Logging: ELK stack, Jaeger (distributed tracing)
+Distributed tracing is especially powerful in microservices ✅
+
+5️⃣ Reproduce Under Load
+
+Test with similar traffic:
+JMeter
+Locust
+k6
+
+Latencies may only appear when system is stressed!
+
+🔥 Short Interview Answer (20 seconds)
+
+First, measure where the 5ms is coming from by breaking latency into client, network, backend, database, and external services.
+Use tracing and logging to isolate delays, then profile the slowest component.
+Fix issues like inefficient DB queries, network bottlenecks, serialization overhead, or thread blocking depending on root cause.
+--------------------------------------------------------------------
+
+✅ How to Upgrade Angular Version with Zero Downtime (Simple Explanation)
+🔹 Problem:
+
+If you upgrade directly on production → Website may go down temporarily.
+
+So we use a safe upgrade + deployment strategy.
+
+✅ Simple 4-Step Method
+✅ Step 1️⃣ — Upgrade in a Separate Branch
+
+Do NOT touch the live production code.
+Create a new branch and upgrade there:
+ng update @angular/cli @angular/core
+
+
+Fix errors and test completely.
+
+👉 Production still running normally.
+
+✅ Step 2️⃣ — Deploy New Version on Separate Server
+Deploy the upgraded version to a staging/backup environment
+Test live functionality with real API
+👉 Still no impact to real users.
+
+✅ Step 3️⃣ — Switch Traffic Gradually
+
+Use Load Balancer / Server Routing:
+
+Server	Status
+Old Angular Version	Serving users
+New Angular Version	Tested and ready
+
+✅ Slowly move users to new version
+✅ If something breaks → switch back instantly
+
+No downtime ✅
+Rollback is safe ✅
+
+✅ Step 4️⃣ — Browser Cache Safety (Very Important)
+
+Angular build creates files with different hash names:
+
+main.abc123.js  → Old users still using this
+main.xyz456.js  → New users get this
+
+
+✔ Both versions work at the same time
+✔ Browser doesn’t break
+✔ No blank screen issue
+
+✅ One-Line Interview Answer
+
+“I upgrade Angular on a separate branch and deploy the upgraded build to a standby server. Using a load balancer, I gradually 
+shift user traffic to the new version. Angular’s hashed files ensure cache-safe switching, so users never experience downtime.”
+
+======================================================================
+30-09-2025	Sharekhan , Kanjur
+✅ What is HTTP?
+
+A request-response protocol — the client must request every time it needs data.
+✔ Good for REST APIs
+✔ Stateless connection
+❌ Not suitable for real-time communication
+
+Example:
+Client -> “Give me data”
+Server -> “Here is data”
+Connection ends
+
+✅ What is WebSocket?
+
+A persistent, full-duplex connection where both client & server can send data anytime.
+✔ Best for real-time apps
+✔ Low latency
+✔ Server can push updates
+
+Example:
+
+Client connects once
+Both sides keep exchanging messages continuously
+
+🛠 When to Use?
+Use Case								Recommended
+CRUD operations							✅ HTTP
+E-commerce product APIs					✅ HTTP
+Live chat, stock market, notifications	✅ WebSocket
+Multiplayer games						✅ WebSocket
+IoT real-time updates					✅ WebSocket
+
+🔐 Security
+HTTP				WebSocket
+HTTPS (TLS)			WSS (WebSocket Secure)
+
+✅ Summary Statement for Interview
+
+HTTP is a request-response protocol ideal for standard web services, while WebSocket provides persistent full-duplex 
+communication ideal for real-time applications like chat, gaming, notifications, and live dashboards.
+
+----------------------------------------------------------------------
+
+✅ What is TCP?
+
+TCP (Transmission Control Protocol) is a connection-oriented, reliable transport layer protocol that ensures error-free,
+ ordered, and complete delivery of data between devices in a network.
+
+Think of TCP like a phone call 📞
+— connection established → talk → end call
+
+TCP is a connection-oriented, reliable transport protocol that guarantees complete and ordered delivery of data using 
+mechanisms like three-way handshake, acknowledgments, flow control, and retransmissions.
+================================================================
+07-10-2025	Nimbal, Andheri, Face to face
+
+YES, in most cases increasing the number of columns increases query execution time, but HOW MUCH depends on:
+
+✅ Row size (more columns = more data to transfer from disk → memory → network)
+✅ Type of columns (TEXT/BLOB are heavier than INT/VARCHAR)
+✅ Index usage (wider rows = fewer rows fit in a data page → more I/O)
+✅ SELECT pattern (SELECT * vs needed columns)
+
+But sometimes the increase is very small if:
+Columns are lightweight and efficiently indexed
+The query is already optimized
+
+✅ Why Time Increases?
+Reason						Explanation
+More Data Pages				Fewer rows fit per page → more disk reads
+More Network Transfer		DB needs to send more bytes to application
+Index Efficiency drops		Large rows reduce index performance
+Extra CPU for processing	Sorting, filtering over bigger data
+
+✅ How to Reduce Query Time
+✅ 1️⃣ Avoid SELECT *
+
+Fetch only required columns
+
+SELECT id, name FROM users;   -- Good
+SELECT * FROM users;          -- Slower
+
+✅ 2️⃣ Add Proper Indexes
+
+Index columns used in:
+✔ WHERE
+✔ JOIN
+✔ ORDER BY
+✔ GROUP BY
+
+CREATE INDEX idx_salary ON employees(salary);
+
+
+But avoid indexing huge columns (TEXT/BLOB).
+
+✅ 3️⃣ Pagination
+
+Fetch limited data
+
+SELECT id, name
+FROM users
+LIMIT 50 OFFSET 0;
+
+✅ 4️⃣ Normalization (Split too-wide tables)
+
+If table has many columns but rarely used together → separate tables
+
+Example:
+
+User basic info → Table A
+
+User metadata (large text, images) → Table B
+
+Join only when needed
+
+✅ 5️⃣ Use Covering Index
+
+Index includes all required columns → query served directly from index
+
+CREATE INDEX idx_email_status ON users(email, status);
+
+✅ 6️⃣ Remove Unnecessary Columns
+
+Especially:
+LONGTEXT, BLOB, JSON
+
+Store large items in:
+Separate table
+External file storage
+
+✅ 7️⃣ Proper Data Types
+
+Use smallest possible data types:
+
+Bad							Good
+BIGINT(20) for ID			INT
+TEXT for small strings		VARCHAR
+DOUBLE for money			DECIMAL
+
+✅ 8️⃣ Enable Caching
+
+✔ MySQL query cache (if MySQL version supports)
+✔ App-side caching (Redis / KeyDB)
+
+📌 Summary
+Action							Performance Impact
+Increase columns				⬆ Slower
+Fetch only needed columns		✅ Faster
+Proper indexing					✅ Much faster
+Pagination						✅ Faster
+Normalize heavy columns			✅ Faster
+
+✅ Interview Friendly Answer
+
+Yes, increasing the number of columns usually increases query execution time because MySQL has to read and transmit more data.
+ To reduce it, avoid SELECT *, use proper indexing, pagination, normalization, data type optimization, and caching.
+==============================================================================
+12-10-2025	Neosoft
+✅ Optional.of() vs Optional.ofNullable()
+Method						Accepts null?	Behavior if value is null		When to use
+Optional.of(value)			❌ No			Throws NullPointerException		When you're sure value is never null
+Optional.ofNullable(value)	✅ Yes			Returns Optional.empty()		When value may be null
+
+----------------------------------------------------------------
+
+✅ What is @Transactional?
+
+It ensures that a group of database operations execute as a single unit of work.
+
+If all operations succeed → commit
+If any operation fails → rollback entire transaction
+
+✅ Where can we use it?
+
+On service layer methods (recommended)
+On class level (applies to all public methods)
+
+@Transactional manages transactions automatically, ensuring all DB operations succeed or fail together. It provides features 
+like rollback, propagation, and isolation to handle concurrency and data integrity in multi-threaded environments.
+
+------------------------------------------------------------------
+
+✅ Singleton Design Pattern (Java)
+
+A creational design pattern that ensures:
+
+1️⃣ Only one instance of a class exists in the whole application
+2️⃣ Global access point to that instance
+
+Quick Interview Answer ✅
+
+“Singleton pattern ensures only one instance of a class is created and provides global access to it. It is commonly used for
+ shared resources like DB connections and logging. Thread-safe implementations use double-checked locking with volatile or 
+ Enum-based Singleton which is the most robust option.”
+ 
+ ✅ Enum Singleton Example
+public enum DatabaseConnection {
+
+    INSTANCE; // Single instance
+
+    private String connection;
+
+    // Constructor acts like initialization block
+    DatabaseConnection() {
+        connection = "Connected to DB";
+    }
+
+    public String getConnection() {
+        return connection;
+    }
+
+    public void query(String sql) {
+        System.out.println("Executing: " + sql);
+    }
+}
+
+✅ How to Use It
+public class Main {
+    public static void main(String[] args) {
+        DatabaseConnection db = DatabaseConnection.INSTANCE;
+
+        System.out.println(db.getConnection());
+        db.query("SELECT * FROM users");
+    }
+}
+
+✅ Why Enum Singleton is Best
+Benefit							Reason
+Thread-safe						Enum handles it automatically
+Prevents reflection attack		Reflection cannot create another enum instance
+Serialization safe				No special readResolve() logic required
+Very simple						No complex locking or lazy code
+Quick Interview Line ✅
+
+“Enum-based Singleton is the most robust implementation in Java as it prevents multiple instances even in cases of reflection 
+and serialization, while ensuring thread-safety automatically.”
+
+✅ Bill Pugh (Inner Static Helper Class) ✅
+public class Singleton {
+    private Singleton() {}
+
+    private static class Holder {
+        private static final Singleton INSTANCE = new Singleton();
+    }
+
+    public static Singleton getInstance() {
+        return Holder.INSTANCE;
+    }
+}
+
+✔ Thread-safe
+✔ Lazy loading
+✔ No synchronization overhead
+✔ Very clean code
+
+Enum Singleton is the best & recommended by Joshua Bloch (creator of Java Collections)
+Except when you need lazy initialization — then Bill Pugh is the best.
+
+======================================================================================
+29-10-2025	Godrej Capital
+
+✅ Aggregation (Has-A Relationship)
+
+🔹 Weak relationship between two objects
+🔹 One object can exist independently from the other
+🔹 If the container object is destroyed, the contained object can still exist
+
+📌 Example: A Department has Teachers. Even if the department is deleted, teachers still exist.
+
+class Teacher {
+    String name;
+    
+    Teacher(String name) {
+        this.name = name;
+    }
+}
+
+class Department {
+    String deptName;
+    Teacher teacher; // Aggregation
+    
+    Department(String deptName, Teacher teacher) {
+        this.deptName = deptName;
+        this.teacher = teacher;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Teacher t = new Teacher("Sonali");
+        Department dept = new Department("Computer", t);
+
+        // Teacher can exist without Department
+    }
+}
+
+✅ Composition (Strong Has-A Relationship)
+
+🔹 Strong relationship
+🔹 The part cannot exist without the whole
+🔹 If the container object is destroyed → contained object also destroyed
+
+📌 Example: A House has Rooms. Rooms cannot exist without a House.
+
+class Room {
+    String roomType;
+
+    Room(String roomType) {
+        this.roomType = roomType;
+    }
+}
+
+class House {
+    private Room room; // Composition
+    
+    House() {
+        room = new Room("Bedroom");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        House house = new House();
+        // Room automatically destroyed when House is destroyed
+    }
+}
+
+🆚 Quick Difference
+Feature				Aggregation			Composition
+Dependency			Weak				Strong
+Lifetime			Independent			Dependent
+Example				Teacher–Department	Room–House
+Represented in UML	Hollow diamond ◇	Filled diamond ◆
+
+🔥 Interview-friendly Definition
+Aggregation: A has-a relationship where the child can exist without the parent.
+Composition: A strong has-a relationship where the child cannot exist without the parent.
+
+-------------------------------------------------------------------------
+
+✅ What is Deadlock?
+
+A deadlock is a situation in concurrent programming where two or more threads are permanently blocked, each waiting for a
+ resource that the other thread holds.
+
+📌 In simple words:
+Thread A waits for Thread B’s resource, and Thread B waits for Thread A’s resource → both are stuck forever.
+
+🔁 Classic Deadlock Example in Java
+class A {}
+class B {}
+
+public class DeadlockDemo {
+    public static void main(String[] args) {
+        A a = new A();
+        B b = new B();
+
+        Thread t1 = new Thread(() -> {
+            synchronized (a) {
+                System.out.println("Thread 1 locked A");
+
+                try { Thread.sleep(100); } catch (Exception e) {}
+
+                synchronized (b) {
+                    System.out.println("Thread 1 locked B");
+                }
+            }
+        });
+
+        Thread t2 = new Thread(() -> {
+            synchronized (b) {
+                System.out.println("Thread 2 locked B");
+
+                try { Thread.sleep(100); } catch (Exception e) {}
+
+                synchronized (a) {
+                    System.out.println("Thread 2 locked A");
+                }
+            }
+        });
+
+        t1.start();
+        t2.start();
+    }
+}
+
+
+📌 Thread-1 locks A then waits for B
+📌 Thread-2 locks B then waits for A
+
+A deadlock can occur if all 4 exists:
+
+1️⃣ Mutual Exclusion – only one thread can access a resource
+2️⃣ Hold and Wait – thread holding some resource waits for another
+3️⃣ No Preemption – resource cannot be forcibly taken
+4️⃣ Circular Wait – circular chain of threads waiting for each other
+
+Breaking even one of these avoids deadlock ✅
+
+🔒 How to Prevent / Avoid Deadlock
+Strategy										Description
+✅ Acquire locks in fixed/global order			All threads lock resources in the same order
+✅ Use tryLock() with timeout (ReentrantLock)	Gives up if lock isn’t available
+✅ Avoid unnecessary locks						Reduce locking scope using smaller synchronized blocks
+✅ Use Lock Timeout								Break the deadlock cycle
+✅ Thread communication							Use wait/notify to avoid waiting conditions
+✅ Immutability									If objects are immutable → no lock needed
+✅ Example: 										Fix Deadlock using lock ordering
+
+class A {}
+class B {}
+
+public class AvoidDeadlock {
+    private final Object lock1 = new Object();
+    private final Object lock2 = new Object();
+
+    public void method1() {
+        synchronized (lock1) {
+            synchronized (lock2) {
+                System.out.println("method1 executed");
+            }
+        }
+    }
+
+    public void method2() {
+        synchronized (lock1) { // same order: lock1 → lock2
+            synchronized (lock2) {
+                System.out.println("method2 executed");
+            }
+        }
+    }
+}
+
+
+➡ Both threads lock resources in same order, so no deadlock ✅
+
+🔥 Interview One-Line Answer
+
+Deadlock is a situation where two or more threads are blocked forever, each waiting for a resource that the other thread holds.
+Avoid by using lock ordering, lock timeout, tryLock, minimizing shared resources, and thread communication.
+
+---------------------------------------------------------------
+
+volatile guarantees visibility of changes across threads but not atomicity.
+Atomic classes guarantee atomic compound operations like increment, using lock-free CAS mechanism.
+
+--------------------------------------------------------------------
+
+✅ SOLID Design Principles
+
+These are the top 5 object-oriented design principles:
+
+Principle	Full Form							Meaning
+S			Single Responsibility Principle		One class → one responsibility
+O			Open/Closed Principle				Open for extension, closed for modification
+L			Liskov Substitution Principle		Subclasses should replace parent class without breaking behavior
+I			Interface Segregation Principle		Many small interfaces > one large interface
+D			Dependency Inversion Principle		Depend on abstractions, not concrete classes
+
+🔹 1️⃣ Single Responsibility Principle (SRP)
+
+📌 One class = One responsibility = One reason to change
+
+Real-World Example:
+🛍 E-commerce:
+
+Order calculation should not handle invoice printing
+
+class OrderCalculator {
+    public double calculateTotal() { return 0.0; }
+}
+
+class InvoicePrinter {
+    public void printInvoice() {}
+}
+
+
+✅ Modifying invoice format won’t affect calculation
+
+📌 Interview Question:
+➡ How would you refactor a God class with too many responsibilities?
+
+🔹 2️⃣ Open/Closed Principle (OCP)
+
+📌 Software entities should be:
+✅ Open for Extension
+❌ Closed for Modification
+
+Real-World Example
+Payment methods: UPI → now add Card, Wallet without changing old code
+
+interface Payment {
+    void pay(int amount);
+}
+
+class UpiPayment implements Payment {
+    public void pay(int amount) {}
+}
+
+class CardPayment implements Payment {
+    public void pay(int amount) {}
+}
+
+
+✅ Add new payment types without touching existing code
+
+📌 Interview Question:
+➡ How do you add new shapes in a drawing app without changing existing classes?
+
+🔹 3️⃣ Liskov Substitution Principle (LSP)
+
+📌 Subclass should behave like parent without breaking functionality
+
+❌ Bad Example:
+Square extending Rectangle (width vs height issue)
+
+✅ Good Example:
+Shape hierarchy that preserves behavior
+
+interface Bird {
+    void fly();
+}
+
+class Sparrow implements Bird {
+    public void fly() {}
+}
+
+// Ostrich should NOT implement Bird.fly()
+
+
+📌 Interview Question:
+➡ When does inheritance violate LSP?
+
+🔹 4️⃣ Interface Segregation Principle (ISP)
+
+📌 No class should be forced to implement unnecessary methods
+❌ Avoid fat interfaces
+
+interface Printer {
+    void print();
+}
+
+interface Scanner {
+    void scan();
+}
+
+class BasicPrinter implements Printer {
+    public void print() {}
+}
+
+
+✅ Devices only implement what they actually support
+
+📌 Interview Question:
+➡ Why do microservices follow small, focused APIs?
+
+🔹 5️⃣ Dependency Inversion Principle (DIP)
+
+📌 High-level modules should depend on abstractions not concrete classes
+📌 Achieved via constructor injection
+
+interface NotificationService {
+    void send(String message);
+}
+
+class EmailService implements NotificationService {
+    public void send(String message) {}
+}
+
+class NotificationClient {
+    private NotificationService service;
+
+    public NotificationClient(NotificationService service) {
+        this.service = service;
+    }
+}
+
+
+✅ Easily switch to SMS, Push Notifications later
+
+📌 Interview Question:
+➡ How does Spring Boot support DIP automatically?
+
+--------------------------------------------------------------------------------
+
+✅ Angular Directives
+
+A directive is a class that can modify the structure or behavior of the DOM (HTML).
+
+📌 In short:
+
+Directives tell Angular what to do with a specific element in the DOM.
+
+✅ Types of Directives in Angular
+Type						What it does										Example
+Component Directive			Has a template, used to create UI elements			@Component
+Structural Directive		Changes DOM layout (add/remove elements)			*ngIf, *ngFor, *ngSwitch
+Attribute Directive			Changes appearance/behavior of existing element		ngClass, ngStyle
+--------------------------------------------------------------------------------
+
+✅ Angular App Optimization Techniques
+✅ 1️⃣ Lazy Loading Modules
+
+Load feature modules only when needed → reduces initial bundle size
+
+{
+  path: 'products',
+  loadChildren: () => import('./products/products.module').then(m => m.ProductsModule)
+}
+
+✅ 2️⃣ OnPush Change Detection Strategy
+
+Angular checks component updates only when inputs change
+instead of checking the whole tree
+
+@Component({
+  selector: 'app-demo',
+  changeDetection: ChangeDetectionStrategy.OnPush
+})
+
+
+✅ Improves performance especially in large apps
+
+✅ 3️⃣ Use trackBy in *ngFor
+
+Prevents re-rendering entire list when only one item changes
+
+<li *ngFor="let item of items; trackBy: trackById">
+  {{ item.name }}
+</li>
+
+trackById(index: number, item: any) {
+  return item.id;
+}
+
+✅ 4️⃣ Enable Production Mode + AOT
+ng build --prod
+
+
+✅ Tree shaking
+✅ Minification
+✅ Faster execution
+
+✅ 5️⃣ Avoid Memory Leaks
+
+Unsubscribe from Observables
+
+ngOnDestroy() {
+  this.sub.unsubscribe();
+}
+
+
+✅ Use async pipe wherever possible
+
+{{ data$ | async }}
+
+✅ 6️⃣ Serve Images in Optimized Way
+
+✔ Lazy load images
+✔ Use compressed images
+✔ Use WebP format for best performance
+
+✅ 7️⃣ Use Pure Pipes
+
+Avoid recalculating values same input
+
+@Pipe({
+  name: 'custom',
+  pure: true
+})
+
+✅ 8️⃣ Avoid Functions Inside Templates
+
+❌ Functions in HTML run on every change detection cycle
+
+✅ Use getters / pre-computed variables
+
+✅ 9️⃣ Preloading Strategy for Faster Navigation
+RouterModule.forRoot(routes, {
+  preloadingStrategy: PreloadAllModules
+});
+
+
+✅ Good balance between performance & usability
+
+✅ 🔟 Debounce User Inputs
+
+Reduces unnecessary API calls while typing
+
+searchControl.valueChanges
+  .pipe(debounceTime(300))
+  .subscribe(...)
+
+✅ 1️⃣1️⃣ Server-Side Rendering (SSR)
+
+Use Angular Universal
+✅ Faster first content paint
+✅ SEO improvement
+
+🚀 Bonus Performance Tips
+Area					Solution
+Large data				Virtual scrolling
+HTTP requests			Caching with RxJS
+Styles					Avoid deep CSS selectors
+Reused components		Use trackBy / OnPush
+Dependency injections	Tree-shakable providers
+----------------------------------------------------------------------------------
+
+✅ What is a User?
+
+A User is an identity that represents a real person or system accessing an application.
+
+✔ Has a unique username / email
+✔ Has login credentials (password, token, OAuth, etc.)
+✔ Actions are tracked for security & auditing
+
+Example:
+Sonali logs in → She is a User
+A background service accessing API → System user
+
+✅ What is a Role?
+A Role defines a set of permissions (what actions a user can perform).
+
+✔ Used for Authorization
+✔ One role → many users
+✔ One user can have multiple roles
+
+Examples:
+
+admin → can create, update, delete data
+user → can only read data
+manager → approve data
+
+✅ Roles abstract permissions, so we do not assign privileges one by one to every user.
+
+🔁 Example Comparison
+Feature	User					Role
+Who?	Actual person/system	Group of permissions
+Purpose	Identity				Authorization
+Count	Many users				Limited roles
+
+👀 Quick example in an app:
+
+User: Sonali
+Role: ADMIN
+Permissions: Add products, Delete orders
+
+🌐 What is IAM (Identity and Access Management)?
+
+IAM is a framework/service used to manage:
+✅ Who can access
+✅ What they can access
+✅ How they authenticate
+✅ What actions they are allowed to do
+
+It covers:
+
+Authentication → Who are you?
+
+Authorization → What can you do?
+
+Used in:
+
+AWS IAM
+Azure AD
+Google IAM
+Keycloak, Okta, Auth0
+
+
+User = Identity of a person/system accessing an application.
+Role = Group of permissions that controls what a user can do.
+IAM = System to authenticate users and authorize access securely.
