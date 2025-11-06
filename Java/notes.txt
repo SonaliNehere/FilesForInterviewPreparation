@@ -1,1 +1,18 @@
+1. Arrays.stream(arr) doesn’t work for a char[] array.
+That method is only overloaded for:
+int[]
+long[]
+double[]
+T[] (object arrays)
+Since char is a primitive type, you can’t use Arrays.stream(char[]) directly.
+
+2. The s.chars() method returns an IntStream.
+When you cast inside map, you’re still producing an IntStream.
+To get a stream of characters, use mapToObj() instead.
+s.chars() → gives an IntStream of Unicode values.
+.mapToObj(c -> (char)c) → converts each code into a Character.
+.filter(c -> s.indexOf(c) == s.lastIndexOf(c)) → keeps only unique characters.
+.findFirst() → picks the first such character in the order they appear.
+.ifPresent(System.out::println) → prints it safely (avoids NoSuchElementException).
+
 
