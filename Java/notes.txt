@@ -23,3 +23,5 @@ Recommended for modern code	❌	    ✅
 ✅ Bonus:
 stripLeading() → removes spaces only at the start
 stripTrailing() → removes spaces only at the end
+
+5. Arrays.toString(array)
