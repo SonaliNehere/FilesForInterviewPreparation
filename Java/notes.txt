@@ -15,4 +15,11 @@ s.chars() → gives an IntStream of Unicode values.
 .findFirst() → picks the first such character in the order they appear.
 .ifPresent(System.out::println) → prints it safely (avoids NoSuchElementException).
 
-
+4. Feature	trim()	                strip()
+Introduced   in	Java 1.0	          Java 11
+Removes	    Only ASCII spaces	      Unicode + ASCII spaces
+Uses	      Character code ≤ 32	    Character.isWhitespace()
+Recommended for modern code	❌	    ✅
+✅ Bonus:
+stripLeading() → removes spaces only at the start
+stripTrailing() → removes spaces only at the end
