@@ -1,3 +1,4 @@
+
 20-08-2025	Starthealth
 ✅ What is REST?
 
@@ -836,7 +837,7 @@ Normalize heavy columns			✅ Faster
 Yes, increasing the number of columns usually increases query execution time because MySQL has to read and transmit more data.
  To reduce it, avoid SELECT *, use proper indexing, pagination, normalization, data type optimization, and caching.
 ==============================================================================
-12-10-2025	Neosoft
+11-10-2025	Neosoft
 ✅ Optional.of() vs Optional.ofNullable()
 Method						Accepts null?	Behavior if value is null		When to use
 Optional.of(value)			❌ No			Throws NullPointerException		When you're sure value is never null
@@ -1451,3 +1452,229 @@ Keycloak, Okta, Auth0
 User = Identity of a person/system accessing an application.
 Role = Group of permissions that controls what a user can do.
 IAM = System to authenticate users and authorize access securely.
+
+IAM stands for Identity and Access Management.
+It’s a framework of policies, processes, and technologies that ensures the right people have the right access to the right
+ resources at the right time — securely.
+ 
+Concept			Meaning							Example
+Identity		Represents a user or service.	Sonali Nehere (employee)
+Authentication	Proving your identity.			Login using password, OTP, fingerprint
+Authorization	Granting permissions.			Sonali can read data but not delete it
+Access Control	Enforcing rules.				Admins can manage users, developers can deploy apps
+
+=================================================================
+
+09-11-2025	Autoplant, ghansoli
+
+⚙️ Java 8 Features
+Lambda Expressions: Enables functional programming; shorter syntax for anonymous functions.
+Streams API: For processing collections declaratively (map, filter, reduce).
+Optional: Avoids NullPointerException.
+Default & Static Methods: In interfaces for backward compatibility.
+Date & Time API: Better date handling (LocalDate, LocalDateTime).
+Functional Interfaces: Interfaces with a single abstract method (e.g., Predicate, Function).
+
+------------------------------------------------------
+⚖️ How to Achieve Scalability
+
+Horizontal Scaling: Add more servers (load balanced).
+Vertical Scaling: Increase server resources (CPU, RAM).
+Stateless Microservices: So requests can hit any instance.
+Caching (Redis, KeyDB): Reduce DB load.
+Message Queues (Kafka, RabbitMQ): Handle async load.
+Database Sharding & Replication.
+
+---------------------------------------------------------
+
+🚀 Main Stages of CI/CD
+
+Code Commit → Developer pushes code.
+Build → Compile, run unit tests.
+Test → Integration/Regression tests.
+Deploy → Auto-deploy to staging/production.
+Monitor → Track logs, performance.
+(Tools: Jenkins, GitLab CI, GitHub Actions)
+
+-------------------------------------------------------------
+🌐 Load Balancer
+
+Distributes incoming traffic across multiple servers for scalability and fault tolerance.
+Types:
+Round Robin, Least Connections, IP Hash.
+Tools: NGINX, AWS ELB, HAProxy.
+
+-----------------------------------------------------------------
+🔒 How to Secure Microservices
+
+JWT Authentication.
+OAuth2.0 or API Gateway authentication.
+HTTPS/TLS encryption.
+Spring Security filters.
+Role-based Access Control (RBAC).
+Input Validation & CSRF Protection.
+
+--------------------------------------------------------------------
+
+📄 Pagination in Backend
+Use SQL LIMIT & OFFSET:
+SELECT * FROM employees LIMIT 10 OFFSET 20;
+
+
+In Spring Data JPA:
+
+Page<Employee> page = repo.findAll(PageRequest.of(pageNo, pageSize));
+
+---------------------------------------------------------------------------
+⚡ How to Optimize SQL Queries
+
+Use indexes on filter columns.
+Avoid SELECT *.
+Use joins carefully, avoid unnecessary subqueries.
+Use query plans (EXPLAIN).
+Apply proper normalization first.
+Cache frequently used results.
+
+-----------------------------------------------------------------------------
+🧩 Normalization vs Denormalization
+Normalization: Split data to remove redundancy → reduces storage, improves integrity.
+Denormalization: Combine tables for faster reads → improves performance at cost of redundancy.
+
+------------------------------------------------------------------------------------
+🧠 First Non-Repeating Character using Streams
+String s = "swiss";
+Character c = s.chars()
+    .mapToObj(ch -> (char) ch)
+    .collect(Collectors.groupingBy(Function.identity(), LinkedHashMap::new, Collectors.counting()))
+    .entrySet().stream()
+    .filter(e -> e.getValue() == 1)
+    .map(Map.Entry::getKey)
+    .findFirst().orElse(null);
+System.out.println(c);
+
+--------------------------------------------------------------------------------------
+⚖️ equals() vs ==
+
+==: Compares memory reference.
+equals(): Compares values/content (if overridden).
+
+---------------------------------------------------------------------------------
+⏱️ How to Find Delay in Programs
+
+Use System.nanoTime() or Instant.now() before and after code block:
+long start = System.nanoTime();
+// code
+long timeTaken = System.nanoTime() - start;
+
+------------------------------------------------------------------------------------
+🧱 HashMap Internal Working
+Uses array of buckets + linked list/tree.
+Key → hashCode() → bucket index.
+If collision: stored in linked list or red-black tree (Java 8+).
+Time: O(1) avg, O(log n) worst.
+
+-------------------------------------------------------------------------------
+⚔️ HashMap vs ConcurrentHashMap
+Feature				HashMap						ConcurrentHashMap
+Thread-Safe			❌							✅
+Synchronization		None						Uses segmented locking
+Performance			Faster (single-threaded)	Safe (multi-threaded)
+Null keys/values	1 null key					No null keys/values
+
+----------------------------------------------------------------------------------
+📨 Communication Between Microservices
+
+Sync: REST (HTTP), gRPC.
+Async: Kafka, RabbitMQ, ActiveMQ.
+Service Discovery: Eureka, Consul.
+
+----------------------------------------------------------------------------------
+💡 @Transactional
+Manages transaction boundaries automatically.
+Rolls back on runtime exceptions.
+
+@Transactional
+public void updateData() { ... }
+
+-----------------------------------------------------------------------------
+💾 SQL to Find Duplicate Employee Names
+SELECT name, COUNT(*) 
+FROM employees
+GROUP BY name
+HAVING COUNT(*) > 1;
+
+-------------------------------------------------------------------------------
+🔍 JPA vs Hibernate
+Feature	JPA					Hibernate
+Type	Specification		Implementation
+Purpose	Defines standard	Implements it
+Example	@Entity, @Query		Session, Criteria API
+
+--------------------------------------------------------------------------------
+🔄 Transaction Management
+
+JDBC: Manual (commit/rollback).
+Spring Boot: Declarative with @Transactional — automatically commits or rolls back.
+
+---------------------------------------------------------------------------------
+🔑 How Spring Boot Validates JWT Token
+
+Client sends JWT in header.
+Filter extracts token and validates signature using secret key.
+Parses claims (username, roles).
+Sets Authentication in SecurityContext.
+
+If invalid → returns 401.
+
+--------------------------------------------------------------------------------
+🧬 Dynamic Interfaces
+
+Use:
+Java Reflection (Proxy.newProxyInstance)
+Or Functional Interfaces dynamically at runtime.
+
+Example:
+
+MyInterface proxy = (MyInterface) Proxy.newProxyInstance(
+    MyInterface.class.getClassLoader(),
+    new Class[]{MyInterface.class},
+    (p, m, a) -> { System.out.println("Dynamic method called"); return null; });
+
+----------------------------------------------------------------------------
+
+🔁 Reentrant Lock
+
+Allows same thread to re-acquire the lock it already holds.
+Avoids self-deadlock.
+
+Lock lock = new ReentrantLock();
+lock.lock();
+try { ... } finally { lock.unlock(); }
+
+----------------------------------------------------------------------------
+🧯 How to Prevent Deadlock
+
+Acquire locks in a fixed order.
+Use tryLock() with timeout.
+Avoid nested locks.
+Release resources in finally block.
+
+----------------------------------------------------------------------------
+📈 Spring Actuators
+
+Provides health, metrics, and monitoring endpoints.
+Example:
+/actuator/health, /actuator/metrics, /actuator/env.
+Useful for DevOps and production monitoring.
+
+----------------------------------------------------------------------------
+💬 Declarative Programming
+
+Focuses on what to do, not how to do it.
+Examples:
+SQL (SELECT * FROM table)
+Java Streams
+Spring annotations (@Transactional, @Cacheable)
+
+=====================================================================================================
+
