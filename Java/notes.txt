@@ -29,3 +29,5 @@ stripTrailing() → removes spaces only at the end
 6. Arrays.stream(arr) — converts the int[] to an IntStream.
     .boxed() — converts primitive int values to Integer objects.
     .toList() — collects them into a List.
+
+7. java.time.LocalDateTime.now()
