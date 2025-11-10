@@ -33,4 +33,5 @@ stripTrailing() → removes spaces only at the end
 7. java.time.LocalDateTime.now()
 
 8. Collections.sort(list, Collections.reverseOrder());
+    Collections.reverse(list);
 
