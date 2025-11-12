@@ -26,7 +26,7 @@ stripTrailing() → removes spaces only at the end
 
 5. Arrays.toString(array)
 
-6. Arrays.stream(arr) — converts the int[] to an IntStream.
+6. Arrays.stream(arr) — converts the int[] to an IntStream(its different from stream of Integer).
     .boxed() — converts primitive int values to Integer objects.
     .toList() — collects them into a List.
 
