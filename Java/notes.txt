@@ -35,3 +35,5 @@ stripTrailing() → removes spaces only at the end
 8. Collections.sort(list, Collections.reverseOrder());
     Collections.reverse(list);
 
+9. Integer.toBinaryString(i) - convert int to binary
+
