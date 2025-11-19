@@ -1,0 +1,563 @@
+Nice — I’ll generate concise, runnable code examples or config snippets for the 50 resume-based questions I gave you. I’ll focus on practical, copy-pasteable samples (Spring Boot, Java concurrency, Redis, Kafka patterns, Docker/K8s), one snippet per question where possible. If a question is conceptual only, I show a short illustrative snippet or command.
+
+Code examples for the 50 resume-based questions
+
+Tip: copy any Java snippets into a small project (or run via jshell for tiny examples). For Spring snippets, drop them into a Spring Boot project (starter dependencies: spring-boot-starter-web, spring-boot-starter-security, spring-boot-starter-data-redis, spring-kafka, spring-boot-starter-actuator).
+
+⸻
+
+1. Optimize high-throughput microservice — thread pool + async controller
+
+@RestController
+public class IngestController {
+    private final ExecutorService ioPool = Executors.newFixedThreadPool(200);
+    @PostMapping("/ingest")
+    public ResponseEntity<String> ingest(@RequestBody byte[] payload) {
+        ioPool.submit(() -> process(payload));
+        return ResponseEntity.accepted().body("accepted");
+    }
+    private void process(byte[] payload){ /* async work: push to Kafka / DB */ }
+}
+
+
+⸻
+
+2. Thread-safe cache with ConcurrentHashMap + TTL cleanup
+
+public class SimpleCache<K,V> {
+  private final ConcurrentHashMap<K, V> map = new ConcurrentHashMap<>();
+  private final ConcurrentHashMap<K, Long> timestamps = new ConcurrentHashMap<>();
+  private final long ttlMs = 5_000;
+  public V getOrCompute(K k, Supplier<V> s) {
+    V v = map.get(k);
+    if(v!=null && System.currentTimeMillis()-timestamps.get(k) < ttlMs) return v;
+    return map.computeIfAbsent(k, key -> {
+      V value = s.get();
+      timestamps.put(key, System.currentTimeMillis());
+      return value;
+    });
+  }
+}
+
+
+⸻
+
+3. Concurrency vs parallelism — ForkJoin example (parallelism)
+
+ForkJoinPool pool = new ForkJoinPool();
+class SumTask extends RecursiveTask<Long>{ /* split/compute */ }
+// Use pool.invoke(new SumTask(...));
+
+(See Fork/Join snippet in previous doc for full code.)
+
+⸻
+
+4. volatile use-case (stop flag)
+
+public class Worker implements Runnable {
+  private volatile boolean running = true;
+  public void stop(){ running = false; }
+  public void run(){ while(running){ /* work */ } }
+}
+
+
+⸻
+
+5. False sharing mitigation (padding)
+
+// Using @Contended requires JVM flag -XX:-RestrictContended in some envs
+@sun.misc.Contended
+public class PaddedCounter { public volatile long value; }
+
+
+⸻
+
+6. Avoid memory leaks — close resources
+
+try (Connection c = dataSource.getConnection();
+     PreparedStatement ps = c.prepareStatement("...")) {
+    // work
+}
+
+
+⸻
+
+7. CompletableFuture pipeline (full)
+
+CompletableFuture.supplyAsync(() -> fetchFromService())
+  .thenApply(this::transform)
+  .thenCompose(result -> saveAsync(result))
+  .exceptionally(ex -> { log.error("err", ex); return null; });
+
+
+⸻
+
+8. Reduce GC pause — use G1GC flags (example JVM args)
+
+-XX:+UseG1GC -Xms2g -Xmx2g -XX:MaxGCPauseMillis=200
+
+
+⸻
+
+9. Large file streaming — NIO zero-copy
+
+try (FileChannel in = FileChannel.open(Paths.get("big.dat"), READ);
+     SocketChannel out = SocketChannel.open(new InetSocketAddress("host", 9000))) {
+    long pos = 0, transferred;
+    while ((transferred = in.transferTo(pos, 8*1024*1024, out)) > 0) pos += transferred;
+}
+
+
+⸻
+
+10. String immutability — example usage (no mutation)
+
+String token = UUID.randomUUID().toString(); // immutable, safe to pass across threads
+
+
+⸻
+
+11. Spring Boot microservice skeleton (controller → service → repo)
+
+@RestController
+@RequestMapping("/images")
+@RequiredArgsConstructor
+public class ImageController {
+  private final ImageService svc;
+  @PostMapping
+  public ResponseEntity<Void> upload(@RequestParam("file") MultipartFile f) {
+    svc.ingest(f);
+    return ResponseEntity.accepted().build();
+  }
+}
+@Service
+public class ImageService {
+  public void ingest(MultipartFile f) { /* store to S3, publish Kafka event */ }
+}
+
+
+⸻
+
+12. Example of Spring IoC — constructor DI
+
+@Component
+public class Processor { private final Repo repo; public Processor(Repo r){this.repo=r;} }
+
+
+⸻
+
+13. RBAC with Spring Security (method level)
+
+@EnableGlobalMethodSecurity(prePostEnabled=true)
+@Configuration class SecConfig { /* JWT filter registration */ }
+
+@Service
+public class AdminService {
+  @PreAuthorize("hasRole('ADMIN')")
+  public void adminOnly() { /* ... */ }
+}
+
+
+⸻
+
+14. DispatcherServlet flow — simple controller mapping
+
+No code beyond controller snippet above; DispatcherServlet is auto-configured in Spring Boot.
+
+⸻
+
+15. @Transactional usage example
+
+@Service
+public class OrderService {
+  @Transactional
+  public void create(OrderDto dto) {
+    orderRepo.save(...);
+    paymentService.charge(...); // if this throws runtime exception, transaction rolls back
+  }
+}
+
+
+⸻
+
+16. Global exception handler
+
+@ControllerAdvice
+public class GlobalError {
+  @ExceptionHandler(Exception.class)
+  public ResponseEntity<Map<String,String>> ex(Exception e){
+    return ResponseEntity.status(500).body(Map.of("error", e.getMessage()));
+  }
+}
+
+
+⸻
+
+17. JWT filter (simplified)
+
+public class JwtFilter extends OncePerRequestFilter {
+  protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain chain) throws ServletException, IOException {
+    String auth = req.getHeader("Authorization");
+    if(auth != null && auth.startsWith("Bearer ")) {
+      String token = auth.substring(7);
+      // validate token, set SecurityContextHolder.getContext().setAuthentication(...)
+    }
+    chain.doFilter(req,res);
+  }
+}
+
+
+⸻
+
+18. Spring Cache with Redis
+
+build.gradle includes spring-boot-starter-data-redis
+
+@EnableCaching
+@SpringBootApplication
+public class App {}
+@Service
+public class UserService {
+  @Cacheable(value="users", key="#id")
+  public User find(String id){ return userRepo.findById(id).orElse(null); }
+}
+
+
+⸻
+
+19. Auto-configuration example override
+
+Create a DataSource bean to override default
+
+@Configuration
+public class DataSourceConfig {
+  @Bean
+  public DataSource dataSource() { return DataSourceBuilder.create().url(...).build(); }
+}
+
+
+⸻
+
+20. RestTemplate vs WebClient vs Feign
+
+RestTemplate (blocking)
+
+RestTemplate rt = new RestTemplate();
+String s = rt.getForObject("http://svc/api", String.class);
+
+WebClient (non-blocking)
+
+WebClient.create("http://svc").get().uri("/api").retrieve().bodyToMono(String.class).block();
+
+Feign (declarative)
+
+@FeignClient("users") interface UserClient { @GetMapping("/u/{id}") User get(@PathVariable String id); }
+
+
+⸻
+
+21. Spring Cloud Gateway route example (application.yml)
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: users
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/users/**
+
+
+⸻
+
+22. Spring Cloud Config (bootstrap.yml)
+
+spring:
+  cloud:
+    config:
+      uri: http://config-server:8888
+
+
+⸻
+
+23. Circuit breaker with Resilience4j
+
+CircuitBreaker cb = CircuitBreaker.ofDefaults("userCB");
+Supplier<String> decorated = CircuitBreaker.decorateSupplier(cb, () -> restTemplate.getForObject("http://svc/hi", String.class));
+Try<String> result = Try.ofSupplier(decorated); // Vavr or use built-in patterns
+
+
+⸻
+
+24. Retry + fallback (Resilience4j + annotation)
+
+@Retry(name="svc", fallbackMethod="fallback")
+public String call() { return restTemplate.getForObject(...); }
+public String fallback(Throwable t) { return "fallback"; }
+
+
+⸻
+
+25. Idempotency key example (Spring controller)
+
+@PostMapping("/orders")
+public ResponseEntity<?> create(@RequestHeader("Idempotency-Key") String key, @RequestBody OrderDto dto) {
+  if(idempotencyRepo.exists(key)) return ResponseEntity.ok(idempotencyRepo.get(key));
+  Order o = orderService.create(dto);
+  idempotencyRepo.save(key, o.getId());
+  return ResponseEntity.status(201).body(o);
+}
+
+
+⸻
+
+26. MongoDB document and repository (Spring Data)
+
+@Document("images")
+public class ImageDoc { @Id String id; String patientId; Map<String,String> meta; }
+public interface ImageRepo extends MongoRepository<ImageDoc,String> {}
+
+
+⸻
+
+27. Embed vs reference in MongoDB
+
+// Embedded
+class Order { List<Item> items; }
+// Reference
+class Order { @DBRef Customer customer; }
+
+
+⸻
+
+28. Elasticsearch indexing via Spring Data Elasticsearch
+
+@Document(indexName="images")
+class ImageEntity { @Id String id; String text; }
+public interface ImageRepo extends ElasticsearchRepository<ImageEntity,String> {}
+
+
+⸻
+
+29. Inverted index illustration (no code)
+
+(Conceptual — Elasticsearch tokenizes text and maps tokens to doc IDs.)
+
+⸻
+
+30. Redis uses — cache example already shown. Distributed counter with Redis INCR:
+
+String key = "counter:today";
+Long value = stringRedisTemplate.opsForValue().increment(key);
+
+
+⸻
+
+31. Redis distributed lock (SET NX PX)
+
+String res = jedis.set("lock:resource", uuid, SetParams.setParams().nx().px(30_000));
+if("OK".equals(res)) { /* got lock */ }
+
+(Use Redisson for robust implementation and auto renew.)
+
+⸻
+
+32. Cache invalidation (cache-aside pattern)
+
+// read
+User u = cache.get(id);
+if(u==null){ u = db.get(id); cache.put(id,u); }
+// write
+db.update(u); cache.evict(id);
+
+
+⸻
+
+33. Elasticsearch bulk indexing (Java client pseudo)
+
+BulkRequest bulk = new BulkRequest();
+for(Document d : docs) bulk.add(new IndexRequest("idx").id(d.id).source(d.toMap()));
+client.bulk(bulk, RequestOptions.DEFAULT);
+
+
+⸻
+
+34. Latency sources — tracer snippet (OpenTelemetry)
+
+Span span = tracer.spanBuilder("processImage").startSpan();
+try (Scope s = span.makeCurrent()) { /* work */ } finally { span.end(); }
+
+
+⸻
+
+35. Backpressure — Reactor example
+
+Flux.range(1, Integer.MAX_VALUE)
+    .onBackpressureBuffer(1000)
+    .publishOn(Schedulers.boundedElastic())
+    .subscribe(System.out::println);
+
+
+⸻
+
+36. Kafka consumer group (Spring Kafka listener)
+
+@KafkaListener(topics="imageUploads", groupId="processors")
+public void listen(ConsumerRecord<String,String> rec){
+  // processing
+}
+
+
+⸻
+
+37. Exactly-once in Kafka — producer config
+
+enable.idempotence=true
+acks=all
+transactional.id=txn-1
+
+Use transactions with KafkaTemplate.executeInTransaction(...).
+
+⸻
+
+38. Event-driven microservice (producer + consumer skeleton)
+
+Producer:
+
+kafkaTemplate.send("imageUploads", imageId, metadataJson);
+
+Consumer: see KafkaListener above. Implement DLQ by sending failing messages to imageUploads.DLQ.
+
+⸻
+
+39. Kafka vs RabbitMQ — code not needed (conceptual).
+
+⸻
+
+40. Kafka partitioning example (producer with key)
+
+kafkaTemplate.send("topic", key, payload); // key -> partition
+
+
+⸻
+
+41. Message retry with DLQ (Spring Kafka)
+
+# configure error handler
+
+In code, on exception, produce to DLQ topic and commit offset.
+
+⸻
+
+42. HTTP/2 with Spring Boot — enable Tomcat HTTP/2
+
+application.yml (and TLS required):
+
+server:
+  http2:
+    enabled: true
+
+Run with TLS and Java 11+.
+
+⸻
+
+43. Dockerfile (multi-stage) — optimized
+
+FROM gradle:8 as build
+WORKDIR /app
+COPY . .
+RUN gradle bootJar --no-daemon
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=build /app/build/libs/*.jar app.jar
+ENTRYPOINT ["java","-Xmx512m","-jar","/app/app.jar"]
+
+
+⸻
+
+44. K8s readiness & liveness manifest
+
+livenessProbe:
+  httpGet: { path: /actuator/health/liveness, port: 8080 }
+  initialDelaySeconds: 30
+readinessProbe:
+  httpGet: { path: /actuator/health/readiness, port: 8080 }
+  initialDelaySeconds: 10
+
+
+⸻
+
+45. HPA manifest snippet (CPU)
+
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+spec:
+  scaleTargetRef: { apiVersion: apps/v1, kind: Deployment, name: app }
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: { type: Utilization, averageUtilization: 60 }
+
+
+⸻
+
+46. ConfigMap vs Secret examples
+
+ConfigMap:
+
+apiVersion: v1
+kind: ConfigMap
+data: { APP_ENV: prod }
+
+Secret:
+
+apiVersion: v1
+kind: Secret
+type: Opaque
+data: { DB_PASS: bXlwYXNzd29yZA== } # base64
+
+
+⸻
+
+47. K8s Service types example (LoadBalancer)
+
+kind: Service
+spec:
+  type: LoadBalancer
+  ports: - port: 80 targetPort: 8080
+
+
+⸻
+
+48. Debug container memory leak — jcmd inside container
+
+# get PID of Java process then:
+jcmd <pid> GC.heap_info
+jmap -dump:live,format=b,file=/tmp/heap.hprof <pid>
+
+
+⸻
+
+49. Spring Boot container JVM options in Dockerfile
+
+ENTRYPOINT ["java","-XX:+UseContainerSupport","-Xms256m","-Xmx512m","-jar","/app/app.jar"]
+
+
+⸻
+
+50. Sidecar pattern — Envoy as example (no code)
+
+(Deploy Envoy as separate container in same Pod to handle mTLS, routing, metrics.)
+
+⸻
+
+If you want, next I can:
+	•	Turn any single item above into a full runnable project (e.g., Spring Boot image ingestion service with Kafka producer + Redis cache + Dockerfile + Kubernetes manifest).
+	•	Or create a PDF cheat sheet containing the 50 Q&A + code examples for printing.
+	•	Or run a mock interview on these questions and grade answers ruthlessly.
+
+Which one do you want me to build first?

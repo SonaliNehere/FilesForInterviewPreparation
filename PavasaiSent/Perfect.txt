@@ -1,0 +1,540 @@
+Perfect.
+Below are 50 highly relevant, resume-based interview questions with detailed answers tailored to your skills:
+
+Java (Core + J2EE), Spring Boot, Microservices, Elasticsearch, MongoDB, Redis, Docker, Kubernetes, Linux, Quartz Scheduler, Jetty, Security (RBAC, JWT, PQC), Distributed Systems, HTTP/2, Kafka (Learning), Advanced Spring Boot.
+
+These are exactly the type senior-level questions you’ll be asked based on the stack you mentioned.
+
+⸻
+
+✅ 50 Resume-Based Interview Questions With Detailed Answers
+
+🔥 A. Core Java – 1 to 10
+
+1. Explain how you would optimize a high-throughput Java microservice handling thousands of requests per second.
+
+Answer:
+	•	Use thread pools with proper sizing (CPU-bound vs IO-bound).
+	•	Avoid blocking calls in request path.
+	•	Use non-blocking WebClient / reactive approach if needed.
+	•	Use efficient collections (ConcurrentHashMap, Disruptor pattern if extreme).
+	•	Cache repeated DB calls in Redis.
+	•	Tune JVM (G1GC, heap sizing).
+	•	Use connection pooling (HikariCP).
+	•	Profile using JFR or VisualVM.
+
+⸻
+
+2. How would you implement a custom thread-safe cache in Java?
+
+Answer:
+	•	Use ConcurrentHashMap with computeIfAbsent.
+	•	Wrap with TTL using ScheduledExecutorService.
+	•	Or use Caffeine for advanced eviction policies.
+	•	Avoid synchronized blocks as they reduce throughput.
+
+⸻
+
+3. Difference between concurrency and parallelism?
+
+Answer:
+	•	Concurrency: deals with multiple tasks in progress at the same time.
+	•	Parallelism: tasks execute simultaneously on multiple cores.
+Your microservices benefit from concurrency (I/O tasks) and parallelism for CPU-heavy tasks like encryption or image processing.
+
+⸻
+
+4. Explain volatile with a real use-case.
+
+Answer:
+volatile ensures visibility between threads.
+Example: A real-time message consumer’s isRunning flag.
+Without volatile, one thread may never see updated values.
+
+⸻
+
+5. What is false sharing? Why is it bad?
+
+Answer:
+	•	When multiple threads modify variables located on the same CPU cache line → cache invalidations → performance drops.
+	•	Happens in high-throughput systems.
+	•	Fix: Padding variables using @Contended.
+
+⸻
+
+6. How do you avoid memory leaks in Java?
+
+Answer:
+	•	Remove references from static collections.
+	•	Close resources in try-with-resources.
+	•	Avoid ThreadLocal leaks in thread pools.
+	•	Use weak references for large cached objects.
+
+⸻
+
+7. Explain CompletableFuture pipeline with example.
+
+Answer:
+	•	Used for async programming:
+
+CompletableFuture.supplyAsync(() -> fetchData())
+                 .thenApply(data -> transform(data))
+                 .thenAccept(result -> save(result));
+
+
+⸻
+
+8. What is GC pause? How do you reduce it?
+
+Answer:
+	•	When JVM stops the application to collect garbage.
+	•	Reduce by:
+	•	G1GC/Low-latency collectors
+	•	Reducing allocation rate
+	•	Using object pooling for repetitive operations
+
+⸻
+
+9. How does Java handle large file streaming?
+
+Answer:
+Use NIO channels:
+FileChannel → zero-copy (transferTo) → extremely fast for log sync or file uploads.
+
+⸻
+
+10. Why is String immutable, and how does it help security?
+
+Answer:
+	•	Allows strings in pool.
+	•	Thread-safe.
+	•	Prevents modification of credentials, URLs, etc.
+
+⸻
+
+🔥 B. Spring Boot & Microservices – 11 to 25
+
+11. Explain how you design a microservice using Spring Boot.
+
+Answer:
+	•	REST controller → service layer → repository layer
+	•	DTO → Entity → Mapper
+	•	Exception handling via @ControllerAdvice
+	•	Logging with SLF4J
+	•	Security via Spring Security + JWT
+	•	Config via application.yml
+	•	Use Actuator for health checks
+	•	Containerize and deploy on Kubernetes.
+
+⸻
+
+12. What problem does Spring IoC solve?
+
+Answer:
+Removes tight coupling.
+Spring handles object creation, dependency wiring → more testable, clean, maintainable.
+
+⸻
+
+13. How would you implement role-based access control (RBAC) in Spring Security?
+
+Answer:
+	•	Users + Roles stored in DB.
+	•	When authenticated, JWT contains roles.
+	•	Method-level security using:
+
+@PreAuthorize("hasRole('ADMIN')")
+
+
+⸻
+
+14. Explain internal working of DispatcherServlet.
+
+Answer:
+	•	Front controller mapping all requests.
+	•	Finds correct handler (controller) via HandlerMapping.
+	•	Calls HandlerAdapter → controller.
+	•	Gets ModelAndView → resolves view.
+	•	Sends response.
+
+⸻
+
+15. What is the use of @Transactional?
+
+Answer:
+	•	Wraps method in transaction boundary.
+	•	Rolls back on RuntimeExceptions.
+	•	Propagation ensures proper transaction nesting.
+
+⸻
+
+16. How do you handle exceptions globally?
+
+Answer:
+Using @ControllerAdvice:
+
+@ExceptionHandler(CustomException.class)
+public ResponseEntity<?> handle(CustomException e) { ... }
+
+
+⸻
+
+17. How do you secure microservices with JWT?
+
+Answer:
+	•	Authenticate user → generate JWT.
+	•	For each request: JWT filter extracts token → decode → validate signature → load roles → set Authentication.
+	•	Stateless, scalable.
+
+⸻
+
+18. How do you implement caching in Spring Boot using Redis?
+
+Answer:
+
+@Cacheable(value="users", key="#id")
+public User getUser(int id){}
+
+Redis holds frequently accessed results → huge performance boost.
+
+⸻
+
+19. Explain Spring Boot AutoConfiguration.
+
+Answer:
+Spring scans classpath → auto-configures beans if conditions match (e.g., if HikariCP is present, DataSource auto-configured).
+
+⸻
+
+20. Difference between RestTemplate, WebClient, FeignClient.
+
+Answer:
+	•	RestTemplate: blocking, legacy.
+	•	WebClient: non-blocking, reactive.
+	•	FeignClient: declarative, simplifies REST calls in microservices.
+
+⸻
+
+21. What is Spring Cloud Gateway and why use it?
+
+Answer:
+API Gateway for microservices:
+	•	Routing
+	•	Rate-limiting
+	•	CORS
+	•	Request/response filters
+	•	Authentication layer
+
+⸻
+
+22. How do you implement configuration management in distributed systems?
+
+Answer:
+	•	Spring Cloud Config Server
+	•	Stores config in Git
+	•	Microservices fetch config from config server
+	•	Dynamic refresh with actuator endpoint.
+
+⸻
+
+23. What is Circuit Breaker pattern?
+
+Answer:
+Stops calling a failing service to prevent cascading failures.
+Use Resilience4J.
+
+⸻
+
+24. How to improve resilience in microservices?
+
+Answer:
+	•	Retry pattern
+	•	Fallback
+	•	Circuit breaker
+	•	Bulkhead isolation
+	•	Timeout configuration
+	•	Async communication (Kafka)
+
+⸻
+
+25. Explain idempotency with real example.
+
+Answer:
+In payment/transaction APIs:
+Multiple retries shouldn’t create duplicate orders.
+Use Idempotency-Key or unique request token.
+
+⸻
+
+🔥 C. Databases: MongoDB, Redis, Elasticsearch – 26 to 33
+
+26. Why use MongoDB for microservices?
+
+Answer:
+	•	Flexible schema
+	•	Fast writes
+	•	Perfect for JSON-based REST APIs
+	•	Sharding → horizontal scalability
+	•	Great for log/event storage
+
+⸻
+
+27. How to model relationships in MongoDB?
+
+Answer:
+	•	Embed small documents
+	•	Reference large ones
+Tradeoff: consistency vs performance.
+
+⸻
+
+28. When would you choose Elasticsearch?
+
+Answer:
+	•	Full-text search
+	•	Aggregations
+	•	Log/analytics
+	•	Real-time filtering
+	•	Complex querying (fuzzy, wildcard, prefix)
+
+⸻
+
+29. Explain ES inverted index.
+
+Answer:
+ES breaks text into tokens → builds dictionary where each token maps to document IDs.
+This makes search O(1) by keyword.
+
+⸻
+
+30. Explain Redis use cases in microservices.
+
+Answer:
+	•	Caching
+	•	Distributed locks
+	•	Session store
+	•	Rate limiting
+	•	Leaderboards / counters
+	•	Pub/Sub
+
+⸻
+
+31. How do you implement distributed lock in Redis?
+
+Answer:
+Using SETNX:
+
+SET lockKey value NX PX 30000
+
+Ensures only one service instance gets the lock.
+
+⸻
+
+32. How to handle cache invalidation?
+
+Answer:
+Patterns:
+	•	Time-based TTL
+	•	Cache-aside (on miss → DB → cache)
+	•	Write-through
+	•	Write-behind
+
+⸻
+
+33. How to index documents efficiently in Elasticsearch?
+
+Answer:
+Batch indexing using Bulk API.
+Use smaller shards, disable refresh temporarily, increase refresh interval.
+
+⸻
+
+🔥 D. Distributed Systems & Kafka – 34 to 42
+
+34. What causes latency in distributed systems?
+
+Answer:
+	•	Network hops
+	•	Serialization/deserialization
+	•	Database bottlenecks
+	•	GC pauses
+	•	Thread starvation
+	•	Load imbalance
+	•	Contention on locks
+
+⸻
+
+35. What is backpressure? How do you handle it?
+
+Answer:
+When producers push data faster than consumers can handle.
+Solutions:
+	•	Kafka to buffer
+	•	Async processing
+	•	Thread pools
+	•	Rate limiting
+
+⸻
+
+36. Explain Kafka consumer group.
+
+Answer:
+	•	Each partition is consumed by only one consumer in the group.
+	•	Group allows horizontal scaling.
+	•	Rebalancing happens when consumers join/leave.
+
+⸻
+
+37. How to ensure exactly-once processing in Kafka?
+
+Answer:
+	•	Enable idempotent producers
+	•	Use transactional writes
+	•	Write to DB + produce output atomically
+	•	Use message keys for deduplication
+
+⸻
+
+38. How would you design event-driven microservice?
+
+Answer:
+	•	Producer publishes events to Kafka
+	•	Consumers subscribe to topics
+	•	Retry and DLQ (Dead Letter Queue)
+	•	Event schema stored in Schema registry
+	•	Idempotent handlers
+
+⸻
+
+39. Difference between Kafka and RabbitMQ?
+
+Answer:
+	•	Kafka = distributed log, high throughput, event streaming
+	•	RabbitMQ = message broker, better for transactional queues, priority messages
+
+⸻
+
+40. Why partitioning is important in Kafka?
+
+Answer:
+	•	Enables parallelism
+	•	Increases throughput
+	•	Ensures ordering within partition
+	•	Distributes load
+
+⸻
+
+41. How do you handle message retries?
+
+Answer:
+	•	Manual commit
+	•	Retry topics
+	•	DLQ
+	•	Exponential backoff using Spring Kafka RetryTemplate
+
+⸻
+
+42. Why use HTTP/2 in microservices?
+
+Answer:
+	•	Multiplexing
+	•	Header compression
+	•	Lower latency
+	•	Server push
+Ideal for real-time analytics or chat pipelines.
+
+⸻
+
+🔥 E. DevOps: Docker, Kubernetes, Linux – 43 to 50
+
+43. How would you containerize a Spring Boot application?
+
+Answer:
+	•	Use multi-stage Dockerfile
+	•	Build JAR → copy to small base image (Eclipse Temurin)
+	•	Expose port 8080
+	•	Health checks
+Example:
+
+FROM gradle:latest as builder
+WORKDIR /app
+COPY . .
+RUN gradle build --no-daemon
+
+FROM eclipse-temurin:17
+COPY --from=builder /app/build/libs/app.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+
+⸻
+
+44. Explain Kubernetes readiness and liveness probes.
+
+Answer:
+	•	Liveness probe: checks if app is healthy; if fails → restart container.
+	•	Readiness probe: checks if app is ready to serve traffic; if fails → remove from load balancer.
+
+⸻
+
+45. How do you handle auto-scaling in Kubernetes?
+
+Answer:
+Horizontal Pod Autoscaler (HPA):
+	•	Based on CPU/memory
+	•	Or custom metrics (Kafka lag, request per second)
+
+⸻
+
+46. What is a ConfigMap vs Secret?
+
+Answer:
+	•	ConfigMap: stores non-sensitive config
+	•	Secret: stores base64 encoded sensitive data
+
+⸻
+
+47. Explain service types in Kubernetes.
+
+Answer:
+	•	ClusterIP → internal
+	•	NodePort → expose on node IP
+	•	LoadBalancer → public cloud LB
+	•	Ingress → route HTTP based on paths/hosts
+
+⸻
+
+48. How do you debug container memory leaks?
+
+Answer:
+	•	Use jmap, jstat
+	•	Heap dump from inside container
+	•	Use docker stats
+	•	Tune JVM inside container (-XX:+UseContainerSupport)
+
+⸻
+
+49. How do you optimize Spring Boot memory usage in containers?
+
+Answer:
+	•	Set fixed heap
+	•	Disable unnecessary auto-configurations
+	•	Use spring.jmx.enabled=false
+	•	Container-aware JVM settings
+	•	Reduce thread pools
+
+⸻
+
+50. What is a sidecar container pattern?
+
+Answer:
+A helper container running alongside main container.
+Examples:
+	•	Logging agent
+	•	Proxy like Envoy
+	•	Sidecar for security (JWT validation)
+
+⸻
+
+✅ Want me to generate coding examples for these 50 questions?
+
+Or do you want 50 more advanced questions for senior-level roles?

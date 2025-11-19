@@ -1,0 +1,361 @@
+Nice — below are detailed, interview-ready answers for all 50 questions. Use these to answer in interviews or adapt to your voice. Where useful I reference concrete techniques from your resume (PQC, SEPP, HTTP/2, BulkProcessor, Docker/K8s, etc.) so your answers map directly to your experience.
+
+⸻
+
+1 — What is the difference between Monolithic and Microservices architecture?
+
+Answer:
+A monolithic app bundles all functionality in one deployable unit — one codebase, one process, single deployment. Microservices split functionality into many independently deployable services, each owning a bounded context (domain). Benefits of microservices: modularity (teams own services), independent deployments (no full-app redeploys), improved scalability (scale only heavy services), better fault isolation (one service failing won’t bring everything down), and easier adoption of different tech stacks per service. Downsides: operational complexity (networking, deployment), distributed data management, and observability requirements. Domain-driven design (DDD) is commonly used to identify service boundaries.
+
+⸻
+
+2 — How does Spring Boot auto-configuration work internally?
+
+Answer:
+Spring Boot auto-configuration uses spring.factories and SpringFactoriesLoader to discover @Configuration classes annotated with @EnableAutoConfiguration. Conditional annotations like @ConditionalOnClass, @ConditionalOnMissingBean, and @ConditionalOnProperty determine whether a particular auto-config should be applied. At startup Spring scans the classpath, loads auto-config classes, and registers beans only when conditions are met, providing sensible defaults while letting you override beans. This reduces boilerplate while still allowing custom configuration.
+
+⸻
+
+3 — Explain Spring IoC Container & ApplicationContext.
+
+Answer:
+The IoC (Inversion of Control) container is the framework component that creates, manages, wires and destroys beans. ApplicationContext is the container implementation used in Spring (extends BeanFactory) and provides features like internationalization, event propagation, and lifecycle callbacks. The container reads bean definitions (annotations/XML), resolves dependencies via constructor/setter/field injection, applies lifecycle callbacks (@PostConstruct, DisposableBean), and manages scopes (singleton, prototype, request/session). DI promotes loose coupling and testability.
+
+⸻
+
+4 — What are the differences between @Component, @Service, @Repository?
+
+Answer:
+All three are stereotype annotations that mark Spring beans for component scanning. @Component is generic. @Service is a specialization intended for service-layer beans (semantic). @Repository is a persistence-layer specialization — Spring applies exception translation for persistence exceptions to DataAccessException and may have additional persistence-specific behavior. Use the most specific annotation to improve readability and behavior when applicable.
+
+⸻
+
+5 — What happens internally when a REST API is hit in Spring Boot?
+
+Answer:
+Request lifecycle: client → HTTP server (embedded Tomcat/Jetty) → DispatcherServlet receives request → HandlerMapping finds appropriate Controller method (via annotations like @RequestMapping) → HandlerAdapter invokes controller method → controller returns ResponseEntity or object → HttpMessageConverter serializes response (e.g., Jackson to JSON) → DispatcherServlet writes response to client. Along the way filters, interceptors, and AOP advice can run, and exceptions are handled by @ControllerAdvice/ExceptionHandler.
+
+⸻
+
+6 — Explain the microservice you built at Jio in PQC & SEPP.
+
+Answer:
+(Concise, but interview-ready) On the PQC project I implemented quantum-safe APIs using NIST-recommended algorithms (CRYSTALS-Kyber for KEM, Dilithium for signatures). I secured data at rest (encrypted Elasticsearch) with RBAC and built optimized HTTP/2 client-server modules to reduce latency. In SEPP I architected and deployed a Security Edge Protection Proxy to protect roaming flows while preserving device anonymity; I improved ES ingestion using BulkProcessor, implemented real-time alerting APIs, and automated Dockerized microservice CI/CD. Highlight performance, security, and automation.
+
+⸻
+
+7 — What are the common design patterns used in microservices?
+
+Answer:
+Common patterns: API Gateway (single entrypoint), Circuit Breaker (fault isolation), Bulkhead (isolate failures), Sidecar (per-service infrastructure), Service Registry (Eureka/Consul), Saga (distributed transactions), CQRS (separate read/write models), Event Sourcing (store events), Adapter/Facade (API compatibility), Factory/Builder/Singleton for local code patterns. Choose patterns based on needs (resiliency, scaling, data consistency).
+
+⸻
+
+8 — What is the Circuit Breaker pattern?
+
+Answer:
+Circuit Breaker protects downstream services by stopping calls when failure thresholds are hit (like an electrical breaker). It has states: Closed (normal), Open (stop calls and fail fast), Half-Open (test if downstream recovered). Implementations (Hystrix, Resilience4j) provide automatic retry/fallbacks and metrics. Use when remote service failures can cause cascading failures; fallback logic preserves system availability.
+
+⸻
+
+9 — What is Kafka? Explain architecture.
+
+Answer:
+Kafka is a distributed streaming platform composed of Producers (write data), Brokers (store data as append-only logs called topics), Partitions (topic subdivisions for parallelism), Consumers (read data), and ZooKeeper/KRaft (cluster metadata). Producers publish messages to topics/partitions; consumers form consumer groups to share partitions; offsets track consumption. Kafka ensures high throughput, persistence, replication (replicas for fault tolerance), and retention policies. It’s suitable for event-driven systems, stream processing, and decoupling services.
+
+⸻
+
+10 — How does Elasticsearch indexing work?
+
+Answer:
+Elasticsearch indexes documents by analyzing text into tokens via analyzers/tokenizers (e.g., standard, stemmers). It builds inverted indexes mapping terms to document IDs for fast full-text search. Data is stored in shards (units of index distribution), each with replicas for redundancy. Index mappings define field types and analyzers. For high ingestion workloads, use Bulk API/BulkProcessor (batching), tune refresh_interval, bulk size, thread pools, and commit frequency to balance throughput and search freshness.
+
+⸻
+
+11 — How is Elasticsearch different from a database like Postgres?
+
+Answer:
+Elasticsearch excels at full-text search, analytics, and near-real-time indexing, using inverted indexes and horizontal shard/replica distribution. Postgres is an ACID relational database optimized for transactions, complex joins, and consistency. Use ES for search and analytics, Postgres for transactional integrity and normalized relational models. Many systems combine both: Postgres for authoritative storage and ES for search/analytics synched via events.
+
+⸻
+
+12 — What are shards & replicas?
+
+Answer:
+Shards are horizontal partitions of an Elasticsearch index; they allow parallelism, distribution and scaling. Each shard is a Lucene index. Replicas are copies of shards for redundancy and read scalability. Cluster sizing: choose shard count based on data size, node count and query patterns; replicas ≥ 1 for high availability. For ingestion optimization, tune bulk sizes, refresh interval, and thread pools.
+
+⸻
+
+13 — Explain Redis use cases in microservices.
+
+Answer:
+Redis is an in-memory data store used for caching (reduce DB load), session store, distributed locks (Redlock), pub/sub for notifications, rate limiting (token bucket), and counters. Its low latency makes it ideal for hot reads and transient state. Combine with persistence (AOF/RDB) if data durability is required.
+
+⸻
+
+14 — What is the difference between Redis and Memcached?
+
+Answer:
+Both are in-memory caches; Memcached is simple, single-purpose key/value store optimized for caching. Redis supports richer data types (lists, sets, sorted sets, hashes), persistence options (RDB/AOF), pub/sub, Lua scripting, and atomic operations. Redis can be used for more complex scenarios (locks, counters, queues), whereas Memcached is simpler and lightweight for pure cache use.
+
+⸻
+
+15 — Explain HTTP/1.1 vs HTTP/2 differences.
+
+Answer:
+HTTP/2 uses binary framing, multiplexing multiple streams over a single TCP connection (reducing head-of-line blocking), header compression (HPACK), stream prioritization, and server push. HTTP/1.1 uses text format, one request per connection or pipelining with limitations. HTTP/2 reduces latency and improves performance for many small requests — beneficial for efficient client-server communication; this aligns with your HTTP/2 optimizations on the PQC project.
+
+⸻
+
+16 — What is gRPC and how is it better than REST?
+
+Answer:
+gRPC is an RPC framework using HTTP/2 and Protocol Buffers for binary serialization. Advantages: smaller payloads, strong typing via proto schemas, streaming (client/server/bidirectional), and better performance due to HTTP/2 multiplexing and binary format. It’s ideal for inter-service communication requiring low latency and high throughput. REST is simpler and more human-readable (JSON/HTTP verbs) and often used for public APIs.
+
+⸻
+
+17 — Explain OAuth2.0, JWT, and RBAC.
+
+Answer:
+OAuth2 is an authorization framework enabling clients to obtain limited access tokens to resources on behalf of users (flows: authorization code, client credentials, etc.). JWT (JSON Web Token) is a compact, signed token containing claims for stateless authentication/authorization. RBAC (Role-Based Access Control) assigns permissions to roles and roles to users. In a typical flow, OAuth2 issues JWT access tokens, services validate tokens and enforce RBAC by checking claims/roles in the token.
+
+⸻
+
+18 — What is difference between Authentication and Authorization?
+
+Answer:
+Authentication verifies identity (who you are). Authorization determines what that authenticated identity is allowed to do (permissions/roles). Authentication occurs before authorization, and both are usually enforced together in secure systems.
+
+⸻
+
+19 — How do you implement Spring Security in a microservice?
+
+Answer:
+Use Spring Security with filters: authenticate requests via OAuth2/JWT or session cookies. Configure ResourceServer to validate JWTs (public keys or introspection), enforce roles via @PreAuthorize/@Secured, protect endpoints with HTTP security rules, and implement CORS/CSRF controls. Use centralized auth (Auth server) for issuing tokens and a gateway to offload common security checks.
+
+⸻
+
+20 — What is CSRF? How do you prevent it?
+
+Answer:
+CSRF (Cross-Site Request Forgery) tricks an authenticated user’s browser into making unwanted requests to a site. Prevent by using anti-CSRF tokens tied to sessions, validating Origin/Referer headers, using SameSite cookies (Lax/Strict), and adopting stateless APIs with tokens (JWT) where CSRF is less of a concern for APIs if cookies aren’t used.
+
+⸻
+
+21 — What is the role of HashMap, ConcurrentHashMap, and TreeMap?
+
+Answer:
+HashMap is an unsynchronized key-value map with O(1) average access; not thread-safe. ConcurrentHashMap is a thread-safe map allowing concurrent reads/writes with fine-grained locking or lock-free algorithms (no global lock). TreeMap is a sorted map (Red-Black tree) with O(log n) operations and ordered iteration. Choose ConcurrentHashMap in multithreaded contexts, HashMap for single-threaded, and TreeMap when sorted keys are required.
+
+⸻
+
+22 — Explain multithreading in Java. How did you use it?
+
+Answer:
+Java multithreading uses Thread, Runnable, Callable, and ExecutorService abstractions. Use thread pools (Executors.newFixedThreadPool) to manage resource usage, Future/CompletableFuture for async results. In SEPP we employed thread pools for async ingestion and processing to avoid blocking I/O, applied backpressure, and tuned pool sizes to match CPU vs I/O bound workloads. Use synchronization, concurrent collections, and thread dumps for debugging.
+
+⸻
+
+23 — How does Garbage Collection work in Java?
+
+Answer:
+GC reclaims unused objects. JVM uses generational GC: Young (Eden + Survivor) and Old (Tenured) generations. Objects that survive several GC cycles are promoted. Collectors vary (G1, Parallel, CMS, ZGC) with tradeoffs in throughput and pause times. Tune heap sizes, GC algorithm, and monitor GC logs and pause times to optimize for latency-sensitive services.
+
+⸻
+
+24 — What is volatile? What is synchronized?
+
+Answer:
+volatile ensures visibility of variable reads/writes across threads (no caching in CPU registers) and prevents instruction reordering for that variable, but it doesn’t provide atomicity for compound actions. synchronized enforces mutual exclusion and memory visibility for the block/method it guards, making compound operations atomic. Use volatile for simple flags; use synchronized or atomic classes (AtomicInteger) for compound updates.
+
+⸻
+
+25 — What is the difference between processes and threads?
+
+Answer:
+Processes are isolated execution environments with separate memory spaces; threads are lightweight execution paths within a process that share memory and resources. Inter-process communication (IPC) is heavier and more isolated; thread communication is via shared memory and requires synchronization to avoid race conditions.
+
+⸻
+
+26 — Can you explain SOLID principles?
+
+Answer:
+SOLID: Single Responsibility (one reason to change), Open/Closed (open for extension, closed for modification), Liskov Substitution (subtypes must be substitutable), Interface Segregation (many client-specific interfaces), Dependency Inversion (depend on abstractions). These principles promote maintainable, testable, extensible code.
+
+⸻
+
+27 — What is Dependency Injection? Why is it useful?
+
+Answer:
+DI is a design pattern where an external container provides dependent objects (dependencies) to a class rather than the class constructing them. It promotes loose coupling, easier testing (swap mocks), and clearer separation of concerns. Spring’s IoC container is a DI implementation.
+
+⸻
+
+28 — How does Spring handle transactions (ACID)?
+
+Answer:
+Spring provides declarative transaction management via @Transactional and programmatic via TransactionTemplate. It delegates to underlying PlatformTransactionManager implementations (e.g., DataSourceTransactionManager, JpaTransactionManager). Transactions have propagation (REQUIRED, REQUIRES_NEW, SUPPORTS) and isolation (READ_COMMITTED, REPEATABLE_READ) levels to control concurrency and consistency. Use transactions for atomic multi-step data operations.
+
+⸻
+
+29 — What is distributed transaction?
+
+Answer:
+Distributed transactions span multiple services or data stores. Two common approaches: two-phase commit (2PC) provides strong consistency but is blocking and complex; Saga pattern uses a sequence of local transactions with compensating transactions upon failure (better for microservices). Use sagas or eventual consistency to reduce coupling and increase availability.
+
+⸻
+
+30 — What is Spring AOP?
+
+Answer:
+Aspect-Oriented Programming separates cross-cutting concerns (logging, security, transactions) from business logic. Key concepts: Aspect (module with advice), Advice (action at join point), Pointcut (where to apply), Join point (method execution), Proxy (generated to weave aspects). Spring AOP uses proxy-based weaving at runtime (or compile/time with AspectJ).
+
+⸻
+
+31 — Difference between Exception and Error.
+
+Answer:
+Exception indicates conditions that an application might want to catch and recover from (checked and unchecked). Error represents serious problems from which recovery is normally not expected (OutOfMemoryError, StackOverflowError). Handle exceptions; usually don’t catch Errors.
+
+⸻
+
+32 — Checked vs Unchecked exceptions.
+
+Answer:
+Checked exceptions (subclass of Exception but not RuntimeException) must be declared or caught (compile-time enforced). Unchecked exceptions (RuntimeException) are not required to be declared caught. Use checked exceptions when the caller can reasonably recover; otherwise use unchecked.
+
+⸻
+
+33 — How do you handle rate limiting in microservices?
+
+Answer:
+Rate limiting techniques: token bucket or leaky bucket typically implemented in API gateway or via Redis for distributed enforcement (store token counters or timestamps). Implement per-user or per-IP quotas, sliding window counters, and exponential backoff for retries. For high throughput use local caches with periodic sync to Redis to reduce round trips.
+
+⸻
+
+34 — How do you externalize configuration in Spring Boot?
+
+Answer:
+Use application.properties/application.yml, environment variables, and Spring Cloud Config Server for centralized config. For secrets use Vault or AWS Secrets Manager. Profiles (spring.profiles.active) control environment-specific config. Externalizing config enables consistent deployments across environments and zero-downtime config changes (when used with config refresh patterns).
+
+⸻
+
+35 — Explain Docker architecture.
+
+Answer:
+Docker uses a client-server architecture: Docker daemon manages images/containers; images are layered, immutable snapshots built from Dockerfile stages; containers are isolated runtime instances of images using OS kernel features (namespaces, cgroups). Registries (Docker Hub, private registries) store images. Multi-stage builds and small base images reduce image size.
+
+⸻
+
+36 — Kubernetes components?
+
+Answer:
+Key components: API Server (control plane), etcd (cluster store), Scheduler (assign pods to nodes), Controller Manager (controllers for replica, deployment), Kubelet (agent on nodes), kube-proxy (networking), Nodes (worker machines), Pods (smallest deployable unit), Deployments/StatefulSets (controllers). Use RBAC for access control, namespaces for multi-tenancy.
+
+⸻
+
+37 — What is a liveness vs readiness probe?
+
+Answer:
+Readiness probe tells Kubernetes if a pod is ready to accept traffic (if false, it’s removed from service endpoints). Liveness probe indicates if a pod is alive; if it fails, kubelet restarts the container. Use readiness for warm-up conditions and liveness for unrecoverable deadlocks.
+
+⸻
+
+38 — How do rolling updates work in Kubernetes?
+
+Answer:
+Deployments perform rolling updates by gradually replacing old pods with new ones according to maxUnavailable and maxSurge settings. This provides zero-downtime upgrades. If health checks fail /during rollout, Kubernetes pauses the update or can rollback to a previous revision.
+
+⸻
+
+39 — How do you perform CI/CD?
+
+Answer:
+CI pipeline: commit → build (Maven/Gradle) → run unit tests (JUnit) → static analysis (SonarQube) → package → push image to registry. CD pipeline: deploy to staging → run integration/perf tests → promote to production using blue/green or canary deployments. Tools: GitLab CI/Jenkins/GitHub Actions, Helm for K8s, Artifactory/Harbor for images, and monitoring/alerts for post-deploy validation.
+
+⸻
+
+40 — What is SonarQube? What is a code smell?
+
+Answer:
+SonarQube is a static code analysis platform that detects bugs, vulnerabilities, and code smells. Code smell is a maintainability issue (duplicated code, long methods, large classes) that indicates design problems but not necessarily bugs. Use Sonar metrics (coverage, duplication, complexity) to enforce code quality gates.
+
+⸻
+
+41 — How do you test microservices?
+
+Answer:
+Unit tests (JUnit/Mockito) for classes, integration tests for service layers, contract tests (Pact) for APIs, and end-to-end tests for flows. Use Testcontainers to spin up ephemeral DBs or Kafka during tests. Mock external dependencies during unit tests and use staging-like environments for full integration testing.
+
+⸻
+
+42 — What is Hibernate? Lazy vs Eager loading.
+
+Answer:
+Hibernate is a JPA implementation for ORM mapping between Java objects and relational DB tables. Lazy loading defers fetching relationships until accessed (avoids unnecessary joins), while eager loading fetches relationships immediately. Lazy reduces initial load but risks LazyInitializationException if session closed; eager can cause large joins and N+1 problems—choose based on use case and optimize with fetch joins.
+
+⸻
+
+43 — Explain REST maturity levels.
+
+Answer:
+Richardson Maturity Model: Level 0 (single endpoint, RPC), Level 1 (resources identified via URIs), Level 2 (use of HTTP verbs and proper status codes), Level 3 (HATEOAS — hypermedia links to discover actions). Level 2 is sufficient for most APIs; Level 3 adds discoverability via hypermedia.
+
+⸻
+
+44 — What is HATEOAS?
+
+Answer:
+HATEOAS (Hypermedia as the Engine of Application State) is a REST constraint where responses include links that indicate possible next actions for the client, allowing the client to navigate the API dynamically. It decouples clients from hardcoded endpoints but adds complexity—useful when APIs evolve frequently.
+
+⸻
+
+45 — How do you write clean, scalable Java code?
+
+Answer:
+Follow SOLID principles, keep methods small, prefer composition over inheritance, write meaningful tests, handle exceptions properly, use immutable objects where possible, apply design patterns where appropriate, and avoid premature optimization. Use code reviews, static analysis, and consistent coding standards. For scalability, design stateless services, use caching, async processing, and ensure good observability.
+
+⸻
+
+46 — Difference between POST, PUT, PATCH?
+
+Answer:
+POST creates resources (non-idempotent), PUT updates/replaces a resource at a known URI (idempotent), PATCH applies partial updates (not necessarily idempotent unless designed so). Use POST to create, PUT to replace/update full resource, PATCH to modify a subset.
+
+⸻
+
+47 — How do you handle concurrency in distributed systems?
+
+Answer:
+Strategies: idempotency keys (prevent duplicate processing), optimistic locking (version fields), pessimistic locking when necessary, distributed locks (Redis/etcd), partitioning to reduce cross-node contention, eventual consistency patterns, message deduplication in Kafka, and compensation via sagas for failure recovery. Also design for retries with exponential backoff and idempotent handlers.
+
+⸻
+
+48 — How do you scale a microservice?
+
+Answer:
+Scale horizontally by increasing instances (pods) and using load balancers; ensure stateless design for easy scaling. Use autoscaling (HPA) based on CPU, memory, or custom metrics. Scale vertically only when necessary (bigger instance). Partition data (sharding), cache hot reads, and use message queues to decouple producers and consumers to handle bursts.
+
+⸻
+
+49 — How do you debug a slow API?
+
+Answer:
+Start with metrics and tracing (APM, Jaeger, Zipkin) to identify slow endpoints and downstream calls. Check logs, thread dumps, GC pauses, DB slow queries (EXPLAIN), cache hit ratios, network latency, and third-party dependencies. Use profiling tools (async profiler, VisualVM) to find hotspots, and run load tests to reproduce. Fix by indexing DB, caching, optimizing serialization, tuning thread pools, or breaking large requests.
+
+⸻
+
+50 — Why should we hire you for this Java + Spring role?
+
+Answer:
+Concise pitch: I bring 3+ years building production microservices with a strong focus on security and performance — demonstrated by my PQC project (quantum-safe APIs, encrypted ES storage) and SEPP (real-time alerting, BulkProcessor optimizations). I’ve automated deployments with Docker and CI/CD, tuned HTTP/2 client/server modules for latency, and I’m actively learning and applying Spring Boot and Kafka. I combine domain-relevant security experience, distributed systems knowledge, and hands-on DevOps skills — enabling me to deliver high-quality, scalable backend systems aligned with AIRA Matrix’s AI and life-sciences workloads.
+
+⸻
+
+If you want, I can now:
+	•	Convert these answers into a one-page cheat sheet for quick revision,
+	•	Generate sample verbal responses (short/long/STAR format) keyed to each question,
+	•	Produce flashcards or Anki-ready Q&A, or
+	•	Insert these into the print-ready PDF you asked for earlier.
+
+Which would you like next?

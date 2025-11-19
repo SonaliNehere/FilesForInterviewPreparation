@@ -1,0 +1,310 @@
+Great — I analyzed your resume deeply (especially your PQC work, SEPP project, Elasticsearch optimization, microservices, HTTP/2 stack, Docker/K8s, distributed systems, security, RBAC, and cryptography).
+
+Below is a complete interview preparation pack tailored exactly to your resume + AIRA Matrix job role.
+This includes:
+
+✅ 50 Technical Interview Questions (with answers)
+✅ 15 Company-specific questions (AIRA Matrix)
+✅ 15 Resume-based questions (PQC + SEPP + ES + HTTP/2)
+✅ Coding Challenges (DSA + System Design + Real-world microservices tasks)
+
+⸻
+
+🚀 PART 1 — 50 MOST IMPORTANT JAVA + SPRING + MICROSERVICES QUESTIONS (With Answers)
+
+1. What is the difference between Monolithic and Microservices architecture?
+
+Explain modularity, scalability, independent deployments, fault isolation, domain-driven design.
+
+2. How does Spring Boot auto-configuration work internally?
+
+Talk about SpringFactoriesLoader, @EnableAutoConfiguration, conditional beans.
+
+3. Explain Spring IoC Container & ApplicationContext.
+
+Bean creation, lifecycle, dependency injection.
+
+4. What are the differences between @Component, @Service, @Repository?
+
+Specializations, exception translation for @Repository.
+
+5. What happens internally when a REST API is hit in Spring Boot?
+
+DispatcherServlet → HandlerMapping → HandlerAdapter → Controller → ViewResolver.
+
+6. Explain the microservice you built at Jio in PQC & SEPP.
+
+Talk about PQC cryptography APIs + SEPP elasticsearch ingestion pipeline.
+
+7. What are the common design patterns used in microservices?
+
+Factory, Singleton, Builder, Circuit Breaker, API Gateway, CQRS.
+
+8. What is the Circuit Breaker pattern?
+
+You used similar logic in SEPP real-time alerting.
+
+9. What is Kafka? Explain architecture.
+
+Producer → Broker → Consumer → Commit logs.
+
+10. How does Elasticsearch indexing work?
+
+Tokenizer, analyzer, inverted index, shards, replicas.
+Use your Bulk Processor experience here.
+
+11. How is Elasticsearch different from a database like Postgres?
+
+Search engine vs RDBMS.
+
+12. What are shards & replicas?
+
+You optimized ES ingestion → mention cluster sizing.
+
+13. Explain Redis use cases in microservices.
+
+Caching, pub/sub, rate limiting, session store.
+
+14. What is the difference between Redis and Memcached?
+
+15. Explain HTTP/1.1 vs HTTP/2 differences.
+
+Your resume highlights optimized HTTP/2 client-server modules.
+→ Multiplexing, binary framing, HPACK compression.
+
+16. What is gRPC and how is it better than REST?
+
+(If asked due to HTTP/2 experience.)
+
+17. Explain OAuth2.0, JWT, and RBAC.
+
+Tie with your RBAC implementation in PQC.
+
+18. What is difference between Authentication and Authorization?
+
+19. How do you implement Spring Security in a microservice?
+
+20. What is CSRF? How do you prevent it?
+
+21. What is the role of HashMap, ConcurrentHashMap, and TreeMap?
+
+22. Explain multithreading in Java. How did you use it?
+
+Discuss thread pools in SEPP async ingestion.
+
+23. How does Garbage Collection work in Java?
+
+24. What is volatile? What is synchronized?
+
+25. What is the difference between processes and threads?
+
+26. Can you explain SOLID principles?
+
+27. What is Dependency Injection? Why is it useful?
+
+28. How does Spring handle transactions (ACID)?
+
+@Transaction, propagation, isolation levels.
+
+29. What is distributed transaction?
+
+Two-phase commit, Saga pattern.
+
+30. What is Spring AOP?
+
+Advice, join points, proxies.
+
+31. Difference between Exception and Error.
+
+32. Checked vs Unchecked exceptions.
+
+33. How do you handle rate limiting in microservices?
+
+Redis token-bucket.
+
+34. How do you externalize configuration in Spring Boot?
+
+Config server, vault, env variables.
+
+35. Explain Docker architecture.
+
+Dockerfile, layers, image, container, registry.
+
+36. Kubernetes components?
+
+Node, kubelet, scheduler, controller manager, pods.
+
+37. What is a liveness vs readiness probe?
+
+38. How do rolling updates work in Kubernetes?
+
+39. How do you perform CI/CD?
+
+Your resume: Dockerized microservice pipelines.
+
+40. What is SonarQube? What is a code smell?
+
+41. How do you test microservices?
+
+JUnit, Mockito, Testcontainers.
+
+42. What is Hibernate? Lazy vs Eager loading.
+
+43. Explain REST maturity levels.
+
+Richardson maturity model.
+
+44. What is HATEOAS?
+
+45. How do you write clean, scalable Java code?
+
+Coding best practices.
+
+46. Difference between POST, PUT, PATCH?
+
+47. How do you handle concurrency in distributed systems?
+
+Kafka, locks, idempotency.
+
+48. How do you scale a microservice?
+
+Horizontal vs vertical scaling.
+
+49. How do you debug a slow API?
+
+Use your PQC + SEPP performance tuning experience.
+
+50. Why should we hire you for this Java + Spring role?
+
+Show domain + performance + security + microservices experience.
+
+⸻
+
+🚀 PART 2 — 15 QUESTIONS BASED ON YOUR RESUME (VERY IMPORTANT)
+
+1. Explain your Post-Quantum Cryptography project.
+
+What algorithms? Why needed? What was your contribution?
+
+2. Why did you use Kyber & Dilithium?
+
+NIST PQC finalists.
+
+3. How did you secure Elasticsearch using encryption?
+
+Encrypted storage + RBAC.
+
+4. Explain Bulk Processor optimization in Elasticsearch.
+
+Thread pool tuning, batch size, flush interval.
+
+5. What is the SEPP protocol? Why is anonymity important?
+
+6. How did you implement real-time alerting APIs?
+
+7. What performance issues did you solve with HTTP/2?
+
+8. What is the difference between RSA vs PQC algorithms?
+
+9. Why was Docker used in PQC?
+
+10. Explain how you automated microservice deployments.
+
+11. What was the toughest bug in your PQC or SEPP project?
+
+12. How did you test security edge protection proxy?
+
+13. Why are you learning Spring Boot & Kafka now?
+
+14. What makes you strong in distributed systems?
+
+15. Explain how you integrated RBAC into PQC APIs.
+
+⸻
+
+🚀 PART 3 — 15 QUESTIONS BASED ON AIRA MATRIX (Company-Specific)
+
+This is 100% company-customized.
+
+1. How would you design a backend that processes high-resolution microscopy images?
+
+2. How will you build an audit-traceable system for laboratory workflows?
+
+3. How do you store and retrieve terabytes of image metadata efficiently?
+
+4. How do you design streaming pipelines for AI inference outputs?
+
+5. How to secure sensitive patient medical data during transmission?
+
+6. How would you integrate AI inference engine results into a microservice?
+
+7. How will you scale an image-analysis backend?
+
+8. How do you design a microservice for digital pathology reports?
+
+9. How do you ensure your backend supports FDA/HIPAA compliance?
+
+10. How do you reduce latency for AI prediction results?
+
+11. What’s your approach for indexing millions of lab records in Elasticsearch?
+
+12. How do you perform role-based access for lab technicians vs doctors?
+
+13. How will you handle large DICOM/medical images?
+
+14. How will you design a Kafka-based pipeline for bioinformatics?
+
+15. Why do you want to join AIRA Matrix?
+
+Tie your domain interest in AI + security + enterprise backend.
+
+⸻
+
+🧠 PART 4 — CODING CHALLENGES (DSA + SYSTEM DESIGN)
+
+A. CODING (Java)
+
+1. Find the longest substring without repeating characters.
+
+LeetCode: Medium.
+
+2. Implement LRU Cache.
+
+Using LinkedHashMap or Doubly LinkedList + HashMap.
+
+3. Producer-Consumer using BlockingQueue.
+
+4. Detect cycle in linked list.
+
+5. Merge k sorted lists.
+
+6. Reverse a binary tree.
+
+7. Rate limiter in Java using Redis token bucket.
+
+⸻
+
+B. SYSTEM DESIGN (Microservices)
+
+1. Design a scalable Image Processing Pipeline
+	•	Image upload
+	•	Metadata extraction
+	•	Kafka queue
+	•	AI model inference
+	•	REST API to fetch results
+	•	Elasticsearch for search
+
+2. Design a Notification Service
+
+Email/SMS/WebSocket.
+
+3. Design an Audit Logging Microservice
+
+For healthcare compliance.
+
+4. Design your PQC API architecture
+
+SSL/TLS handshake, key exchange, HTTP/2.
+
+5. Design a Digital Pathology Report Management System.
+
