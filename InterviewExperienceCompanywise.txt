@@ -1678,3 +1678,271 @@ Spring annotations (@Transactional, @Cacheable)
 
 =====================================================================================================
 
+
+21-11-2025	Wissen Technology, Andheri
+
+✅ 1. First Non-Repeating Character (String)
+Logic:
+Use a frequency map. First char with freq = 1 is answer.
+Code:
+for (char c : s.toCharArray()) map.put(c, map.getOrDefault(c, 0) + 1);
+for (char c : s.toCharArray()) if (map.get(c) == 1) return c;
+
+
+✅ 2. Longest Non-Repeating Substring
+Use sliding window + HashSet.
+Keep expanding window; when duplicate found, shrink from left.
+Time: O(n)
+
+✅ 3. Collection Framework
+A set of interfaces + classes to store and manipulate groups of objects.
+Main interfaces:
+List, Set, Map, Queue
+
+✅ 4. Array vs ArrayList
+| Array               | ArrayList            |
+| ------------------- | -------------------- |
+| Fixed size          | Dynamic size         |
+| Supports primitives | Only objects         |
+| No inbuilt methods  | Many utility methods |
+
+✅ 5. LinkedList vs ArrayList
+| ArrayList                    | LinkedList                       |
+| ---------------------------- | -------------------------------- |
+| Fast for read (index access) | Fast for add/remove at start/mid |
+| Uses array                   | Uses doubly linked list          |
+| Slower insert/delete         | Slower search                    |
+
+✅ 6. HashMap
+Stores key–value pairs
+Uses hashing
+Allows null key & values
+Not ordered
+
+✅ 7. HashSet
+Uses HashMap internally
+No duplicates
+No order guaranteed
+
+✅ 8. LinkedHashMap
+Maintains insertion order
+Uses doubly-linked list + hash table
+
+✅ 9. LinkedHashSet
+HashSet + insertion order
+Internally LinkedHashMap
+
+
+✅ 10. equals() vs ==
+== → compares references
+equals() → compares values
+
+
+✅ 11. Contract between equals() & hashCode()
+If equals() is true → hashCode must be same
+If hashCode same → equals may or may not be true
+Required for correct behavior in HashMap/HashSet
+
+✅ 12. Can I put an object as key in HashMap?
+Yes, but you MUST override equals() & hashCode() for correct behavior.
+
+✅ 13. Mutable vs Immutable Class
+Mutable → fields can change after creation (StringBuilder).
+Immutable → cannot change once created (String).
+To make immutable:
+private final fields
+no setters
+deep copy in constructor
+
+✅ 14. Angular Directives
+3 types:
+Component – template + logic
+Structural – *ngIf, *ngFor
+Attribute – ngClass, ngStyle
+
+✅ 15. Decorators
+Metadata added to classes.
+Examples:
+@Component
+@Injectable
+@Input / @Output
+@NgModule
+@Directive
+
+
+✅ 16. Angular Modules
+Group components, directives, pipes
+Have imports, declarations, providers
+Root module → AppModule
+
+✅ 17. Standalone Component + How to Import Module
+Standalone removes need of NgModule.
+@Component({
+  standalone: true,
+  imports: [CommonModule, FormsModule],
+  ...
+})
+export class MyComponent {}
+
+Use imports inside component itself.
+
+✅ 18. Angular Lifecycle Hooks
+| Hook        | Usage                            |
+| ----------- | -------------------------------- |
+| constructor | For dependency injection         |
+| ngOnInit    | Fetch data, initialize variables |
+| ngOnChanges | When @Input changes              |
+| ngOnDestroy | Cleanup, unsubscribe             |
+
+
+✅ 19. constructor vs ngOnInit
+
+| constructor                      | ngOnInit                      |
+| -------------------------------- | ----------------------------- |
+| Called when component is created | Called after bindings are set |
+| Only for DI                      | For API calls, logic          |
+| Avoid heavy logic                | Safe to do heavy logic        |
+
+Why use both?
+constructor → inject dependencies
+ngOnInit → run initialization logic
+
+✅ 20. Angular Services
+Reusable business logic
+Singleton by default
+Injected using Dependency Injection
+Use @Injectable
+Used for API calls, shared data, state
+
+=====================================================================================
+
+21-11-2025	Morgan Stanly from Synechron
+
+✅ 1. Stream API (Short + Clear)
+
+Stream API allows functional programming in Java.
+Used for filtering, mapping, sorting, reducing, collecting.
+Key points:
+Works on collections
+Does not modify original list
+Lazy evaluation (intermediate ops only run when terminal op called)
+Supports parallel streams
+
+Example:
+list.stream()
+    .filter(e -> e.getSalary() > 50000)
+    .map(Employee::getName)
+    .forEach(System.out::println);
+
+✅ 2. What if we don't override equals() and hashCode()?
+Java uses Object class default implementations.
+equals() → checks reference
+hashCode() → generated from memory address
+
+👉 So every object becomes unique, even if fields are same.
+👉 HashMap/HashSet will treat them as different objects.
+
+✅ 3. Case 1: Multiple Employee objects have same values BUT you did NOT override equals()/hashCode()
+
+Example:
+new Employee(1, "Sonali")
+new Employee(1, "Sonali")
+
+
+Without overriding:
+equals() → false
+hashCodes → different (memory based)
+
+HashSet → stores both objects (duplicates allowed!)
+HashMap → treats them as different keys
+
+👉 Bad for business objects. Always override both.
+
+✅ 4. Case 2: Multiple Employee objects have same values AND hashCode returns 1 for ALL objects
+If hashCode() always returns 1 → all objects go to same bucket
+But equals() decides if object is duplicate or not.
+
+Scenario A → equals() overridden properly
+Same value → equals() true → HashSet will NOT add duplicate
+But performance becomes O(n) (worst case)
+
+Scenario B → equals() NOT overridden
+equals() false → HashSet will store ALL objects, duplicates allowed
+And performance is worst (one bucket, linear scan)
+
+👉 Correct behavior but very poor performance.
+
+✅ 5. Case 3: Multiple Employee objects have DIFFERENT values and hashCode returns 1
+
+Example:
+Employee(1, "A")
+Employee(2, "B")
+Employee(3, "C")
+
+
+But hashCode() returns 1 for all.
+
+Effects:
+Everything goes to ONE bucket
+HashSet/HashMap becomes linked list inside bucket
+equals() decides uniqueness
+Performance drops to O(n) for add/search
+But correctness is still maintained if equals() is proper
+
+👉 Correct but extremely slow.
+
+🔥 6. Comparable vs Comparator (Deep Answer)
+
+✅ Comparable
+Used for natural sorting
+Class implements Comparable<T> and overrides compareTo()
+Sorting logic is written inside the class
+Only one sorting order possible
+Used by: Collections.sort(), TreeSet, TreeMap
+
+Example:
+class Employee implements Comparable<Employee> {
+   int id;
+   public int compareTo(Employee e) {
+       return this.id - e.id; // natural order by id
+   }
+}
+
+✅ Comparator
+Used for custom sorting
+Sorting logic written outside the class.
+Multiple sorting orders possible
+Useful when you cannot modify the original class
+Used by: Collections.sort(list, comparator)
+
+Example:
+Comparator<Employee> sortByName = 
+    (e1, e2) -> e1.getName().compareTo(e2.getName());
+
+| Comparable           | Comparator         |
+| -------------------- | ------------------ |
+| Natural sorting      | Custom sorting     |
+| compareTo()          | compare()          |
+| Inside class         | Outside class      |
+| Only 1 order         | Multiple orders    |
+| Affects class design | No change to class |
+
+🔥 One-line interview answers
+➤ If I don’t override equals & hashCode?
+"Hash-based collections treat every object as unique — duplicates allowed."
+
+➤ If hashCode returns 1 for all objects?
+"Correct but very slow (all entries in one bucket); equals decides duplicates."
+
+➤ Stream API?
+"Functional operations on collections — filter, map, reduce — without modifying original data."
+
+➤ Comparable vs Comparator?
+"Comparable = natural sorting inside class, Comparator = custom sorting outside class."
+
+If you want, I can also give ready-to-speak example codes for each case (HashSet, HashMap, Streams, Comparator).
+
+| Case                         | Same Values                                                              | Different Values | Collection Behavior          |
+| ---------------------------- | ------------------------------------------------------------------------ | ---------------- | ---------------------------- |
+| **Override only hashCode()** | Goes to same bucket → equals false → **duplicates stored**               | Works normally   | Incorrect duplicate behavior |
+| **Override only equals()**   | Goes to different buckets → equals never checked → **duplicates stored** | Works normally   | Violates contract            |
