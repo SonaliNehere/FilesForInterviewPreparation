@@ -44,7 +44,42 @@ stripTrailing() → removes spaces only at the end
 
     “Subtracting values inside a comparator (a - b) may cause integer overflow and break comparator rules, so we should avoid using the - operator for sorting.         Instead, we use Integer.compare() or Comparator.comparingInt().”
 
-       
+   11. Comparable and comparator
+    "
+    class Employee implements Comparable<Employee> {
+    int salary;
+
+    Employee(int salary) { this.salary = salary; }
+
+    @Override
+    public int compareTo(Employee o) {
+        return Integer.compare(this.salary, o.salary);  // natural order
+    }
+    }
+
+    List<Employee> list = Arrays.asList(
+        new Employee(3000),
+        new Employee(1000),
+        new Employee(2000)
+    );
+
+// 1️⃣ Using Comparable
+Collections.sort(list);   // ascending
+list.sort(null);          // ascending
+
+// 2️⃣ Using Comparator
+Comparator<Employee> desc =
+        (e1, e2) -> Integer.compare(e2.salary, e1.salary);
+
+Collections.sort(list, desc); // descending
+list.sort(desc);              // descending
+"
+✔ If you call:
+list.sort();  - This won’t compile.
+Because list.sort() requires an argument — either: a Comparator, or null (meaning use Comparable / natural ordering). So you MUST pass something.
+
+
+
 
 
 
