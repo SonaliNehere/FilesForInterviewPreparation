@@ -37,3 +37,14 @@ stripTrailing() → removes spaces only at the end
 
 9. Integer.toBinaryString(i) - convert int to binary
 
+10. .sorted(Comparator.comparingInt(Employee::getSalary))
+    .sorted((e1, e2) -> Integer.compare(e1.getSalary(), e2.getSalary()))
+    .sorted(Comparator.comparingInt(Employee::getSalary).reversed())
+    .sorted((e1, e2) -> Integer.compare(e2.getSalary(), e1.getSalary()))
+
+    “Subtracting values inside a comparator (a - b) may cause integer overflow and break comparator rules, so we should avoid using the - operator for sorting.         Instead, we use Integer.compare() or Comparator.comparingInt().”
+
+       
+
+
+
