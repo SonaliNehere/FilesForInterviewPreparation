@@ -1996,3 +1996,132 @@ Short answer:
 
 “ConcurrentModificationException occurs only when the map structure changes during iteration. Updating an employee’s fields, like changing only the
  name inside the object, does not alter the map structure, so it’s safe and won’t cause CME.”
+ 
+===============================================================================================
+
+24-11-2025	Neosoft 2nd round
+
+✅ 1. Microservice Design Patterns (Interview Answer)
+Interviewer: “What are common microservice design patterns?”
+
+Microservices commonly use a few important design patterns:
+
+API Gateway Pattern –
+A single entry point for all client requests. It handles routing, authentication, rate limiting, logging, and hides internal services from the client.
+
+Circuit Breaker Pattern –
+Used to make the system resilient when a downstream service is slow or down. It prevents cascading failures.
+
+Service Discovery Pattern –
+Instances in microservices are dynamic, so we use Eureka / Consul to automatically register & discover services.
+
+Database per Service Pattern –
+Each service owns its own database to avoid tight coupling.
+
+Bulkhead Pattern –
+Isolates resources so one failing service does not impact others.
+
+Retry / Timeout Pattern –
+Retries failed calls and sets timeouts so calls don't hang forever.
+
+🚪 2. API Gateway (Interview Answer)
+Interviewer: “What is an API Gateway and why do we use it?”
+
+“API Gateway is the single entry point for all client requests in microservices.
+Instead of calling microservices directly, the client calls the API Gateway, and the gateway routes the request internally.”
+
+Why it is used:
+Centralized Authentication & Authorization (JWT/OAuth2)
+Routing & Load Balancing
+Logging & Monitoring
+Rate Limiting / Throttling
+Caching
+Hides internal architecture from clients
+
+Example:
+Spring Cloud Gateway, Kong, Zuul.
+
+⚡ 3. Circuit Breaker (Interview Answer)
+Interviewer: “What is a circuit breaker and its default state?”
+
+Circuit Breaker protects the system from repeated failures when a service is down or slow.
+It monitors requests and opens the circuit when failures exceed a threshold.
+
+Default State → CLOSED
+
+Meaning:
+Requests flow normally
+Failures are counted
+
+Other States:
+Open
+Circuit is broken
+No calls go to the service
+Fallback logic is used
+
+Half-Open
+A small number of test requests are allowed
+If successful → move to Closed
+If fail → remain Open
+
+Tool: Resilience4j (commonly used now).
+
+🔐 4. Steps to Create JWT Token in Spring Security (Interview Answer)
+Interviewer: “How do you generate and validate JWT tokens in Spring Security?”
+
+“JWT is used for stateless authentication. The steps are:”
+
+Steps:
+User sends username/password to /login.
+Authenticate the user using AuthenticationManager.
+If valid, generate JWT token using JJWT or Spring Security JWT.
+Add username + roles inside JWT claims.
+Return token to client.
+For every request, client sends:
+Authorization: Bearer <token>
+
+Create a JWT Filter (OncePerRequestFilter) that:
+Extracts token
+Validates signature
+Extracts username + roles
+Sets authentication in SecurityContext
+Then Spring Security authorizes the request.
+
+🧑‍⚖️ 5. Role-Based Authorization in Spring Security (Interview Answer)
+Interviewer: “How do you implement role-based authorization?”
+
+“Role-based authorization restricts access to APIs based on the user’s role. Steps are:”
+
+Steps:
+Store roles in the User Entity (ex: ROLE_ADMIN, ROLE_USER).
+Include role in JWT claims during token generation.
+Extract role in the JWT filter and set it inside SecurityContext.
+Use either of the two:
+Method-level security
+@PreAuthorize("hasRole('ADMIN')")
+
+OR HttpSecurity config
+http.authorizeRequests()
+    .antMatchers("/admin/**").hasRole("ADMIN")
+    .antMatchers("/user/**").hasRole("USER");
+
+
+Enable method-level security:
+@EnableGlobalMethodSecurity(prePostEnabled = true)
+
+⭐ Final Interview-Ready Summary
+🔹 Microservice Design Patterns
+API Gateway, Circuit Breaker, Service Discovery, Bulkhead, Database per Service.
+
+🔹 API Gateway
+Single entry point, does auth, routing, logging, rate limiting.
+
+🔹 Circuit Breaker
+Default = Closed
+States = Closed → Open → Half-Open.
+
+🔹 JWT Steps
+Authenticate → Generate token → Add claims → Return token → Validate on every request.
+
+🔹 Role-Based Authorization
+Add roles → Put role in JWT → Extract role → Secure endpoints with roles.
