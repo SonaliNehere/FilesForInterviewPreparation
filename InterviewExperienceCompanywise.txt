@@ -2125,3 +2125,414 @@ Authenticate → Generate token → Add claims → Return token → Validate on 
 
 🔹 Role-Based Authorization
 Add roles → Put role in JWT → Extract role → Secure endpoints with roles.
+
+=====================================================================================================
+
+26-11-2025	Namura 
+
+✅ 1. HashMap
+Stores data as key–value pairs.
+Allows one null key and multiple null values.
+Not thread-safe.
+Uses hashing → bucket → LinkedList/Tree (Tree after Java 8 when collisions occur).
+
+Time complexity:
+Average: O(1)
+Worst: O(log n) because of TreeNode.
+
+✅ 2. Hashtable vs ConcurrentHashMap
+| Feature       | Hashtable           | ConcurrentHashMap                       |
+| ------------- | ------------------- | --------------------------------------- |
+| Thread Safety | Fully synchronized  | Partially locked (segment/bucket level) |
+| Performance   | Slow                | High performance                        |
+| Nulls allowed | ❌ No null key/value | ❌ No null key/value                     |
+| Locking       | Entire map          | Only part of map locked                 |
+
+Why CHM is faster?
+Because it uses lock striping and CAS internally, so multiple threads can operate concurrently.
+
+✅ 3. ArrayList vs LinkedList
+| Feature              | ArrayList     | LinkedList                           |
+| -------------------- | ------------- | ------------------------------------ |
+| Storage              | Dynamic array | Doubly linked list                   |
+| Access               | O(1)          | O(n)                                 |
+| Insert/Delete Middle | O(n)          | O(1)                                 |
+| Memory               | Less          | More (because node object, pointers) |
+
+
+Use ArrayList when: more reads
+Use LinkedList when: more insert/delete in middle.
+
+✅ 4. ThreadPool
+ThreadPool = pool of pre-created threads managed by ExecutorService.
+
+Types:
+FixedThreadPool → fixed number of threads
+CachedThreadPool → creates threads on demand; reuses idle threads
+ScheduledThreadPool → for scheduling tasks
+SingleThreadExecutor → sequential execution
+
+Benefits:
+Better performance
+Avoids thread creation overhead
+Controls concurrency
+
+✅ 5. Runnable vs Callable
+| Runnable                       | Callable                    |
+| ------------------------------ | --------------------------- |
+| Returns nothing                | Returns a value (Future)    |
+| Cannot throw checked exception | Can throw checked exception |
+| run()                          | call()                      |
+
+Callable is used when you want a result from a background thread.
+
+✅ 6. Redis
+
+Redis = in-memory key-value store used as:
+Cache
+Pub/Sub
+Distributed locks
+Session store
+Leaderboard / counters
+
+Why fast?
+Data stored in RAM
+Single-threaded event loop (no locking)
+
+✅ 7. Spring Boot Flow
+Client Request → DispatcherServlet
+DispatcherServlet → finds HandlerMapping
+Calls Controller method
+Controller → Service
+Service → Repository
+Repository → DB
+Response returns back as JSON
+
+Key concepts:
+Auto-configuration
+Component scanning
+Starter dependencies
+
+✅ 8. How to Write Custom Queries (Spring Data JPA)
+
+Three ways:
+
+✔ 1. JPQL
+@Query("select u from User u where u.email = :email")
+User findByEmail(String email);
+
+✔ 2. Native SQL
+@Query(value = "select * from users where email = :email", nativeQuery = true)
+User findByEmailNative(String email);
+
+✔ 3. Derived Queries
+User findByNameAndStatus(String name, String status);
+
+✅ 9. HashCode & Equals All Cases
+Case 1: equals = true & hashCode = true
+→ Same bucket, considered same key → good.
+
+Case 2: equals = false & hashCode = true
+→ Same bucket but different object → causes collision.
+
+Case 3: equals = true & hashCode = false
+❌ Violates contract → unpredictable behavior.
+
+Case 4: equals = false & hashCode = false
+→ Goes to different buckets → normal.
+
+Golden Rule:
+If two objects are equal → their hashCode must be same.
+
+✅ 10. SOLID Principles
+S – Single Responsibility
+One class = one responsibility.
+
+O – Open/Closed
+Open for extension, closed for modification.
+
+L – Liskov Substitution
+Child should replace parent without breaking logic.
+
+I – Interface Segregation
+Use multiple small interfaces.
+
+D – Dependency Inversion
+Depend on abstractions, not concrete classes.
+
+✅ 11. Procedure in SQL
+
+Procedure = stored code executed on DB server.
+
+Example:
+
+CREATE PROCEDURE getUsers()
+BEGIN
+  SELECT * FROM users;
+END;
+
+
+Benefits:
+Faster execution
+Precompiled
+Reduced network calls
+Security (limited access)
+
+✅ 12. Kafka vs REST API
+| Kafka                   | REST             |
+| ----------------------- | ---------------- |
+| Asynchronous            | Synchronous      |
+| High throughput         | Low throughput   |
+| Event-driven            | Request-response |
+| Decoupled microservices | Tightly coupled  |
+
+Handles millions of events/sec
+Producers & consumers can scale independently
+Stores messages for days/weeks
+Guarantees at-least-once delivery
+
+✅ 13. JPQL
+
+Object-oriented query language
+Works on entities, not tables
+
+Example:
+select u from User u where u.age > 20
+
+✅ 14. Native Query
+
+Uses raw SQL
+DB-specific
+
+Example:
+
+@Query(value = "select * from user_table where age > 20", nativeQuery = true)
+
+=============================================================================
+
+28-11-2025	Loylti Rewardz Management Private Limited, Sakinaka
+
+✅ 1. Have you used encode() method?
+
+Yes.
+encode() is generally used for Base64 encoding, password encoding, URL encoding, or converting string → bytes.
+
+Example in Java (Base64):
+String encoded = Base64.getEncoder().encodeToString("hello".getBytes());
+
+✅ 2. Code – Rotate Array by K (Right Rotation)
+
+Optimal O(n) solution using reverse technique:
+
+void rotate(int[] nums, int k) {
+    k = k % nums.length;
+    reverse(nums, 0, nums.length - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, nums.length - 1);
+}
+
+void reverse(int[] a, int l, int r) {
+    while(l < r) {
+        int temp = a[l];
+        a[l] = a[r];
+        a[r] = temp;
+        l++;
+        r--;
+    }
+}
+
+
+Edge cases:
+k > n, normalize using k = k % n
+
+array empty
+k = 0, return original
+
+✅ 3. join() method
+join() makes one thread wait for another thread to finish.
+
+Example:
+
+t1.join(); // main thread waits for t1 to complete
+
+✅ 4. sleep() vs wait() & Who releases lock?
+| Method      | Releases Lock? | Belongs To   |
+| ----------- | -------------- | ------------ |
+| **sleep()** | ❌ No           | Thread class |
+| **wait()**  | ✅ Yes          | Object class |
+
+sleep() pauses thread for time but holds lock.
+wait() releases lock & moves thread to waiting state until notified.
+
+✅ 5. Multithreading – What is it?
+Execution of multiple threads concurrently in a single process.
+
+Benefits:
+Better CPU utilization
+Faster execution
+Handles async tasks
+
+✅ 6. Runnable vs Callable
+| Runnable                 | Callable                    |
+| ------------------------ | --------------------------- |
+| `run()`                  | `call()`                    |
+| No return                | Returns a value             |
+| No checked exception     | Can throw checked exception |
+| Good for fire-and-forget | Good when you need output   |
+
+✅ 7. In Spring I want to add multiple databases
+
+Two types:
+✔ A. Same DB type (Example: 2 MySQL DBs)
+
+Use:
+2 DataSource
+2 EntityManagerFactory
+2 TransactionManager
+
+Different packages for entities
+
+✔ B. Different DB type (MySQL + MongoDB + Oracle)
+
+Simpler:
+Add needed starters
+Configure separate beans
+Use repository packages
+
+Example:
+
+@EnableJpaRepositories(basePackages = "com.mysql.repo")
+@EnableMongoRepositories(basePackages = "com.mongo.repo")
+
+✅ 8. Spring Security
+
+Flow:
+Request hits FilterChain.
+Username/Password Authentication.
+AuthenticationManager validates.
+SecurityContext stores auth details.
+Only authorized users allowed.
+
+✅ 9. JWT is used for Authentication or Authorization?
+
+Both, but mainly:
+✔ Authentication
+JWT verifies the user’s identity.
+
+✔ Authorization
+
+Once verified, the token carries roles so server checks what user can access.
+JWT = stateless auth mechanism.
+
+✅ 10. Code – Prime Number (with edge cases)
+boolean isPrime(int n) {
+    if (n <= 1) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
+
+    for (int i = 3; i * i <= n; i += 2) {
+        if (n % i == 0) return false;
+    }
+    return true;
+}
+
+
+Edge cases handled:
+n <= 1
+even numbers
+large numbers using √n loop
+
+✅ 11. How did you enhance API performance? (Perfect interview answer)
+
+I improved performance using multiple strategies:
+
+✔ Caching with Redis
+Reduced DB hits by ~70%.
+
+✔ Pagination
+Stopped fetching large datasets.
+
+✔ Async + ThreadPool
+Improved throughput & reduced API latency.
+
+✔ Database indexing
+Created proper indexes → improved read queries drastically.
+
+✔ Connection Pool tuning
+Optimized HikariCP max pool size.
+
+✔ Removed N+1 query issues
+Used JOIN FETCH.
+
+✔ Compressed and minimized JSON
+Reduced network overhead.
+
+This is exactly the performance answer interviewers love.
+
+✅ 12. Want to have different database for different client (Multi-Tenancy)
+
+Spring Boot supports 3 tenant strategies:
+
+✔ 1. DATABASE-per-tenant
+Each client has its own DB.
+Good isolation.
+
+✔ 2. SCHEMA-per-tenant
+One DB, multiple schemas.
+
+✔ 3. TABLE-per-tenant
+Single schema, separate tables.
+
+For multi-tenancy use:
+Custom TenantInterceptor
+MultiTenantConnectionProvider
+CurrentTenantIdentifierResolver
+
+✅ 13. How you add multiple databases (same type) in Spring Boot?
+
+Setup:
+Create two data sources:
+
+@Bean
+@ConfigurationProperties("spring.datasource.db1")
+DataSource ds1();
+
+@Bean
+@ConfigurationProperties("spring.datasource.db2")
+DataSource ds2();
+
+
+Define:
+LocalContainerEntityManagerFactoryBean
+JpaTransactionManager
+Map each datasource to package using:
+
+@EnableJpaRepositories(entityManagerFactoryRef="emf1", transactionManagerRef="tm1")
+
+✅ 14. Design Patterns (most asked)
+
+
+✅ 15. Why Redis? (Best answer)
+
+Redis is used because:
+Extremely fast (in-memory)
+Supports data structures
+TTL-based caching
+Pub/Sub
+Distributed locks
+Atomic operations
+Helps reduce database load
+
+✅ 16. Why Elasticsearch is fast?
+
+Because:
+Uses inverted indexes (searches millions of documents in ms)
+Distributed architecture
+Full-text search using Lucene
+Built-in caching
+Horizontal scalability
+Near real-time indexing
+Elastic is optimized for SEARCH, not storage.
+
+===================================================================================
+

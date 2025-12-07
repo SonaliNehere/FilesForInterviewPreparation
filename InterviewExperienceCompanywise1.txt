@@ -1,0 +1,530 @@
+05-12-2025	Namura 
+✅ 1. Project – Why Redis over Relational Database?
+
+Redis is not a replacement for relational DB.
+I used Redis as a cache because:
+
+✔ Performance
+Redis stores data in memory → ~1–2 ms latency
+Database queries take 10–50 ms or more.
+
+✔ Offloads DB
+Redis reduces database calls by 60–80%.
+Higher throughput
+
+✔ Useful Structures
+Key-value, Lists, Sets, Sorted Sets → perfect for caching
+TTL support automatically expires data.
+
+✔ Distributed Locks
+Helps in concurrency control.
+
+✔ Pub/Sub
+Good for notifications, streams.
+
+Conclusion:
+Relational DB = storage + transactions
+Redis = caching + speed + concurrency features
+
+✅ 2. How You Secured Your Application?
+
+I implemented multiple layers:
+
+🔐 1. Authentication
+Spring Security
+JWT tokens
+Password hashing using BCrypt
+
+🔐 2. Authorization
+Role-based access:
+@PreAuthorize("hasRole('ADMIN')")
+
+🔐 3. Input Validation
+Bean validation
+Prevent SQL injection
+
+🔐 4. HTTPS + CORS
+Enforced HTTPS
+Configured CORS for frontend domain.
+
+🔐 5. Exception Handling
+Generic error messages → no internal details exposed.
+
+🔐 6. Rate Limiting + Throttling
+Prevent brute-force attacks.
+
+✅ 3. JWT Implementation Code + How JWT Works
+✔ JWT Workflow
+User logs in → sends username/password
+Server validates
+Server generates JWT containing:
+	username, roles, expiry time
+Client stores JWT
+For every request, JWT is sent in header
+Server validates signature and expiry
+If valid → user authorized
+
+✔ Spring Boot JWT Code (Simple & Interview Ready)
+🔸 Generate Token
+public String generateToken(UserDetails userDetails) {
+    return Jwts.builder()
+            .setSubject(userDetails.getUsername())
+            .claim("roles", userDetails.getAuthorities())
+            .setIssuedAt(new Date())
+            .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60))
+            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .compact();
+}
+
+🔸 Validate Token
+public boolean validateToken(String token, UserDetails userDetails) {
+    String username = extractUsername(token);
+    return username.equals(userDetails.getUsername()) && !isExpired(token);
+}
+
+🔸 Filter Class
+String token = request.getHeader("Authorization").substring(7);
+String username = jwtService.extractUsername(token);
+UserDetails user = userDetailsService.loadUserByUsername(username);
+
+if (jwtService.validateToken(token, user)) {
+    UsernamePasswordAuthenticationToken auth =
+            new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+    SecurityContextHolder.getContext().setAuthentication(auth);
+}
+
+✅ 4. How You Configure Security in Spring Boot?
+✔ Spring Security 6+ (No WebSecurityConfigurerAdapter)
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/auth/**").permitAll()
+                    .anyRequest().authenticated())
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
+            .build();
+}
+
+✅ 5. Implement Custom LinkedList – Why Node Should Be Inside Main Class?
+✔ Why Node class is inside LinkedList class?
+
+Because:
+Encapsulation → Node shouldn’t be used outside LinkedList
+Internal representation → Users should not interact with Node
+Keeps code organized → Node depends only on LinkedList
+
+✔ Is it necessary?
+❌ No.
+Node can be outside class also.
+But inner class is preferred for encapsulation.
+
+✅ 6. Improve Time Complexity of Add Operation in LinkedList
+Current issue:
+If you add at end without tail pointer → O(n)
+
+Solution:
+Maintain tail pointer.
+
+Result:
+addLast() becomes O(1)
+No need to traverse full list
+
+❗ Interview-Ready Explanation
+"I improved LinkedList insertion complexity from O(n) to O(1) by maintaining a tail pointer."
+
+✅ 7. Streams Question
+
+You have:
+
+class Book {
+   String name;
+   String author;
+   LocalDate publishDate;
+}
+
+class Review {
+   String name;
+   int rating;
+}
+
+Requirement:
+
+After 2021, find books whose rating > 4.
+
+⭐ FIRST: NORMAL STREAM SOLUTION (Less optimal – allowed in interviews)
+
+This solution uses filtering + searching the review list for each book.
+
+List<Book> result = books.stream()
+        .filter(b -> b.getPublishDate().getYear() > 2021)
+        .filter(b -> reviews.stream()
+                .anyMatch(r -> r.getName().equals(b.getName()) && r.getRating() > 4))
+        .collect(Collectors.toList());
+
+❌ Complexity: O(n²)
+Because for each book you scan the reviews again.
+Still acceptable for small lists but NOT optimal.
+
+⭐ SECOND: OPTIMIZED STREAM SOLUTION (Best Answer for Interview)
+Step 1 — Convert review list into a Map for O(1) lookup
+Map<String, Integer> ratingMap = reviews.stream()
+        .collect(Collectors.toMap(Review::getName, Review::getRating));
+
+Step 2 — Filter books efficiently
+List<Book> result = books.stream()
+        .filter(b -> b.getPublishDate().getYear() > 2021)
+        .filter(b -> ratingMap.getOrDefault(b.getName(), 0) > 4)
+        .collect(Collectors.toList());
+
+👉 WHY THIS IS OPTIMAL
+✔ Only one pass for reviews → O(n)
+✔ Only one pass for books → O(n)
+✔ Map lookup per book → O(1)
+✔ No nested loops
+✔ Avoids repeated scanning
+Result: O(n) complexity (Best possible)
+🟢 FINAL CLARIFICATION
+
+
+✅ 8. Producer–Consumer Problem Code — Why While Loop Required?
+✔ Simplest Code Using wait/notify
+class PC {
+    Queue<Integer> queue = new LinkedList<>();
+    int capacity = 5;
+
+    public synchronized void produce() throws InterruptedException {
+        while (queue.size() == capacity) {   // MUST BE WHILE
+            wait();
+        }
+        queue.add(1);
+        notifyAll();
+    }
+
+    public synchronized void consume() throws InterruptedException {
+        while (queue.isEmpty()) {            // MUST BE WHILE
+            wait();
+        }
+        queue.remove();
+        notifyAll();
+    }
+}
+
+| Reason                           | Explanation                              |
+| -------------------------------- | ---------------------------------------- |
+| **Spurious wakeup**              | Threads can wake without notify          |
+| **Multiple producers/consumers** | After waking, condition may not be valid |
+| **Data race avoidance**          | While rechecks condition                 |
+
+
+IF checks once → unsafe
+WHILE checks condition repeatedly → safe
+
+✅ 9. Critical or Complex Scenario From Your Experience
+
+Use this answer in interviews:
+
+⭐ Scenario: API slowness due to repeated DB calls
+
+Problem:
+API latency was 1.8 seconds
+Due to N+1 queries + repeating DB calls
+
+✔ My multi-step solution:
+Added Redis caching → reduced repetitive queries
+Fixed N+1 by using JOIN FETCH
+Created indexes on frequently filtered columns
+Used parallel streams for large dataset
+Tuned HikariCP pool size
+
+⭐ Result:
+Reduced API latency from 1.8s → 220ms
+Reduced DB load by 70%
+
+Interview Impact:
+This proves performance optimization + real experience.
+
+========================================================================================
+
+06-12-2025	CCIL, dadar
+
+1️⃣ Redis over relational databases
+I don’t use Redis instead of RDBMS, I use it with RDBMS.
+
+Why Redis?
+
+In-memory → microsecond–millisecond latency.
+
+Great for:
+Caching frequently accessed data.
+Storing sessions, tokens.
+Counters, leaderboards, rate limiting.
+Supports TTL → automatic expiry.
+Reduces load on relational DB → improves overall throughput.
+
+Line for interview:
+“We kept relational DB as source of truth and used Redis as a caching + fast-access layer on top of it.”
+
+2️⃣ Why Elasticsearch?
+
+Built on Lucene → optimized for full-text search.
+Uses inverted index → super-fast text queries on huge data.
+
+Supports:
+Full-text, fuzzy, relevance scoring.
+Aggregations & analytics.
+Horizontal scaling across nodes.
+Great for logs, search boxes, analytics dashboards.
+
+Line:
+“I use Elasticsearch where search & analytics on large text data are needed, not as a primary OLTP database.”
+
+3️⃣ Microservices – what & why?
+Application split into small, independent services.
+
+Each service:
+Has its own codebase.
+Can have its own DB.
+Can be deployed, scaled independently.
+
+Benefits: scalability, tech flexibility, fault isolation.
+
+4️⃣ How do microservices communicate?
+
+Two main ways:
+Synchronous:
+REST (HTTP/JSON)
+gRPC (binary, faster)
+
+Asynchronous:
+Kafka / RabbitMQ / other message brokers.
+
+Often: mixed – REST for request/response, Kafka for events.
+
+5️⃣ What if some microservices fail?
+
+We use resilience patterns:
+Timeouts → don’t wait forever.
+Retries with backoff.
+Circuit breaker (e.g. Resilience4j).
+Fallback (default or cached response).
+Bulkhead (isolate resources per service).
+Idempotency for safe retries.
+For workflows: Saga pattern for distributed transactions.
+
+6️⃣ Kafka – where and why?
+
+Distributed log-based message broker.
+High throughput, partitioned, scalable.
+Decouples producers & consumers.
+
+Good for:
+Event-driven architecture.
+Streaming data.
+Async communication between microservices.
+
+Line:
+“I use Kafka to make services event-driven and to decouple communication instead of chaining synchronous REST calls.”
+
+7️⃣ Get data from 3 microservices – async but in sequence
+
+Goal: call 3 services in parallel (for speed) but combine response in a specific order.
+
+In Java (CompletableFuture):
+
+CompletableFuture<Data1> f1 = supplyAsync(() -> callService1());
+CompletableFuture<Data2> f2 = supplyAsync(() -> callService2());
+CompletableFuture<Data3> f3 = supplyAsync(() -> callService3());
+
+CompletableFuture.allOf(f1, f2, f3).join();
+
+CombinedResponse resp = new CombinedResponse(
+    f1.get(),  // first in sequence
+    f2.get(),  // second
+    f3.get()   // third
+);
+
+
+Calls run in parallel.
+Final object respects desired sequence.
+
+8️⃣ How do you find latency in code?
+
+Add timing logs:
+
+long start = System.currentTimeMillis();
+// call
+long end = System.currentTimeMillis();
+log.info("Time taken: {} ms", (end - start));
+
+
+Use APM tools: NewRelic, Datadog, Prometheus + Grafana.
+
+Use Spring Boot Actuator metrics.
+
+Check DB EXPLAIN plan for query latency.
+
+Measure per-layer:
+API layer
+Service
+Repository/DB
+
+9️⃣ How to optimize an API?
+
+Common points I’d say:
+
+Add caching (Redis).
+Use pagination, not full dumps.
+Remove N+1 queries.
+Add proper DB indexes.
+Tune connection pool (HikariCP).
+Avoid heavy object mapping / unnecessary transformations.
+Compress response (gzip).
+
+Use async/non-blocking where suitable.
+
+🔟 How to optimize SQL?
+
+Create indexes on WHERE / JOIN columns.
+Avoid SELECT * → select only needed columns.
+Avoid functions in WHERE on indexed columns (LOWER(col) breaks index).
+Use EXPLAIN to see query plan.
+Avoid unnecessary joins, subqueries.
+Add limit/pagination where possible.
+
+1️⃣1️⃣ What if I want 20k records from SQL – how to optimize?
+
+First: ask → Do we really need all 20k at once?
+
+If yes:
+
+DB side:
+
+Proper indexes.
+Use server-side paging or streaming (cursor).
+Use fetchSize hints (JDBC) for streaming results.
+
+Example:
+
+stmt.setFetchSize(1000);
+
+1️⃣2️⃣ After optimizing SQL, how to optimize code for 20k records?
+
+Avoid O(n²) operations; use Map/Set for lookups.
+Avoid creating unnecessary intermediate lists.
+Use stream() or parallelStream() (carefully).
+Avoid heavy operations inside loops (e.g. repeated DB calls or JSON parsing).
+
+If sending to client:
+Use pagination on API.
+Or stream chunks (e.g. application/stream+json).
+
+1️⃣3️⃣ Interface vs Abstract Class
+
+Interface:
+Only method signatures + default/static methods.
+No state (except public static final constants).
+A class can implement multiple interfaces.
+
+Abstract class:
+Can have:
+Abstract + concrete methods.
+Fields, constructors.
+Single inheritance → can extend only one abstract class.
+
+Rule of thumb:
+Use interface for contract; abstract class for shared partial implementation.
+
+1️⃣4️⃣ What if I write body to an abstract method?
+
+In Java:
+An abstract method cannot have a body.
+If you put a body, it is not abstract anymore.
+
+You can have:
+
+abstract class A {
+    abstract void m1();      // no body
+    void m2() { ... }        // normal concrete method
+}
+
+
+If you want default body in an interface → use default method.
+
+1️⃣5️⃣ Square / Circle extend Shape – Find area without knowing shape
+
+Polymorphism.
+
+abstract class Shape {
+    abstract double area();
+}
+
+class Circle extends Shape {
+    double r;
+    Circle(double r) { this.r = r; }
+    double area() { return Math.PI * r * r; }
+}
+
+class Square extends Shape {
+    double s;
+    Square(double s) { this.s = s; }
+    double area() { return s * s; }
+}
+
+// usage:
+Shape s1 = new Circle(5);
+Shape s2 = new Square(4);
+
+double a1 = s1.area();   // calls Circle.area()
+double a2 = s2.area();   // calls Square.area()
+
+
+We don’t need to know whether it’s a circle or square.
+
+1️⃣6️⃣ Batching
+
+Batching = grouping multiple operations into one shot to reduce overhead.
+
+Examples:
+
+JDBC batch insert/update:
+
+ps.addBatch();
+ps.executeBatch();
+
+
+Kafka batch sending.
+Batch REST calls (where possible).
+
+Benefits:
+Fewer network calls.
+Better throughput.
+
+1️⃣7️⃣ Difference between @Component, @Service, @Repository
+
+All are Spring beans but semantically different:
+@Component
+Generic bean.
+Any component that doesn’t fit other stereotypes.
+
+@Service
+Service layer / business logic.
+For readability + AOP (e.g. transactional, logging).
+
+@Repository
+DAO/persistence layer.
+Spring translates DB exceptions into DataAccessException hierarchy.
+
+1️⃣8️⃣ Throughput vs Latency
+Latency = time taken to process one request
+(e.g. 120 ms).
+
+Throughput = number of requests processed per unit time
+(e.g. 500 requests/second).
+
+Analogy:
+Latency: time to serve one customer.
+Throughput: how many customers served per minute.
+
+=====================================================================================
